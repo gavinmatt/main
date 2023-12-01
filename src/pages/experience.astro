@@ -1,11 +1,11 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import TimeLineElement from "../components/cv/TimeLine.astro";
+import TimeLineElement from "../components/experience/TimeLine.astro";
 ---
 
-<BaseLayout title="Resume" sideBarActiveItemID="cv">
+<BaseLayout title="My Experience" sideBarActiveItemID="experience">
   <div class="mb-5">
-    <div class="text-3xl w-full font-bold">Profile</div>
+    <div class="text-3xl w-full font-bold">Who Am I?</div>
   </div>
 
   <div class="mb-10 text-justify">
@@ -61,6 +61,12 @@ import TimeLineElement from "../components/cv/TimeLine.astro";
     >
       Product lead focused on the platform, software patch availability, Linux, and Product Led Growth.
     </TimeLineElement>
+    <TimeLineElement
+      title="CommercialTribe, Enterprise Product Manager and Privacy Specialist"
+      subtitle="September 2015-May 2018, Denver, CO"
+    >
+      Product lead for CommercialTribe's sales training and assessment products and privacy and security specialist. 
+    </TimeLineElement>
   </div>
 
   <div class="mb-5">
@@ -80,10 +86,23 @@ import TimeLineElement from "../components/cv/TimeLine.astro";
   </ul>
 
   <div class="mb-5">
+    <div class="text-3xl w-full font-bold">Publications</div>
+  </div>
+
+  <div class="time-line-container grid gap-2 mb-10">
+    <TimeLineElement
+      title="Anthropology & Archeology of Eurasia"
+      subtitle="Volume 51, 2012 - Issue 1 - Graffiti on the Walls of Buildings in Scythian Neapolis"
+    />
+    Translated the original work by Ol'ga D. Dashnevskaia from Russian to English.
+
+  </div>
+
+  <div class="mb-5">
     <div class="text-3xl w-full font-bold">Skills</div>
   </div>
 
-  <ul class="list-disc md:columns-5 columns-2 mx-6">
+  <ul class="list-disc md:columns-3 columns-2 mx-6">
     <li>Product Leadership</li>
     <li>Product Led Growth</li>
     <li>AI/ML Products</li>

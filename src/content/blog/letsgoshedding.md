@@ -42,7 +42,7 @@ From there, the pad sat for weeks. We traveled, endured a brutally wet Colorado 
 
 Finally the kit arrived - the [Lowes Heartland Coronado](https://www.lowes.com/pd/Heartland-12-ft-x-8-ft-Coronado-Saltbox-Engineered-Storage-Shed/5012923399). This kit was a perfect mix of size, capacity, and price. The kits are fantastic - everything comes flat packed into a 4ftx4ftx8ft pile, and you can just pull pieces off as you need them.
 
-Construction from here followed the manual. Floor joists first, then flooring, then walls supported by a 2x4, then a full structure. The main benefit of the kits is that the siding comes pre-cut - no mismeasured walls or unexpected overlap. As long as you keep the floor square, everything from here works out fine.
+Construction from here followed the manual. Floor joists first, then flooring, then walls framed in 2x4s, then a full structure. The main benefit of the kits is that everything comes pre-cut - no mismeasured walls or unexpected overlap. As long as you keep the floor square, everything from here works out fine. _Sure_.
 
 <img src="/images/shed/shed_floor.png">
 
@@ -50,15 +50,15 @@ We, of course, did not keep the floor square. A sledgehammer and some creative j
 
 <img src="/images/shed/shed_wall.png">
 
-Next we added some pre-fab OSB siding and squared all of our walls up, and at long last we had a structure.
+Next, we added the pre-fab OSB siding and squared all of our walls up, and at long last we had a structure.
 
 <img src="/images/shed/shed_walls.png">
 
-We then threw in trusses, put on the roof OSB (slamming nails in as fast as possible during a thunderstorm), put on shingles, installed doors and windows, and caulked and painted. But of course that plan was blown up nearly immediately due to some fuzzy window installation instructions. I’ll cut to the chase  - the door windows were supposed to be installed on the inside facing out. I read it the opposite - outside with the trim facing out. What followed was several attempts to do it correctly, with me finally settling on a nicer looking but totally incorrect placement between trim layers. Whatever - paint and caulk fix all wounds. At least shingling is straightforward and predictable - as long as you actually randomly overlap each sheet.
+We then threw in trusses, put on the roof planks (slamming nails in as fast as possible during a thunderstorm), put on shingles, installed doors and windows, and caulked and painted. But of course that plan was blown up nearly immediately due to some fuzzy window installation instructions. I’ll cut to the chase  - the door windows were supposed to be installed on the inside, with glass facing out. I read it the opposite - outside with the trim facing out. What followed was several attempts to do it correctly, with me finally settling on a nicer looking but totally incorrect placement between trim layers. Whatever - paint and caulk fix all wounds. At least shingling is straightforward and predictable - as long as you _actually_ randomly overlap each sheet.
 
 <img src="/images/shed/shed_shingles.png">
 
-**AT LAST** we arrived at a viable shed. While more work was needed to cut in the remaining retaining wall elements, we had a stable, waterproof, and painted shed ready for storage. And storáge we did - I’m a well known evangelist for the [Gladiator Geartrack](https://www.gladiatorgarageworks.com/products/4-wide-geartrack%C2%AE-channels-2-pack) system and of course lined the shed with Gladiator strips. Our garage is coated in it. Now we have ample storage in the relatively small space, and important items stay off the floor. Go buy it.
+**AT LAST** we arrived at a viable shed. While more work was needed to hammer in the remaining retaining wall, we had a stable, waterproof, and painted shed ready for storage. And storáge we did - I’m a well known evangelist for the [Gladiator Geartrack](https://www.gladiatorgarageworks.com/products/4-wide-geartrack%C2%AE-channels-2-pack) system and of course lined the shed with Gladiator strips. Our garage is coated in it. Now we have ample storage in the relatively small space, and important items stay off the floor. Go buy it.
 
 <img src="/images/shed/shed_geartrack.png">
 

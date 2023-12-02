@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<!--  created with sitemap generator https://octopus.do  -->
+
+    <url>
+        <loc>https://gavmatt.com</loc>
+        <lastmod>2023-12-02</lastmod>
+        <changefreq>always</changefreq>
+        <priority>0.5</priority>
+    </url>
+    <url>
+        <loc>https://gavmatt.com/blog</loc>
+        <lastmod>2023-12-02</lastmod>
+        <changefreq>always</changefreq>
+        <priority>0.5</priority>
+    </url>
+    <url>
+        <loc>https://gavmatt.com/blog/letsgoshedding</loc>
+        <lastmod>2023-12-02</lastmod>
+        <changefreq>always</changefreq>
+        <priority>0.5</priority>
+    </url>
+    <url>
+        <loc>https://gavmatt.com/blog/tag/DIY</loc>
+        <lastmod>2023-12-02</lastmod>
+        <changefreq>always</changefreq>
+        <priority>0.5</priority>
+    </url>
+    <url>
+        <loc>https://gavmatt.com/experience</loc>
+        <lastmod>2023-12-02</lastmod>
+        <changefreq>always</changefreq>
+        <priority>0.5</priority>
+    </url>
+    <url>
+        <loc>https://gavmatt.com/projects</loc>
+        <lastmod>2023-12-02</lastmod>
+        <changefreq>always</changefreq>
+        <priority>0.5</priority>
+    </url>
+</urlset>

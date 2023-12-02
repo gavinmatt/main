@@ -38,7 +38,7 @@ Construction from here followed the manual. Floor joists first, then flooring, t
 
 We, of course, did not keep the floor square. A sledgehammer and some creative jigsawing later, we got to square! Walls went up soon after.
 
-<img src="/images/shed/shed_wall.png>
+<img src="/images/shed/shed_wall.png">
 
 After that, we added on the trusses, put on the roof OSB (slamming nails in as fast as possible before a storm), and at long last had a structure.
 
@@ -46,13 +46,15 @@ After that, we added on the trusses, put on the roof OSB (slamming nails in as f
 
 From here, the recipe was simple - put on shingles, install doors and windows, and paint. But of course that plan was blown up nearly immediately due to some fuzzy window installation instructions. I’ll cut to the chase  - the door windows were supposed to be installed on the inside facing out. I read it the opposite - outside with the trim facing out. What followed was several attempts to do it correctly, with me finally settling on a nicer looking but totally incorrect placement. Whatever - paint and caulk fix all wounds. At least shingling is straightforward and predictable - as long as you actually separate each sheet.
 
-
+<img src="/images/shed/shed_shingles.png">
 
 AT LAST we arrived at a viable shed. While more work was needed to cut in the remaining retaining wall boards, we had a stable, waterproof, and painted shed ready for storage. And storage we did - I’m a well known evangelist for the [Gladiator Geartrack](https://www.gladiatorgarageworks.com/products/4-wide-geartrack%C2%AE-channels-2-pack) system and of course lined the shed with Gladiator strips. Now we have ample storage for even a relatively small space, and important items stay off the floor. 
 
-But of course, this journey ended too easily. Literally the day that we finished the shed, the last of a posse of 10(!) skunks moved in underneath. After spraying our dogs for the 4th time, we captured and removed it, hammered in hardware cloth, and called it a season.
+<img src="/images/shed/shed_geartrack.png">
 
-So what did I learn?
+But par the course, this journey ended abruptly. Literally the day that we finished the shed, the last of a posse of 10(!) skunks moved in underneath. After spraying our dogs for the 4th time, we captured and removed it, hammered in hardware cloth, and called it a season.
+
+So what did we learn?
 
 * **Buy the tools** -It doesn’t matter how many times I do a DIY project - without fail, I cheap out on the right tools and later shrug my way into Home Depot to do it right. Just buy the nail gun and paint sprayer upfront and get things done earlier.
 * **Mama strong** - my amazing wife came in clutch 24/7 to lift, carry, support, and bang in siding nails. Don’t be afraid to ask for help for “1 person” projects and celebrate when your partner in crime gets a chance to use a high-powered nail gun.

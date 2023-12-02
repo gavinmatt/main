@@ -28,7 +28,7 @@ Next up, cement. We went with 8” sonotubes, placing 6 total - 3 in parallel al
 
 After that, gravel! We found gravel to be essential for drainage and maintaining a dry foundation. In comes the skid steer again to help move 2ish tons of gravel into place. Our lovely friends at [SEF Construction and & Landscape](https://www.seflandscaping.com) added the rest of the gravel and tamped it down for us! 
 
-<img src="/images/shed/skid_steer.png>
+<img src="/images/shed/skid_steer.png">
 
 For weeks, the pad sat. We traveled, endured a brutally wet Colorado summer, and planned our next move. Finally the kit arrived - the [Lowes Heartland Coronado](https://www.lowes.com/pd/Heartland-12-ft-x-8-ft-Coronado-Saltbox-Engineered-Storage-Shed/5012923399). This kit was a perfect mix of size, capacity, and price. The kits are fantastic - everything comes flat packed into a 4ftx4ftx8ft pile, and you can just pull pieces off as you need them.
 

@@ -22,7 +22,9 @@ Once we had a relatively flat area, we mapped out a 12ft x 8ft area and complete
 
 Let me tell you about shed anchoring. Despite being one of the most common DIY tasks I think someone can do, the amount of information out there about how to actually position and anchor your shed ranges the gambit of useful to useless. Even for a relatively small shed (we’re not parking cars), opinions range from “set it on gravel” to “support each joist with cement columns at every corner.” I’ll admit - I agonized over stability for weeks and still got it wrong as you’ll see later.
 
-Next up, cement. We went with 8” sonotubes, placing 6 total - 3 in parallel along the longest supports...failing to reinforce the corners. Oh well.
+Next up, cement. We went with 8” sonotubes, placing 6 total - 3 in parallel along the longest supports...failing to reinforce the corners. Oh well. I did find a slick way to bring all of my supplies up in the laziest way possible using a skid steer, wheelbarrow, and hopes and prayers.
+
+<img src="images/shed/skid_luggage.png">
 
 We dug each to at least 2ft where possible, trying to avoid frost heave. Maybe 24” in the back. Maybe.
 
@@ -69,6 +71,6 @@ So what did we learn?
 * **You can’t win it all** - despite my best efforts, must haves like gutters proved impossible due to the design of the shed. While I tried, we still have runoff to the front. Sometimes, despite your best efforts buying everything needed to accomplish the plan, the design can bite you. Put down some drain lines and gravel and move on.
 * **There are no hurricanes in Colorado** - Building safely is great, as is ensuring your shed doesn’t fly away in a breeze. That being said, we don’t tend to get 120 mph winds down here, and prepping for this scenario can be overkill.
 * **Small progress = big outcomes** - Heading out each day to knock down a small task like framing a wall didn’t seem like much at the time, but moved us along at a predictable rate. The many times I felt like giving up and hiring out, I was reminded that just the day before, the situation was even more chaotic. Stepping back to realize progress made it possible to take another step and (eventually) get it done.
-* **Don’t beat yourself up** - Am I happy about the gutters and drainage? Is the retaining wall done? Did I line the shingles up as perfectly in the front as I did the back? While it’s a solid **no** to all three, I’m proud of what I learned and what got accomplished, and next time, I’ll come prepared with that knowledge. I also expect this shed to outlive me.
+* **Don’t beat yourself up** - Am I happy about the gutters and drainage? Is the retaining wall done? Did I line the shingles up as perfectly in the front as I did the back? Do we need stairs? While it’s a solid **check back next year** to all of these questions, I’m proud of what I learned and what got accomplished, and next time, I’ll come prepared with that knowledge. I also expect this shed to outlive me.
 
 

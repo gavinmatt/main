@@ -22,7 +22,9 @@ Once we had a relatively flat area, we mapped out a 12ft x 8ft area and complete
 
 Let me tell you about shed anchoring. Despite being one of the most common DIY tasks I think someone can do, the amount of information out there about how to actually position and anchor your shed ranges the gambit of useful to useless. Even for a relatively small shed (we’re not parking cars), opinions range from “set it on gravel” to “support each joist with cement columns at every corner.” I’ll admit - I agonized over stability for weeks and still got it wrong as you’ll see later.
 
-Next up, cement. We went with 8” sonotubes, placing 6 total - 3 in parallel along the longest supports. We dug each to at least 2ft where possible, trying to avoid frost heave. Maybe 24” in the back. Just rent an auger - they seem useful, but the $40 to rent saves an auger-sized space in your garage. We had a clean pour, added rebar down the middle, and let it cure for 3 days.
+Next up, cement. We went with 8” sonotubes, placing 6 total - 3 in parallel along the longest supports...failing to reinforce the corners. Oh well.
+
+We dug each to at least 2ft where possible, trying to avoid frost heave. Maybe 24” in the back. Just rent an auger - you may think you'll use it again, but you won't. THe $40 to rent saves an auger-sized space in your garage. We had a clean pour, added rebar down the middle, and let it cure for 3 days.
 
 <img src="/images/shed/shed_anchors.png">
 

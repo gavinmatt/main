@@ -5,7 +5,7 @@ pubDate: "Dec 1 2023"
 heroImage: "/shed_final.png"
 tags: ["DIY"]
 ---
-
+<i>Or, how to spend $5,000 saving money by "doing it yourself"</i>
 
 
 A small passion of mine outside of work is to start major projects with relatively little planning. Our recent 6 month saga of the backyard shed was no exception. In order to “save money” and “make things easier,” I decided that doing it entirely DIY with a kit and nothing else was the best way to go. Mistakes were made, lessons were learned…

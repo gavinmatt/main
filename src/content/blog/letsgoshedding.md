@@ -22,7 +22,9 @@ Once we had a relatively flat area, we mapped out a 12ft x 8ft area and complete
 
 Let me tell you about shed anchoring. Despite being one of the most common DIY tasks I think someone can do, the amount of information out there about how to actually position and anchor your shed ranges the gambit of useful to useless. Even for a relatively small shed (we’re not parking cars), opinions range from “set it on gravel” to “support each joist with cement columns at every corner.” I’ll admit - I agonized over stability for weeks and still got it wrong as you’ll see later.
 
-Next up, cement. We went with 8” sonotubes, placing 6 total - 3 in parallel along the longest supports. We dug each to at least 2ft where possible, trying to avoid frost heave. Maybe 24” in the back. Just rent an auger - they seem useful, but the $40 to rent saves an auger-sized space in your garage. We had a clean pour, added rebar down the middle, and let it cure for 3 days.
+Next up, cement. We went with 8” sonotubes, placing 6 total - 3 in parallel along the longest supports...failing to reinforce the corners. Oh well.
+
+We dug each to at least 2ft where possible, trying to avoid frost heave. Maybe 24” in the back. Just rent an auger - you may think you'll use it again, but you won't. THe $40 to rent saves an auger-sized space in your garage. We had a clean pour, added rebar down the middle, and let it cure for 3 days.
 
 <img src="/images/shed/shed_anchors.png">
 
@@ -48,11 +50,15 @@ From here, the recipe was simple - put on shingles, install doors and windows, a
 
 <img src="/images/shed/shed_shingles.png">
 
-**AT LAST** we arrived at a viable shed. While more work was needed to cut in the remaining retaining wall boards, we had a stable, waterproof, and painted shed ready for storage. And storage we did - I’m a well known evangelist for the [Gladiator Geartrack](https://www.gladiatorgarageworks.com/products/4-wide-geartrack%C2%AE-channels-2-pack) system and of course lined the shed with Gladiator strips. Now we have ample storage for even a relatively small space, and important items stay off the floor. 
+**AT LAST** we arrived at a viable shed. While more work was needed to cut in the remaining retaining wall boards, we had a stable, waterproof, and painted shed ready for storage. And storage we did - I’m a well known evangelist for the [Gladiator Geartrack](https://www.gladiatorgarageworks.com/products/4-wide-geartrack%C2%AE-channels-2-pack) system and of course lined the shed with Gladiator strips. Our garage is coated in it. Now we have ample storage for even a relatively small space, and important items stay off the floor. 
 
 <img src="/images/shed/shed_geartrack.png">
 
-But par the course, this journey ended abruptly. Literally the day that we finished the shed, the last of a posse of 10(!) skunks moved in underneath. After spraying our dogs for the 4th time, we captured and removed it, hammered in hardware cloth, and called it a season.
+But par the course, this journey ended abruptly. Literally the day that we finished the shed, the last of a posse of 10(!) skunks moved in underneath. After it sprayed our dogs for the 4th time, we captured and removed it, hammered in hardware cloth, and called it a season.
+
+Viola:
+
+<img src="/images/shed/shed_final.webp">
 
 So what did we learn?
 
@@ -61,6 +67,6 @@ So what did we learn?
 * **You can’t win it all** - despite my best efforts, must haves like gutters proved impossible due to the design of the shed. While I tried, we still have runoff to the front. Sometimes, despite your best efforts buying everything needed to accomplish the plan, the design can bite you. Put down some drain lines and gravel and move on.
 * **There are no hurricanes in Colorado** - Building safely is great, as is ensuring your shed doesn’t fly away in a breeze. That being said, we don’t tend to get 120 mph winds down here, and prepping for this scenario can be overkill.
 * **Small progress = big outcomes** - Heading out each day to knock down a small task like framing a wall didn’t seem like much at the time, but moved us along at a predictable rate. The many times I felt like giving up and hiring out, I was reminded that just the day before, the situation was even more chaotic. Stepping back to realize progress made it possible to take another step and (eventually) get it done.
-* **Don’t beat yourself up** - Am I happy about the gutters and drainage? Is the retaining wall done? Did I line the shingles up as perfectly in the front as I did the back? While it’s a solid **no** to both, I’m proud of what I learned and what got accomplished, and next time, I’ll come prepared with that knowledge. I also expect this shed to outlive me.
+* **Don’t beat yourself up** - Am I happy about the gutters and drainage? Is the retaining wall done? Did I line the shingles up as perfectly in the front as I did the back? While it’s a solid **no** to all three, I’m proud of what I learned and what got accomplished, and next time, I’ll come prepared with that knowledge. I also expect this shed to outlive me.
 
 

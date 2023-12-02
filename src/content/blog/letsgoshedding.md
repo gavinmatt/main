@@ -62,7 +62,7 @@ We then threw in trusses, put on the roof OSB (slamming nails in as fast as poss
 
 <img src="/images/shed/shed_geartrack.png">
 
-But par the course, this journey ended abruptly. Literally the day that we finished the shed, the last of a posse of 10(!) skunks moved in underneath. After it sprayed our dogs for the 4th time, we captured and removed it, hammered in hardware cloth, and called it a season.
+But par for the course, this journey ended abruptly. Literally the day that we finished the shed, the last of a posse of 10(!) skunks moved in underneath. After it sprayed our dogs for the 4th time, we captured and removed it, hammered in hardware cloth, and called it a season.
 
 **Viola:**
 

@@ -54,11 +54,11 @@ Next we added some pre-fab OSB siding and squared all of our walls up, and at lo
 
 <img src="/images/shed/shed_walls.png">
 
-We then threw in trusses, put on the roof OSB (slamming nails in as fast as possible during a thunderstorm), put on shingles, installed doors and windows, and caulked and painted. But of course that plan was blown up nearly immediately due to some fuzzy window installation instructions. I’ll cut to the chase  - the door windows were supposed to be installed on the inside facing out. I read it the opposite - outside with the trim facing out. What followed was several attempts to do it correctly, with me finally settling on a nicer looking but totally incorrect placement. Whatever - paint and caulk fix all wounds. At least shingling is straightforward and predictable - as long as you actually separate each sheet.
+We then threw in trusses, put on the roof OSB (slamming nails in as fast as possible during a thunderstorm), put on shingles, installed doors and windows, and caulked and painted. But of course that plan was blown up nearly immediately due to some fuzzy window installation instructions. I’ll cut to the chase  - the door windows were supposed to be installed on the inside facing out. I read it the opposite - outside with the trim facing out. What followed was several attempts to do it correctly, with me finally settling on a nicer looking but totally incorrect placement between trim layers. Whatever - paint and caulk fix all wounds. At least shingling is straightforward and predictable - as long as you actually randomly overlap each sheet.
 
 <img src="/images/shed/shed_shingles.png">
 
-**AT LAST** we arrived at a viable shed. While more work was needed to cut in the remaining retaining wall boards, we had a stable, waterproof, and painted shed ready for storage. And storage we did - I’m a well known evangelist for the [Gladiator Geartrack](https://www.gladiatorgarageworks.com/products/4-wide-geartrack%C2%AE-channels-2-pack) system and of course lined the shed with Gladiator strips. Our garage is coated in it. Now we have ample storage for even a relatively small space, and important items stay off the floor. 
+**AT LAST** we arrived at a viable shed. While more work was needed to cut in the remaining retaining wall elements, we had a stable, waterproof, and painted shed ready for storage. And storáge we did - I’m a well known evangelist for the [Gladiator Geartrack](https://www.gladiatorgarageworks.com/products/4-wide-geartrack%C2%AE-channels-2-pack) system and of course lined the shed with Gladiator strips. Our garage is coated in it. Now we have ample storage for even a relatively small space, and important items stay off the floor. 
 
 <img src="/images/shed/shed_geartrack.png">
 

@@ -56,7 +56,7 @@ From here, the recipe was simple - put on shingles, install doors and windows, a
 
 But par the course, this journey ended abruptly. Literally the day that we finished the shed, the last of a posse of 10(!) skunks moved in underneath. After it sprayed our dogs for the 4th time, we captured and removed it, hammered in hardware cloth, and called it a season.
 
-Viola:
+**Viola:**
 
 <img src="/images/shed/shed_final.webp">
 

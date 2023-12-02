@@ -26,7 +26,9 @@ Next up, cement. We went with 8” sonotubes, placing 6 total - 3 in parallel al
 
 <img src="/images/shed/shed_anchors.png">
 
-After that, gravel! We found gravel to be essential for drainage and maintaining a dry foundation. In comes the skid steer again to help move 2ish tons of gravel into place. Our lovely friends at [SEF Construction and & Landscape](https://www.seflandscaping.com) added the rest of the gravel and tamped it down for us!
+After that, gravel! We found gravel to be essential for drainage and maintaining a dry foundation. In comes the skid steer again to help move 2ish tons of gravel into place. Our lovely friends at [SEF Construction and & Landscape](https://www.seflandscaping.com) added the rest of the gravel and tamped it down for us! 
+
+<img src="/images/shed/skid_steer.png>
 
 For weeks, the pad sat. We traveled, endured a brutally wet Colorado summer, and planned our next move. Finally the kit arrived - the [Lowes Heartland Coronado](https://www.lowes.com/pd/Heartland-12-ft-x-8-ft-Coronado-Saltbox-Engineered-Storage-Shed/5012923399). This kit was a perfect mix of size, capacity, and price. The kits are fantastic - everything comes flat packed into a 4ftx4ftx8ft pile, and you can just pull pieces off as you need them.
 
@@ -34,9 +36,17 @@ Construction from here followed the manual. Floor joists first, then flooring, t
 
 <img src="/images/shed/shed_floor.png">
 
-We, of course, did not keep the floor square. A sledgehammer and some creative jigsawing later, we got to square! After that, we added on the trusses, put on the roof OSB (slamming nails in as fast as possible before a storm), and at long last had a structure.
+We, of course, did not keep the floor square. A sledgehammer and some creative jigsawing later, we got to square! Walls went up soon after.
+
+<img src="/images/shed/shed_wall.png>
+
+After that, we added on the trusses, put on the roof OSB (slamming nails in as fast as possible before a storm), and at long last had a structure.
+
+<img src="/images/shed/shed_walls.png">
 
 From here, the recipe was simple - put on shingles, install doors and windows, and paint. But of course that plan was blown up nearly immediately due to some fuzzy window installation instructions. I’ll cut to the chase  - the door windows were supposed to be installed on the inside facing out. I read it the opposite - outside with the trim facing out. What followed was several attempts to do it correctly, with me finally settling on a nicer looking but totally incorrect placement. Whatever - paint and caulk fix all wounds. At least shingling is straightforward and predictable - as long as you actually separate each sheet.
+
+
 
 AT LAST we arrived at a viable shed. While more work was needed to cut in the remaining retaining wall boards, we had a stable, waterproof, and painted shed ready for storage. And storage we did - I’m a well known evangelist for the [Gladiator Geartrack](https://www.gladiatorgarageworks.com/products/4-wide-geartrack%C2%AE-channels-2-pack) system and of course lined the shed with Gladiator strips. Now we have ample storage for even a relatively small space, and important items stay off the floor. 
 

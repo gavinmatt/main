@@ -2,7 +2,7 @@
 title: "Let's Go Shedding"
 description: "Or, how to spend $5,000 saving money by \"doing it yourself\""
 pubDate: "Dec 1 2023"
-heroImage: "/public/images/shed/shed_final.webp"
+heroImage: "/images/shed/shed_final.webp"
 tags: ["DIY"]
 ---
 <i>Or, how to spend $5,000 saving money by "doing it yourself..."</i>

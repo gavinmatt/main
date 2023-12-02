@@ -28,15 +28,17 @@ Next up, cement. We went with 8” sonotubes, placing 6 total - 3 in parallel al
 
 We dug each to at least 3ft where possible, trying to avoid frost heave. Maybe 24” in the back. Maybe.
 
-Hey - just rent an auger. You may think you'll use it again, but you won't. The $40 to rent saves an auger-sized space in your garage. We had a clean pour, added rebar down the middle, and let it cure for 3 days.
+Hey - just rent an auger. You may think you'll use it again, but you won't. The $40 rental fee saves an auger-sized space in your garage. We had a clean pour, added rebar down the middle, and let it cure for 3 days.
 
 <img src="/images/shed/shed_anchors.png">
 
-After that, gravel! We found gravel to be essential for drainage and maintaining a dry foundation. In comes the skid steer again to help move 2ish tons of gravel into place. Our lovely friends at [SEF Construction and & Landscape](https://www.seflandscaping.com) added the rest of the gravel and tamped it down for us! 
+After that, gravel! Gravel is essential for drainage and maintaining a dry foundation. In comes the skid steer again to help move 2ish tons of gravel into place. Our lovely friends at [SEF Construction and & Landscape](https://www.seflandscaping.com) added the rest of the gravel and tamped it down for us! We even got a turn delivering a solid pile.
 
 <img src="/images/shed/skid_steer.png">
 
-For weeks, the pad sat. We traveled, endured a brutally wet Colorado summer, and planned our next move. Finally the kit arrived - the [Lowes Heartland Coronado](https://www.lowes.com/pd/Heartland-12-ft-x-8-ft-Coronado-Saltbox-Engineered-Storage-Shed/5012923399). This kit was a perfect mix of size, capacity, and price. The kits are fantastic - everything comes flat packed into a 4ftx4ftx8ft pile, and you can just pull pieces off as you need them.
+From there, the pad sat for weeks. We traveled, endured a brutally wet Colorado summer, and planned our next move. Finally the kit arrived - the [Lowes Heartland Coronado](https://www.lowes.com/pd/Heartland-12-ft-x-8-ft-Coronado-Saltbox-Engineered-Storage-Shed/5012923399). This kit was a perfect mix of size, capacity, and price. The kits are fantastic - everything comes flat packed into a 4ftx4ftx8ft pile, and you can just pull pieces off as you need them.
+
+<img src="/images/shed/travel.jpg">
 
 Construction from here followed the manual. Floor joists first, then flooring, then walls supported by a 2x4, then a full structure. The main benefit of the kits is that the siding comes pre-cut - no mismeasured walls or unexpected overlap. As long as you keep the floor square, everything from here works out fine.
 

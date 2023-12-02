@@ -24,7 +24,9 @@ Let me tell you about shed anchoring. Despite being one of the most common DIY t
 
 Next up, cement. We went with 8” sonotubes, placing 6 total - 3 in parallel along the longest supports...failing to reinforce the corners. Oh well.
 
-We dug each to at least 2ft where possible, trying to avoid frost heave. Maybe 24” in the back. Just rent an auger - you may think you'll use it again, but you won't. THe $40 to rent saves an auger-sized space in your garage. We had a clean pour, added rebar down the middle, and let it cure for 3 days.
+We dug each to at least 2ft where possible, trying to avoid frost heave. Maybe 24” in the back. Maybe.
+
+Hey - just rent an auger. You may think you'll use it again, but you won't. THe $40 to rent saves an auger-sized space in your garage. We had a clean pour, added rebar down the middle, and let it cure for 3 days.
 
 <img src="/images/shed/shed_anchors.png">
 

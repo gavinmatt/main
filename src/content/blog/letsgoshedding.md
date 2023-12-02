@@ -24,7 +24,7 @@ Let me tell you about shed anchoring. Despite being one of the most common DIY t
 
 Next up, cement. We went with 8” sonotubes, placing 6 total - 3 in parallel along the longest supports...failing to reinforce the corners. Oh well. I did find a slick way to bring all of my supplies up in the laziest way possible using a skid steer, wheelbarrow, and hopes and prayers.
 
-<img src="images/shed/skid_luggage.png">
+<img src="/images/shed/skid_luggage.png">
 
 We dug each to at least 2ft where possible, trying to avoid frost heave. Maybe 24” in the back. Maybe.
 

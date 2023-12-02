@@ -54,7 +54,7 @@ Add some pre-fab OSB siding and squure things up, and at long last we had a stru
 
 <img src="/images/shed/shed_walls.png">
 
-We then threw in trusses, added roof OSB, put on shingles, installed doors and windows, and painted. But of course that plan was blown up nearly immediately due to some fuzzy window installation instructions. I’ll cut to the chase  - the door windows were supposed to be installed on the inside facing out. I read it the opposite - outside with the trim facing out. What followed was several attempts to do it correctly, with me finally settling on a nicer looking but totally incorrect placement. Whatever - paint and caulk fix all wounds. At least shingling is straightforward and predictable - as long as you actually separate each sheet.
+We then threw in trusses, put on the roof OSB (slamming nails in as fast as possible during a thunderstorm), put on shingles, installed doors and windows, and painted. But of course that plan was blown up nearly immediately due to some fuzzy window installation instructions. I’ll cut to the chase  - the door windows were supposed to be installed on the inside facing out. I read it the opposite - outside with the trim facing out. What followed was several attempts to do it correctly, with me finally settling on a nicer looking but totally incorrect placement. Whatever - paint and caulk fix all wounds. At least shingling is straightforward and predictable - as long as you actually separate each sheet.
 
 <img src="/images/shed/shed_shingles.png">
 

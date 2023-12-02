@@ -14,7 +14,7 @@ A small passion of mine outside of work is to start major projects with relative
 
 It all started with an area. We live close to a mountain, and flat land comes at a premium. I (stupidly) decided to build it into a hill with retaining walls instead of using the very flat area on the opposite side of the yard. Despite having a skid steer available, we dug 90% of it by hand. It was all clay, and not just clay, but premium quality, dense, break your back clay. Clearing took weeks a few hours at a time.
 
-<img src="/shed_clearing.png>
+<img src="/shed_clearing.png">
 
 Once we had a relatively flat area, we mapped out a 12ft x 8ft area and completely leveled it. We left a buffer of about a foot around each side for the retaining walls. We specifically chose not to set the shed on a gravel pad that extended beyond the area because of relatively easy to manage runoff. Next, building the frame made it abundantly clear that the area was in fact NOT level, and required terracing to create a flat cage for the gravel.
 

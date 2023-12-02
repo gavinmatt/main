@@ -50,7 +50,7 @@ From here, the recipe was simple - put on shingles, install doors and windows, a
 
 <img src="/images/shed/shed_shingles.png">
 
-**AT LAST** we arrived at a viable shed. While more work was needed to cut in the remaining retaining wall boards, we had a stable, waterproof, and painted shed ready for storage. And storage we did - I’m a well known evangelist for the [Gladiator Geartrack](https://www.gladiatorgarageworks.com/products/4-wide-geartrack%C2%AE-channels-2-pack) system and of course lined the shed with Gladiator strips. Now we have ample storage for even a relatively small space, and important items stay off the floor. 
+**AT LAST** we arrived at a viable shed. While more work was needed to cut in the remaining retaining wall boards, we had a stable, waterproof, and painted shed ready for storage. And storage we did - I’m a well known evangelist for the [Gladiator Geartrack](https://www.gladiatorgarageworks.com/products/4-wide-geartrack%C2%AE-channels-2-pack) system and of course lined the shed with Gladiator strips. Our garage is coated in it. Now we have ample storage for even a relatively small space, and important items stay off the floor. 
 
 <img src="/images/shed/shed_geartrack.png">
 

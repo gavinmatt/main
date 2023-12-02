@@ -3,7 +3,6 @@ import { type BlogSchema } from "../content/config";
 import BaseLayout from "./BaseLayout.astro";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
-import Comments from "@components/Comments.astro";
 
 export interface Props extends BlogSchema {}
 
@@ -40,7 +39,21 @@ import { Image } from "astro:assets";
       <div class="divider my-2"></div>
       <slot />
     </article>
-    <PostComments />
+    <script src="https://giscus.app/client.js"
+        data-repo="gavmattwebsite/main"
+        data-repo-id="R_kgDOKzt3fw"
+        data-category="General"
+        data-category-id="DIC_kwDOKzt3f84Cbb90"
+        data-mapping="url"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="transparent_dark"
+        data-lang="en"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
   </main>
-  <Footer />
 </BaseLayout>

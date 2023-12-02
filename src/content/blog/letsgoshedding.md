@@ -14,11 +14,11 @@ A small passion of mine outside of work is to start major projects with relative
 
 It all started with an area. We live close to a mountain, and flat land comes at a premium. I (stupidly) decided to build it into a hill with retaining walls instead of using the very flat area on the opposite side of the yard. Despite having a skid steer available, we dug 90% of it by hand. It was all clay, and not just clay, but premium quality, dense, break your back clay. Clearing took weeks a few hours at a time.
 
-<img src="images/shed/shed_clearing.png">
+<img src="/images/shed/shed_clearing.png">
 
 Once we had a relatively flat area, we mapped out a 12ft x 8ft area and completely leveled it. We left a buffer of about a foot around each side for the retaining walls. We specifically chose not to set the shed on a gravel pad that extended beyond the area because of relatively easy to manage runoff. Next, building the frame made it abundantly clear that the area was in fact NOT level, and required terracing to create a flat cage for the gravel.
 
-<img src="images/shed/shed_terrace.png">
+<img src="/images/shed/shed_terrace.png">
 
 Let me tell you about shed anchoring. Despite being one of the most common DIY tasks I think someone can do, the amount of information out there about how to actually position and anchor your shed ranges the gambit of useful to useless. Even for a relatively small shed (we’re not parking cars), opinions range from “set it on gravel” to “support each joist with cement columns at every corner.” I’ll admit - I agonized over stability for weeks and still got it wrong as you’ll see later.
 

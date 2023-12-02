@@ -3,6 +3,7 @@ import { type BlogSchema } from "../content/config";
 import BaseLayout from "./BaseLayout.astro";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
+import Comments from "@components/Comments.astro";
 
 export interface Props extends BlogSchema {}
 
@@ -41,3 +42,17 @@ import { Image } from "astro:assets";
     </article>
   </main>
 </BaseLayout>
+
+<Layout>
+  <main id="main-content">
+    <article
+      id="article"
+      role="article"
+      class="prose mx-auto mt-8 max-w-3xl prose-pre:border-[1px] prose-pre:border-skin-line prose-pre:border-solid"
+    >
+      <Content />
+    </article>
+    <PostComments />
+  </main>
+  <Footer />
+</Layout>

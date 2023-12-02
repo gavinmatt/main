@@ -16,7 +16,7 @@ It all started with an area. We live close to a mountain, and flat land comes at
 
 <img src="/images/shed/shed_clearing.png">
 
-Once we had a relatively flat area, we mapped out a 12ft x 8ft area and completely leveled it. We left a buffer of about a foot around each side for the retaining walls. We specifically chose not to set the shed on a gravel pad that extended beyond the area because of relatively easy to manage runoff. Next, building the frame made it abundantly clear that the area was in fact NOT level, and required terracing to create a flat cage for the gravel.
+Once we had a relatively flat area, we mapped out a 12ft x 8ft area and completely leveled it. We left a buffer of about a foot around each side for the retaining walls. We specifically chose not to set the shed on a gravel pad that extended beyond the area because of relatively easy to manage runoff. Next, building the frame made it abundantly clear that the area was in fact <i>not</i> level, and required terracing to create a flat cage for the gravel.
 
 <img src="/images/shed/shed_terrace.png">
 
@@ -48,7 +48,7 @@ From here, the recipe was simple - put on shingles, install doors and windows, a
 
 <img src="/images/shed/shed_shingles.png">
 
-AT LAST we arrived at a viable shed. While more work was needed to cut in the remaining retaining wall boards, we had a stable, waterproof, and painted shed ready for storage. And storage we did - I’m a well known evangelist for the [Gladiator Geartrack](https://www.gladiatorgarageworks.com/products/4-wide-geartrack%C2%AE-channels-2-pack) system and of course lined the shed with Gladiator strips. Now we have ample storage for even a relatively small space, and important items stay off the floor. 
+**AT LAST** we arrived at a viable shed. While more work was needed to cut in the remaining retaining wall boards, we had a stable, waterproof, and painted shed ready for storage. And storage we did - I’m a well known evangelist for the [Gladiator Geartrack](https://www.gladiatorgarageworks.com/products/4-wide-geartrack%C2%AE-channels-2-pack) system and of course lined the shed with Gladiator strips. Now we have ample storage for even a relatively small space, and important items stay off the floor. 
 
 <img src="/images/shed/shed_geartrack.png">
 

@@ -1,1 +1,1 @@
-# Personal blog for Gavin!
+# Personal blog for Gavin Matthews!

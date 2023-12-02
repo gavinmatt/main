@@ -7,8 +7,5 @@ import media from "astro-media/integration";
 // https://astro.build/config
 export default defineConfig({
   site: 'https://astrofy-template.netlify.app',
-  integrations: [mdx(), sitemap(), tailwind()
-    integrations: [
-      // towards the top is better
-      media(),]
+  integrations: [mdx(), sitemap(), tailwind(),media()]
 });

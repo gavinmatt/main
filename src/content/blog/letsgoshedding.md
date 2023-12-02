@@ -38,7 +38,7 @@ After that, gravel! Gravel is essential for drainage and maintaining a dry found
 
 From there, the pad sat for weeks. We traveled, endured a brutally wet Colorado summer, and planned our next move. Finally the kit arrived - the [Lowes Heartland Coronado](https://www.lowes.com/pd/Heartland-12-ft-x-8-ft-Coronado-Saltbox-Engineered-Storage-Shed/5012923399). This kit was a perfect mix of size, capacity, and price. The kits are fantastic - everything comes flat packed into a 4ftx4ftx8ft pile, and you can just pull pieces off as you need them.
 
-<img src="/images/shed/travel.jpg">
+<img src="/images/shed/travel.jpeg">
 
 Construction from here followed the manual. Floor joists first, then flooring, then walls supported by a 2x4, then a full structure. The main benefit of the kits is that the siding comes pre-cut - no mismeasured walls or unexpected overlap. As long as you keep the floor square, everything from here works out fine.
 

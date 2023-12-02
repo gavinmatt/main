@@ -58,7 +58,7 @@ We then threw in trusses, put on the roof OSB (slamming nails in as fast as poss
 
 <img src="/images/shed/shed_shingles.png">
 
-**AT LAST** we arrived at a viable shed. While more work was needed to cut in the remaining retaining wall elements, we had a stable, waterproof, and painted shed ready for storage. And storáge we did - I’m a well known evangelist for the [Gladiator Geartrack](https://www.gladiatorgarageworks.com/products/4-wide-geartrack%C2%AE-channels-2-pack) system and of course lined the shed with Gladiator strips. Our garage is coated in it. Now we have ample storage for even a relatively small space, and important items stay off the floor. 
+**AT LAST** we arrived at a viable shed. While more work was needed to cut in the remaining retaining wall elements, we had a stable, waterproof, and painted shed ready for storage. And storáge we did - I’m a well known evangelist for the [Gladiator Geartrack](https://www.gladiatorgarageworks.com/products/4-wide-geartrack%C2%AE-channels-2-pack) system and of course lined the shed with Gladiator strips. Our garage is coated in it. Now we have ample storage in the relatively small space, and important items stay off the floor. Go buy it.
 
 <img src="/images/shed/shed_geartrack.png">
 

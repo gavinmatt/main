@@ -26,7 +26,7 @@ Next up, cement. We went with 8” sonotubes, placing 6 total - 3 in parallel al
 
 <img src="/images/shed/skid_luggage.png">
 
-We dug each to at least 2ft where possible, trying to avoid frost heave. Maybe 24” in the back. Maybe.
+We dug each to at least 3ft where possible, trying to avoid frost heave. Maybe 24” in the back. Maybe.
 
 Hey - just rent an auger. You may think you'll use it again, but you won't. The $40 to rent saves an auger-sized space in your garage. We had a clean pour, added rebar down the middle, and let it cure for 3 days.
 

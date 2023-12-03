@@ -64,7 +64,7 @@ But par for the course, this journey ended abruptly. Literally the day that we f
 
 **Viola:**
 
-<img src="/images/shed/shed_final.webp">
+<img src="/images/shed/shed_final.png">
 
 So what did we learn?
 

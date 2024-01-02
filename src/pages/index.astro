@@ -1,4 +1,4 @@
----
+S---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import HorizontalCard from "../components/HorizontalCard.astro";
 import { getCollection } from "astro:content";
@@ -12,7 +12,7 @@ const last_posts = posts.slice(0, 3);
   <div class="pb-12 mt-5">
     <div class="text-xl py-1">Hello!</div>
     <div class="text-5xl font-bold">I'm Gavin Matthews</div>
-    <div class="text-3xl py-3 font-bold">Product Manager, Writer, and Hobbist</div>
+    <div class="text-3xl py-3 font-bold">Product Manager, Writer, and Project Starter</div>
     <div class="mt-8">
       <a class="btn" href="https://www.linkedin.com/in/gavinmatt/" target="_blank"> Let's connect!</a>
     </div>
@@ -43,10 +43,10 @@ const last_posts = posts.slice(0, 3);
     desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
     url="#"
     badge="FOSS"
-  /> -->
+  />  -->
 
   <div>
-    <div class="text-3xl w-full font-bold mb-5 mt-10">Latest from blog</div>
+    <div class="text-3xl w-full font-bold mb-5 mt-10">Latest Blog Posts</div>
   </div>
 
   {
@@ -63,5 +63,5 @@ const last_posts = posts.slice(0, 3);
         <div class="divider my-0" />
       </>
     ))
-  }
+  } 
 </BaseLayout>

@@ -1,0 +1,58 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import HorizontalCard from "../components/HorizontalCard.astro";
+---
+
+<BaseLayout title = "Publications" sideBarActiveItemID="publications">
+  <div>
+    <div class="text-3xl w-full font-bold mb-5 mt-10">Recent Publications and Interviews</div>
+  </div>
+  <!-- 
+  <p>I've had the privilege to work at several extraordinary companies backed by incredible teams designing amazing products! Here is a sample of projects I've worked on as Product Manager.</p>
+  <div class="pb-12 mt-5"></div>
+
+    <div>
+    <div class="text-3xl w-full font-bold mb-5">Contentful</div>
+  </div> -->
+
+  <HorizontalCard
+    title="Marketers Overwhelmed by Data Look to AI for Help"
+    img="https://res.cloudinary.com/draaqu0o9/image/upload/f_auto,q_auto/lgfysy7muoanb6prrflu"
+    desc="Interview with Bloomberg on how AI can transform data for personalization"
+    url="https://sponsored.bloomberg.com/quicksight/contentful/marketers-overwhelmed-by-data-look-to-ai-for-help"
+    badge="NEW"
+    />
+  <HorizontalCard
+    title="Contentful Marketplace"
+    img="/Marketplace.png"
+    desc="Contentful Marketplace is filled with dozens of apps and integrations with industry standard trust and security."
+    url="https://www.contentful.com/marketplace/"
+  />
+  <div class="divider my-0"></div>
+  
+
+  <div>
+    <div class="text-3xl w-full font-bold mb-5 mt-10">Red Canary</div>
+  </div>
+
+  <HorizontalCard
+    title="Linux EDR"
+    img="/Linux.jpg"
+    desc="Red Canary's Linux EDR provides industry-leading MDR and EDR for Linux instances, including desktops/laptops, servers, and cloud instances."
+    url="https://redcanary.com/products/linux-edr/"
+  />
+  <div class="divider my-0"></div>
+<!--  <HorizontalCard
+    title="Demo Project 4"
+    img="/post_img.webp"
+    desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+    url="#"
+  />
+  <div class="divider my-0"></div>
+  <HorizontalCard
+    title="Demo Project 5"
+    img="/post_img.webp"
+    desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+    url="#"
+  /> -->
+</BaseLayout>

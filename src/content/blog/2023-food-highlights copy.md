@@ -1,5 +1,5 @@
 ---
-title: "A Product Mamnager's Thoughts on Generative AI"
+title: "A Product Manager's Thoughts on Generative AI"
 description: "A year of revolution in AI in retrospect"
 pubDate: "Jan 03 2024"
 heroImage: "https://res.cloudinary.com/draaqu0o9/image/upload/f_auto,q_auto/v1/AI/sunpjmpgo5d0esygbtvd"
@@ -51,35 +51,35 @@ I also personally love AI for general content accessibility. What I mean here is
 
 Image generation is catching up, but still provides for a great laugh. So many images end up smack in the middle of the uncanny valley or totally miss the intent, creating a new form of pseudo glitch art. I keep a personal gallery of the worst of the worst:
 
-<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_800/f_auto/q_auto:best/v1/AI/ie20mvev7ymmfbnv5dto" alt="A bad AI generated image of a beach with a mountain and yetis in the background">
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_600/f_auto/q_auto:best/v1/AI/ie20mvev7ymmfbnv5dto" alt="A bad AI generated image of a beach with a mountain and yetis in the background">
 
 <div align="center" style="padding-bottom:15px"><i>Add a huge mountain with snow and Yetis to this beach scene</i></div>
 
-<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_800/f_auto/q_auto:best/v1/AI/owi1n5cka15f3zwz81oq" alt="A bad AI generated image of a beach with an illegible word floating in the ocean">
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_600/f_auto/q_auto:best/v1/AI/owi1n5cka15f3zwz81oq" alt="A bad AI generated image of a beach with an illegible word floating in the ocean">
 
 <div align="center" style="padding-bottom:15px"><i>Add a portal into a forest world in a photorealistic style with trees and misty border</i></div>
 
-<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_800/f_auto/q_auto:best/v1/AI/qhxy130ftfmbekf2rzsy" alt="An AI generated image of a family having fun on a beach">
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_600/f_auto/q_auto:best/v1/AI/rq7myptpjtf3ztdobh3u" alt="An AI generated image of a family having fun on a beach">
 
 <div align="center" style="padding-bottom:15px"><i>Family with kids having fun on the beach</i></div>
 
-<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_800/f_auto/q_auto:best/v1/AI/k9incfaga43c1pwqg7pp" alt="An AI generated image of a shrimp swimming with okra slices">
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_600/f_auto/q_auto:best/v1/AI/k9incfaga43c1pwqg7pp" alt="An AI generated image of a shrimp swimming with okra slices">
 
 <div align="center" style="padding-bottom:15px"><i>A cartoon mascot of okra</i></div>
 
 
 That being said, I did find the hack somewhere only that still works if you need workable images. The trick is to be incredibly, incredibly specific, down to listing a specific camera body and apeture:
 
-<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_800/f_auto/q_auto:best/v1/AI/qhxy130ftfmbekf2rzsy" alt="A hyperrealistic AI generated image of a giraffe">
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_600/f_auto/q_auto:best/v1/AI/qhxy130ftfmbekf2rzsy" alt="A hyperrealistic AI generated image of a giraffe">
 
 <div align="center" style="padding-bottom:15px"><i>A realistic photograph of a giraffe at a zoo, sharp, black and white, Hasselblad camera, f4, 150mm, natural lighting</i></div>
 
-<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_800/f_auto/q_auto:best/v1/AI/tgtckm6ypse14ahvfixd" alt="An AI generated image of a shrimp swimming with okra slices">
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_600/f_auto/q_auto:best/v1/AI/tgtckm6ypse14ahvfixd" alt="An AI generated image of a shrimp swimming with okra slices">
 
 <div align="center" style="padding-bottom:15px"><i>Photorealistic okra in water, shrimp, sharp</i></div>
 
 
-<img src="https://res.cloudinary.com/draaqu0o9/image/upload/f_auto,q_auto/v1/AI/sksqjx0ssosi4ncvkpf8" alt="An AI generated image of a denim jacket with a smiley face patch">
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_600/f_auto/q_auto:best/v1/AI/sksqjx0ssosi4ncvkpf8" alt="An AI generated image of a denim jacket with a smiley face patch">
 
 <div align="center" style="padding-bottom:15px"><i>A realistic photograph of a modern demin jacket, up close, sharp, embroidered smiley face patch on neck, Hasselblad camera, f4, 150mm, natural lighting</i></div>
 

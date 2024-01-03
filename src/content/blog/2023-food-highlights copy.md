@@ -1,9 +1,9 @@
 ---
-title: "A Product Manager's Thoughts on Generative AI"
-description: "A year of revolution in AI in retrospect"
+title: "A Product Manager's Thoughts on AI in 2023"
+description: "A year of insanity in generative AI, in retrospect"
 pubDate: "Jan 03 2024"
 heroImage: "https://res.cloudinary.com/draaqu0o9/image/upload/f_auto,q_auto/v1/AI/icxivoqucx9hnzjgf61v"
-tags: ["AI", "Work"]
+tags: ["AI", "Work", "Technology"]
 ---
 <i>Content by Gavin, images by boops and beeps</i>
 
@@ -71,7 +71,7 @@ Image generation is catching up, but still provides for a great laugh. So many i
 
 <div align="center" style="padding-bottom:15px"><i>Family with kids having fun on the beach</i></div>
 
-<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_600/f_auto/q_auto:best/v1/AI/k9incfaga43c1pwqg7pp" alt="An AI generated image of a shrimp swimming with okra slices">
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_600/f_auto/q_auto:best/v1/AI/k9incfaga43c1pwqg7pp" alt="An AI generated image of an okra cartoon mascot">
 
 <div align="center" style="padding-bottom:15px"><i>A cartoon mascot of okra</i></div>
 

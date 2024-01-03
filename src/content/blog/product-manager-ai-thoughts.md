@@ -108,5 +108,7 @@ My 2024 predictions include:
 
 **AI architecture** - I expect more emergent and nimble companies to factor AI into how they structure their data and backend. I don’t mean “how can we integrate OpenAI into our database” style planning. Instead, think “how can I ensure the data I collect and store is structured and useful for training?” Or “are we extensible enough to interact with a variety of foundational models?” If you buy that this era of AI is sticky, you have to also buy that architectures will need to be prepared for it by design.
 
+**More focus on hallucinations and trust** - hallucination reduction is a natural target in 2024. There are a handful of great methods to reduce hallucinations that I expect will be used more by vendors to make targeted reductions to inaccurate information. Likewise, more open source models trained on more niche data will improve accuracy for specific usecases like enterprise search.
+
 
 What’s your favorite use of AI last year? Are you excited, worried, skeptical, or eating popcorn on the sidelines? 

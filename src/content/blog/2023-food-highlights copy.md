@@ -76,7 +76,7 @@ Image generation is catching up, but still provides for a great laugh. So many i
 <div align="center" style="padding-bottom:15px"><i>A cartoon mascot of okra</i></div>
 
 
-That being said, I did find a hack somewhere online that still works if you need sharp, workable images. The trick is to be incredibly, incredibly specific, down to listing a specific camera body and apeture:
+That being said, I did find a hack somewhere online that still works if you need sharp, workable images. The trick is to be incredibly, incredibly specific, down to listing a specific camera body and aperture:
 
 <img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_600/f_auto/q_auto:best/v1/AI/qhxy130ftfmbekf2rzsy" alt="A hyperrealistic AI generated image of a giraffe">
 
@@ -89,7 +89,7 @@ That being said, I did find a hack somewhere online that still works if you need
 
 <img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_600/f_auto/q_auto:best/v1/AI/sksqjx0ssosi4ncvkpf8" alt="An AI generated image of a denim jacket with a smiley face patch">
 
-<div align="center" style="padding-bottom:15px"><i>A realistic photograph of a modern demin jacket, up close, sharp, embroidered smiley face patch on neck, Hasselblad camera, f4, 150mm, natural lighting</i></div>
+<div align="center" style="padding-bottom:15px"><i>A realistic photograph of a modern denim jacket, up close, sharp, embroidered smiley face patch on neck, Hasselblad camera, f4, 150mm, natural lighting</i></div>
 
 
 <h2>Looking forward</h2>
@@ -106,7 +106,7 @@ My 2024 predictions include:
 
 **More snafus** - like any technology, ChatGPT and others are hitting the mainstream and are constantly being jailbroken or abused (as they should be). The lack of tight controls and even basic thought around response handling will lead to even more cars sold for $1 and recipe generators producing dangerous concoctions. At least it’s easy enough to spot the garbage - look for “certainly!” or “as a large language model” as signs that you’re just speaking to raw ChatGPT.
 
-**AI architecture** - I expect more emergent and nimble companies to factor AI into how they structure their data and backends. I don’t mean “how can we integrate OpenAI into our database” style planning. Instead, think “how can I ensure the data I collect and store is structured and useful for training?” Or “are we extensible enough to interact with a variety of foundational models?” If you buy that this era of AI is sticky, you have to also buy that architectures will need to be prepared for it by design.
+**AI architecture** - I expect more emergent and nimble companies to factor AI into how they structure their data and backend. I don’t mean “how can we integrate OpenAI into our database” style planning. Instead, think “how can I ensure the data I collect and store is structured and useful for training?” Or “are we extensible enough to interact with a variety of foundational models?” If you buy that this era of AI is sticky, you have to also buy that architectures will need to be prepared for it by design.
 
 
 What’s your favorite use of AI last year? Are you excited, worried, skeptical, or eating popcorn on the sidelines? 

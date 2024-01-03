@@ -31,7 +31,7 @@ What became immediately clear when using these tools is that standard controls w
 
 Say you’re working on a research project, maybe generating competitive intelligence about another product. You write a basic prompt that seems on the surface to be relatively solid:
 
-> You are generating competitive intelligence about Brand X, comparing their products and pricing to Brand Y. Generate 10 bullet points about how Brand X and Brand Y compare and contrast and make a recommendation about which brand you would recommend.
+> You are generating competitive intelligence about Brand X, comparing their products and pricing to Brand Y. Generate 10 bullet points about how Brand X and Brand Y compare and contrast and make a recommendation about which brand you think is better.
 
 This prompt appears to work. No matter what model you use, you will get back an apparently accurate read of the competitive landscape with detailed bullets and supposedly factual statements. Satisfied, you then bring this analysis into your day job and operate off of the assumptions it creates.
 

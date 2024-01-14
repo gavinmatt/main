@@ -62,7 +62,7 @@ I personally stray away from most grass-fed beef. This is also a matter of perso
 
 Why Choice or Prime? <i>Generally</i>, these cuts are likely to better achieve the balance of fat and lean more reliably and thus taste better. This isn’t set in stone - these grades are assigned for the whole cow, and various cuts will have varying levels of quality. This is why using your eyes and your gut as you learn is so important - based on your tastes, a Choice cut may look and taste better than Prime even at a discount.
 
-<b>Step 2: Prep Your Workspace<b>
+<b>Step 2: Prep Your Workspace</b>
 
 Take your steaks out of the fridge and leave them on the counter.
 

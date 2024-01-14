@@ -72,19 +72,19 @@ Start by filling your container with enough water to fully immerse your food. If
 
 Next, plug in and configure your cooker. Most of them allow you to use an app to control the temperature and cook time, or even dial in a specific recipe. I’ll keep it simple and assume you have buttons or a dial that allow you to set cook temperature and time. Set the temperature to whatever you want out of your steak. You can use many different [handy charts](https://blog.thermoworks.com/beef/steak-temperatures-ordering-and-buying-guides/) to find the temperature that works best for your preferences. I like steak rare, and dial mine into 122°F or 123°F. Cook times also depend on what you want. For steak, 1 to 1.5 hours is good, but you can cook for longer if you want to break down more fat. Longer cook times come with some danger, as the more you cook, the more connective tissue is able to break down. At a certain point, steak can become inedible or have an off putting texture, so I don’t recommend cooking for more than 4 hours.
 
-<b>Step 3: Prepare Your Steaks<b>
+<b>Step 3: Prepare Your Steaks</b>
 
 Seasoning steaks is another matter of personal preference, but you can’t go wrong with the basics. I like to use even amounts of Kosher salt, coursely ground black pepper, onion powder, and garlic powder on mine. I usually also place a spring of rosemary and a pat of butter in the bag alongside my steaks. You can do whatever you prefer, from even more basic seasoning to complex espresso rubs. I recommend doing the basics first as a baseline, then experimenting as you get comfortable.
 
 Let that run in the background, as it will take 12-15 minutes to reach temperature. In the meantime, we get to the fun part! Sealing your steaks is best done with a vacuum sealer. For this method, grab your bag (or prepare a custom bag with the seal method), ensure the bottom is sealed, and put your 1-2 steaks inside, flat and longways. You don’t want to overstuff the bags, but don’t be afraid to press steaks directly next to each other. Optionally, add a pat of butter and fresh herbs at this point. Next, mate the open end of your bag up to the right spot in your vacuum sealer and vacuum until you stop seeing air move out of the bag. Without opening the sealer, press seal to melt the end of the bag and lock in the steaks. Whether you vacuum seal or use the water displacement method, you want the steaks to look tightly wrapped by the bag with no visible air.
 
-<b>Step 4: Cook<b>
+<b>Step 4: Cook</b>
 
 Finally, you’re ready to cook! Feel free to add the steaks directly to the water even if it hasn’t reached temperature - they will still cook evenly. Steaks will be nearly neutrally buoyant and sit in the water, but they can be held in the water with any number of clothespins, racks, or specialized tools. Just ensure that the steaks are fully submerged and cannot float around in the current. Start your timer from when the water reaches temperature. 
 
 At this point, grab a beer and make your sides. You have about an hour to an hour and a half to relax before your next steps.
 
-<b>Step 5: Sear and Enjoy<b>
+<b>Step 5: Sear and Enjoy</b>
 
 Once you have about 15 minutes left, it’s a good time to get your pan hot. I use cast iron for this, and get it as hot as I can just before it smokes. You want a “ripping hot” pan, so hot that when the steaks hit the pan, they immediately start to sear. Cold pans will not sear as fast, and will actually cook the meat, blowing past your intended level of doneness. Searing should take no more than 1-2 minutes per side. DO NOT TOUCH THE STEAKS BEFORE THIS TIME OR FLIP THEM CONSTANTLY. Doing so will prevent a hard sear and will burn off juices. Once one side is done, I like to flip and then add butter, aromatics, and garlic to add additional flavor. You can then baste the steaks by tiling the pan and using a spoon to pour the butter mixture over the top. At a minimum, try to do this with butter - it’s well worth it. 
 

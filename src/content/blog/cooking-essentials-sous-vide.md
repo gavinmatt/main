@@ -89,7 +89,7 @@ At this point, grab a beer and make your sides. You have about an hour to an hou
 Once you have about 15 minutes left, it’s a good time to get your pan hot. I use cast iron for this, and get it as hot as I can just before it smokes. You want a “ripping hot” pan, so hot that when the steaks hit the pan, they immediately start to sear. Cold pans will not sear as fast, and will actually cook the meat, blowing past your intended level of doneness. Searing should take no more than 1-2 minutes per side. DO NOT TOUCH THE STEAKS BEFORE THIS TIME OR FLIP THEM CONSTANTLY. Doing so will prevent a hard sear and will burn off juices. Once one side is done, I like to flip and then add butter, aromatics, and garlic to add additional flavor. You can then baste the steaks by tiling the pan and using a spoon to pour the butter mixture over the top. At a minimum, try to do this with butter - it’s well worth it. 
 
 <img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/Sous%20Vide/ve2dqolwakwhdxynnoyp" alt="Seared sous vide pork chops">
-<div style="padding-left:auto; padding-right:auto"><i>Not steak, but same procedures for pork</i></div>
+<div align="center" style="padding-bottom:15px"><i>Not steak, but same procedures for pork</i></div>
 
 
 Last, let the steaks sit for 5 minutes. When you cook, juices are forced out of the muscle tissue. If you cut steak too soon, these juices flow out and flood your plate, and you end up with less juicy steak. Waiting 5 minutes allows the steak to reabsorb these juices and create a perfect bite every time.

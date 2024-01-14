@@ -2,12 +2,12 @@
 title: "Cooking Essentials: Sous Vide"
 description: "A how-to guide on sous vide cooking at home"
 pubDate: "Jan 14 2024"
-heroImage: "https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/Sous%20Vide/rctaimbhitxab0vfxi1q"
+heroImage: "https://res.cloudinary.com/draaqu0o9/image/upload/f_auto/q_auto:best/v1/Sous%20Vide/rctaimbhitxab0vfxi1q"
 tags: ["Cooking", "Hobbies"]
 ---
-<i>Adventures in cooking anything I can get my hands on</i>
+<i>How to use science, wizardry, and water baths to nail your next meal</i>
 
-By popular demand (n of 2), here's a primer on how, when, and why to use sous vide cooking! While expensive upfront and a bit scary at first, you will get hooked on sous vide from the first cook.
+By popular demand (<i>n of 2</i>), here's a primer on how, when, and why to use sous vide cooking! While expensive upfront and a bit scary at first, you will get hooked on sous vide from the first cook.
 
 <h2>Sous Vide: What, Why, and How?</h2>
 
@@ -28,8 +28,10 @@ If you are totally new to sous vide (i.e. you have NO equipment), I recommend yo
 
 Expect to spend around $150 to get started with this approach. If you’re lucky, places like Costco offer an all in one bundle for around $125.
 
-[Anova Nano](https://anovaculinary.com/products/anova-precision-cooker-nano-3) - Anova offers a range of models including a Pro model for continuous/heavy duty use, but for most people, a Nano is fine!
-[Anova 12L container](https://anovaculinary.com/products/anova-precision-12l-container) - just the right volume for regular home use and comes with a lid that fits around the Nano and other models. This makes for a nearly all in one kit that’s pretty solid for most people.
+<ul>
+<li>[Anova Nano](https://anovaculinary.com/products/anova-precision-cooker-nano-3) - Anova offers a range of models including a Pro model for continuous/heavy duty use, but for most people, a Nano is fine!</li>
+<li>[Anova 12L container](https://anovaculinary.com/products/anova-precision-12l-container) - just the right volume for regular home use and comes with a lid that fits around the Nano and other models. This makes for a nearly all in one kit that’s pretty solid for most people.</li>
+</ul>
 
 For those who prefer more flexibility in their cooking, I recommend adding in some other tools. This combines some out of the box items with random tools to give you full flexibility. There are many ways to approach DIY, but getting some purpose-built items helps a lot. 
 

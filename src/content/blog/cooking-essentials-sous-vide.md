@@ -15,6 +15,9 @@ By popular demand (<i>n of 2</i>), here's a primer on how, when, and why to use 
 
 Sous vide works because water is an extremely good stable conductor of heat, and can hold a specific temperature in a very steady range indefinitely. When food is entirely emerged in this water, it is evenly heated from all sides up to the same temperature as the water. Sous vide makes the most sense when compared to an oven. Air is a poor conductor of heat, and ovens can fluctuate between a wide range of temperatures during cooking. What results is food that isn’t consistent or predictable for the home chef, and meals that can vary widely each cook. With sous vide, two of the most critical elements of cooking - time and temperature - can be controlled in ways that an oven generally cannot without variations. And because the food is cooked in a vacuum sealed bag, it generally keeps the same texture and stays extremely juicy.
 
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/f_auto,q_auto/v1/Sous%20Vide/stiashwkg4zripzf6pwe" alt="Sous vide setup with dog">
+<div align="center" style="padding-bottom:10px"><i>Sous vide makes for calm and predictable cooking for everyone</i></div>
+
 Sous vide can be used for anything from short (1-2 hour) cooks to multi-day recipes. Generally, the method does require more time than other approaches, because it uses much lower temperatures than normal cooking to prepare food. However, this time is mitigated by the fact that - like a slow cooker - you can prep and start cooking your food hours before dinner, and simply sear off or serve food whenever you choose. In some cases, as with meat, sous vide can even let you decide the texture and tenderness you want simply by cooking for longer.
 
 If you’re like me, your head is probably jumping immediately to steak, and for good reason. There are a ton of very valid and delicious ways to cook steak, but sous vide’s unique benefits mean that using this method yields extremely predictable, juicy, and perfectly cooked steak literally every time. A sous vide steak can be seasoned like normal, cooked for 1-2 hours, and then get seared off an extremely hot pan, and turn out restaurant quality with a tiny bit of effort.
@@ -53,12 +56,15 @@ Feel free to skip ahead and just grab a copy of The Food Lab (or skim the same c
 
 Like above, I will use steak as an example of how to cook using sous vide. Just keep in mind that this platform is insanely flexible. I’ve seen recipes that involve any protein you can think of and extend even to complex dishes like butter chicken, egg bites, and ice cream. 
 
-<b>Step 1: PIck Your Steaks</b>
+<b>Step 1: Pick Your Steaks</b>
 
 The right cut, grade, and thickness of steak is a matter of personal preference. Just kidding - there’s a right and wrong answer! For most people, you’re going to want a thick cut (1.5” is the norm) of Choice or Prime ribeye or strip. No slight to other cuts like sirloin or filet mignon - ribeye and strip just tend to be easier to find, less expensive, and more predictable than other cuts. 
-You’re going to want a steak with nice marbling, meaning a good pattern of fat running through the meat. Think of a marble countertop - you have a mix of black/gray seams randomly running through the white marble. Too many seams look chaotic, while too little look uninteresting. The same is true of meat but for different reasons - too much red meat results in a leaner, less flavorful steak, while too much white fat can be too rich and chewy. When in doubt, ask your butcher.
+You’re going to want a steak with nice marbling, meaning a good pattern of fat running through the meat. Think of a marble slab - you have a mix of black/gray seams randomly running through the white marble. Too many seams look chaotic, while too little look uninteresting. The same is true of meat but for different reasons - too much red meat results in a leaner, less flavorful steak, while too much white fat can be too rich and chewy. When in doubt, ask your butcher.
 
-I personally stray away from most grass-fed beef. This is also a matter of personal preference, and there are well-known ethical and environmental reasons to only go grass fed. However, “you are what you eat,” and grass fed beef tends to be very lean with very poor marbling, sometimes resulting in a subpar steak. I lean toward beef that is “grain finished,” meaning that the cow consumes grain and other foods alongside pasturing in grass before slaughter. The result is a cut that is generally the perfect mix of fat and lean, with great marbling.
+I personally stray away from most grass-fed beef. This is also a matter of personal preference, and there are well-known ethical and environmental reasons to only go grass fed. However, “you are what you eat,” and grass fed beef tends to be very lean with poor marbling, sometimes resulting in a subpar steak. I lean toward beef that is grain-fed or "corn finished," meaning that the cow consumes grain and other foods alongside pasturing in grass before slaughter. The result is a cut that is generally the perfect mix of fat and lean, with great marbling. This is not a universal rule and plenty of grass-fed beef tastes great.
+
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/f_auto,q_auto/v1/Sous%20Vide/pfxrcnemszs9o1ilpsfo" alt="Grain fed steak in sous vide vacuum bag">
+<div align="center" style="padding-bottom:10px"><i>A grain-fed ribeye vacuum sealed for sous vide</i></div>
 
 Why Choice or Prime? <i>Generally</i>, these cuts are likely to better achieve the balance of fat and lean more reliably and thus taste better. This isn’t set in stone - these grades are assigned for the whole cow, and various cuts will have varying levels of quality. This is why using your eyes and your gut as you learn is so important - based on your tastes, a Choice cut may look and taste better than Prime even at a discount.
 
@@ -68,7 +74,13 @@ Take your steaks out of the fridge and leave them on the counter.
 
 To start, you need to get your sous vide workspace ready. Depending on your equipment, you need at a minimum a solid spot of counter space near an outlet. You also generally want to use a trivet or heat pad underneath your container. 
 
-Start by filling your container with enough water to fully immerse your food. If you’re using the Rubbermaid containers above, I generally aim for 9L of water. For other containers, compare the height of your food when laid horizontally and add a bit more water above that height in your container. The main thing to keep in mind is that you want the food fully immersed while not exceeding the maximum water depth of your sous vide cooker (it’ll be marked with a line on the device). Finally, assemble your cooker. Most will have a hoop looking mechanism that screws onto the wall of your container and allows you to set the cooker into a hole.
+Next, assemble your cooker. Most will have a hoop looking cradle mechanism that screws onto the wall of your container and allows you to set the cooker into the cradle.
+
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/f_auto,q_auto/v1/Sous%20Vide/b00emvna6rfujeqvbdn4" alt="Sous vide cooker cradle">
+
+After assembly, fill your container with enough water to fully immerse your food. If you’re using the Rubbermaid containers above, I generally aim for 9L of water. For other containers, compare the height of your food when laid horizontally and add a bit more water above that height in your container. The main thing to keep in mind is that you want the food fully immersed while not exceeding the maximum water depth of your sous vide cooker (it’ll be marked with a line on the device). 
+
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/f_auto,q_auto/v1/Sous%20Vide/t1vqsrr6wcchhix6w8fw" alt="Fully assembled sous vide">
 
 Next, plug in and configure your cooker. Most of them allow you to use an app to control the temperature and cook time, or even dial in a specific recipe. I’ll keep it simple and assume you have buttons or a dial that allow you to set cook temperature and time. Set the temperature to whatever you want out of your steak. You can use many different [handy charts](https://blog.thermoworks.com/beef/steak-temperatures-ordering-and-buying-guides/) to find the temperature that works best for your preferences. I like steak rare, and dial mine into 122°F or 123°F. Cook times also depend on what you want. For steak, 1 to 1.5 hours is good, but you can cook for longer if you want to break down more fat. Longer cook times come with some danger, as the more you cook, the more connective tissue is able to break down. At a certain point, steak can become inedible or have an off putting texture, so I don’t recommend cooking for more than 4 hours.
 
@@ -82,6 +94,8 @@ Let that run in the background, as it will take 12-15 minutes to reach temperatu
 
 Finally, you’re ready to cook! Feel free to add the steaks directly to the water even if it hasn’t reached temperature - they will still cook evenly. Steaks will be nearly neutrally buoyant and sit in the water, but they can be held in the water with any number of clothespins, racks, or specialized tools. Just ensure that the steaks are fully submerged and cannot float around in the current. Start your timer from when the water reaches temperature. 
 
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/f_auto,q_auto/v1/Sous%20Vide/k3lpu6iogmokhncy6bof" alt="Sous vide cooking">
+
 At this point, grab a beer and make your sides. You have about an hour to an hour and a half to relax before your next steps.
 
 <b>Step 5: Sear and Enjoy</b>
@@ -89,7 +103,7 @@ At this point, grab a beer and make your sides. You have about an hour to an hou
 Once you have about 15 minutes left, it’s a good time to get your pan hot. I use cast iron for this, and get it as hot as I can just before it smokes. You want a “ripping hot” pan, so hot that when the steaks hit the pan, they immediately start to sear. Cold pans will not sear as fast, and will actually cook the meat, blowing past your intended level of doneness. Searing should take no more than 1-2 minutes per side. DO NOT TOUCH THE STEAKS BEFORE THIS TIME OR FLIP THEM CONSTANTLY. Doing so will prevent a hard sear and will burn off juices. Once one side is done, I like to flip and then add butter, aromatics, and garlic to add additional flavor. You can then baste the steaks by tiling the pan and using a spoon to pour the butter mixture over the top. At a minimum, try to do this with butter - it’s well worth it. 
 
 <img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/Sous%20Vide/ve2dqolwakwhdxynnoyp" alt="Seared sous vide pork chops">
-<div align="center" style="padding-bottom:15px"><i>Not steak, but same procedures for pork</i></div>
+<div align="center" style="padding-bottom:10px"><i>Not steak, but same procedures for pork</i></div>
 
 
 Last, let the steaks sit for 5 minutes. When you cook, juices are forced out of the muscle tissue. If you cut steak too soon, these juices flow out and flood your plate, and you end up with less juicy steak. Waiting 5 minutes allows the steak to reabsorb these juices and create a perfect bite every time.

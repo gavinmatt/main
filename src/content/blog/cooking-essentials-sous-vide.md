@@ -2,7 +2,7 @@
 title: "Cooking Essentials: Sous Vide"
 description: "A how-to guide on sous vide cooking at home"
 pubDate: "Jan 14 2024"
-heroImage: "https://res.cloudinary.com/draaqu0o9/image/upload/f_auto/q_auto:best/v1/Sous%20Vide/rctaimbhitxab0vfxi1q"
+heroImage: "https://res.cloudinary.com/draaqu0o9/image/upload/f_auto,q_auto/v1/Sous%20Vide/wsglctedghc8mqwisphi"
 tags: ["Cooking", "Hobbies"]
 ---
 <i>How to use science, wizardry, and water baths to nail your next meal</i>
@@ -54,7 +54,7 @@ You may be noticing a theme - sous vide is prohibitively expensive upfront. You 
 
 Feel free to skip ahead and just grab a copy of The Food Lab (or skim the same content [here](https://www.seriouseats.com/food-lab-complete-guide-to-sous-vide-steak)). Kenji Lopez-Alt has done more to pioneer this and other cooking methods than anyone else, and is responsible for a majority of the recipes you’ll find in the Anova app.
 
-Like above, I will use steak as an example of how to cook using sous vide. Just keep in mind that this platform is insanely flexible. I’ve seen recipes that involve any protein you can think of and extend even to complex dishes like butter chicken, egg bites, and ice cream. 
+Like above, I will use steak (and sometimes pork) as an example of how to cook using sous vide. Just keep in mind that this method is insanely flexible. I’ve seen recipes that involve any protein you can think of and extend even to complex dishes like butter chicken, egg bites, and ice cream. 
 
 <b>Step 1: Pick Your Steaks</b>
 
@@ -63,7 +63,7 @@ You’re going to want a steak with nice marbling, meaning a good pattern of fat
 
 I personally stray away from most grass-fed beef. This is also a matter of personal preference, and there are well-known ethical and environmental reasons to only go grass fed. However, “you are what you eat,” and grass fed beef tends to be very lean with poor marbling, sometimes resulting in a subpar steak. I lean toward beef that is grain-fed or "corn finished," meaning that the cow consumes grain and other foods alongside pasturing in grass before slaughter. The result is a cut that is generally the perfect mix of fat and lean, with great marbling. This is not a universal rule and plenty of grass-fed beef tastes great.
 
-<img src="https://res.cloudinary.com/draaqu0o9/image/upload/f_auto,q_auto/v1/Sous%20Vide/pfxrcnemszs9o1ilpsfo" alt="Grain fed steak in sous vide vacuum bag">
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/f_auto,q_auto/v1/Sous%20Vide/wsglctedghc8mqwisphi" alt="Grain fed steak in sous vide vacuum bag">
 <div align="center" style="padding-bottom:10px"><i>A grain-fed ribeye vacuum sealed for sous vide</i></div>
 
 Why Choice or Prime? <i>Generally</i>, these cuts are likely to better achieve the balance of fat and lean more reliably and thus taste better. This isn’t set in stone - these grades are assigned for the whole cow, and various cuts will have varying levels of quality. This is why using your eyes and your gut as you learn is so important - based on your tastes, a Choice cut may look and taste better than Prime even at a discount.
@@ -89,6 +89,9 @@ Next, plug in and configure your cooker. Most of them allow you to use an app to
 Seasoning steaks is another matter of personal preference, but you can’t go wrong with the basics. I like to use even amounts of Kosher salt, coursely ground black pepper, onion powder, and garlic powder on mine. I usually also place a spring of rosemary and a pat of butter in the bag alongside my steaks. You can do whatever you prefer, from even more basic seasoning to complex espresso rubs. I recommend doing the basics first as a baseline, then experimenting as you get comfortable.
 
 Let that run in the background, as it will take 12-15 minutes to reach temperature. In the meantime, we get to the fun part! Sealing your steaks is best done with a vacuum sealer. For this method, grab your bag (or prepare a custom bag with the seal method), ensure the bottom is sealed, and put your 1-2 steaks inside, flat and longways. You don’t want to overstuff the bags, but don’t be afraid to press steaks directly next to each other. Optionally, add a pat of butter and fresh herbs at this point. Next, mate the open end of your bag up to the right spot in your vacuum sealer and vacuum until you stop seeing air move out of the bag. Without opening the sealer, press seal to melt the end of the bag and lock in the steaks. Whether you vacuum seal or use the water displacement method, you want the steaks to look tightly wrapped by the bag with no visible air.
+
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/f_auto,q_auto/v1/Sous%20Vide/heoqnqv3jqkqn7jtfsmy" alt="Sous vide pork chops">
+<div align="center" style="padding-bottom:10px"><i>For any protein, ensure you have a tight seal and remove all air possible</i></div>
 
 <b>Step 4: Cook</b>
 

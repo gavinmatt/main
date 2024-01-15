@@ -9,72 +9,77 @@
 
 <url>
   <loc>https://www.gavmatt.com/</loc>
-  <lastmod>2024-01-04T14:51:08+00:00</lastmod>
+  <lastmod>2024-01-15T00:07:26+00:00</lastmod>
   <priority>1.00</priority>
 </url>
 <url>
+  <loc>https://www.gavmatt.com/blog/cooking-essentials-sous-vide</loc>
+  <lastmod>2024-01-15T00:07:26+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
   <loc>https://www.gavmatt.com/blog/product-manager-ai-thoughts</loc>
-  <lastmod>2024-01-04T14:51:08+00:00</lastmod>
+  <lastmod>2024-01-15T00:07:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
   <loc>https://www.gavmatt.com/blog/2023-food-highlights</loc>
-  <lastmod>2024-01-04T14:51:08+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://www.gavmatt.com/blog/letsgoshedding</loc>
-  <lastmod>2024-01-04T14:51:08+00:00</lastmod>
+  <lastmod>2024-01-15T00:07:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
   <loc>https://www.gavmatt.com/experience</loc>
-  <lastmod>2024-01-04T14:51:08+00:00</lastmod>
+  <lastmod>2024-01-15T00:07:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
   <loc>https://www.gavmatt.com/blog/</loc>
-  <lastmod>2024-01-04T14:51:08+00:00</lastmod>
+  <lastmod>2024-01-15T00:07:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
   <loc>https://www.gavmatt.com/projects</loc>
-  <lastmod>2024-01-04T14:51:08+00:00</lastmod>
+  <lastmod>2024-01-15T00:07:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
   <loc>https://www.gavmatt.com/publications</loc>
-  <lastmod>2024-01-04T14:51:08+00:00</lastmod>
+  <lastmod>2024-01-15T00:07:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://www.gavmatt.com/blog/tag/AI</loc>
-  <lastmod>2024-01-04T14:51:08+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://www.gavmatt.com/blog/tag/Work</loc>
-  <lastmod>2024-01-04T14:51:08+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://www.gavmatt.com/blog/tag/Technology</loc>
-  <lastmod>2024-01-04T14:51:08+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
   <loc>https://www.gavmatt.com/blog/tag/Cooking</loc>
-  <lastmod>2024-01-04T14:51:08+00:00</lastmod>
+  <lastmod>2024-01-15T00:07:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
   <loc>https://www.gavmatt.com/blog/tag/Hobbies</loc>
-  <lastmod>2024-01-04T14:51:08+00:00</lastmod>
+  <lastmod>2024-01-15T00:07:26+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://www.gavmatt.com/blog/tag/AI</loc>
+  <lastmod>2024-01-15T00:07:26+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://www.gavmatt.com/blog/tag/Work</loc>
+  <lastmod>2024-01-15T00:07:26+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://www.gavmatt.com/blog/tag/Technology</loc>
+  <lastmod>2024-01-15T00:07:26+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://www.gavmatt.com/blog/letsgoshedding</loc>
+  <lastmod>2024-01-15T00:07:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
   <loc>https://www.gavmatt.com/blog/tag/DIY</loc>
-  <lastmod>2024-01-04T14:51:08+00:00</lastmod>
+  <lastmod>2024-01-15T00:07:26+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 

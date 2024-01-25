@@ -4,7 +4,7 @@ export default async function(req, res) {
     const apiKey = process.env.API_KEY;
     const macAddress = process.env.MAC_ADDRESS;
 
-    const apiUrl = `https://api.ambientweather.net/v1/devices/${MAC_ADDRESS}?apiKey=${API_KEY}&applicationKey=${APPLICATION_KEY}&endDate=${Date.now()}&limit=48`;
+    const apiUrl = `https://api.ambientweather.net/v1/devices/${macAddress}?apiKey=${apiKey}&applicationKey=${applicationKey}&endDate=${Date.now()}&limit=48`;
 
     try {
         const weatherResponse = await fetch(apiUrl);
@@ -19,3 +19,6 @@ export default async function(req, res) {
         res.status(500).json({ message: "Error fetching weather data" });
     }
 }
+console.log(formattedData); // Add this line
+setChartData(formattedData);
+

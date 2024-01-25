@@ -31,7 +31,39 @@ const WeatherForecast = () => {
 
     return (
         <div className="forecast-container">
-            {/* ... rest of your component ... */}
+            <div className="forecast-section">
+                <h2>Current Conditions</h2>
+                {currentConditions && (
+                    <div className="forecast-box">
+                        <p>{currentConditions.name}: {currentConditions.temperature}°{currentConditions.temperatureUnit}</p>
+                        <p>{currentConditions.shortForecast}</p>
+                    </div>
+                )}
+            </div>
+
+            <div className="forecast-section">
+                <h2>Next 24 Hours</h2>
+                <div className="forecast-row">
+                    {next24Hours.map((period, index) => (
+                        <div key={index} className="forecast-box">
+                            <p>{period.name}: {period.temperature}°{period.temperatureUnit}</p>
+                            <p>{period.shortForecast}</p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            <div className="forecast-section">
+                <h2>Long-Term Forecast</h2>
+                <div className="forecast-row">
+                    {longTermForecast.map((period, index) => (
+                        <div key={index} className="forecast-box">
+                            <p>{period.name}: {period.temperature}°{period.temperatureUnit}</p>
+                            <p>{period.shortForecast}</p>
+                        </div>
+                    ))}
+                </div>
+            </div>
         </div>
     );
 };

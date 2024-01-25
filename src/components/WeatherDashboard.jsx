@@ -49,7 +49,14 @@ const WeatherDashboard = ({ apiEndpoint }) => {
                 {weatherData && <WindDirection data={weatherData} />}
 
             </div>
-            <p className="text-center pb-1">Precipitation</p>
+
+            <div className="flex justify-center items-center gap-4">
+                {weatherData && <FeelsLike data={weatherData} />}
+                {weatherData && <Humidity data={weatherData} />}
+                {weatherData && <Pressure data={weatherData} />}
+
+            </div>
+            <p className="text-center pb-1">Precipitation Totals</p>
 
             <div className="flex justify-center items-center gap-4">
                 {weatherData && <RainHour data={weatherData} />}

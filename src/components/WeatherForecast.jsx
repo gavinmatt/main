@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './WeatherForecast.css'; // Ensure this CSS file is correctly linked
+import './WeatherForecast.css';
 
 const WeatherForecast = () => {
     const [forecast, setForecast] = useState(null);
@@ -10,6 +10,9 @@ const WeatherForecast = () => {
         const fetchForecast = async () => {
             try {
                 const response = await fetch('https://api.weather.gov/gridpoints/PUB/89,89/forecast');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
                 const data = await response.json();
                 setForecast(data.properties.periods);
             } catch (err) {
@@ -33,9 +36,10 @@ const WeatherForecast = () => {
     if (loading) return <p>Loading forecast...</p>;
     if (error) return <p>Error loading forecast: {error}</p>;
 
-    // Adjusted to start the forecast from the next 24 hours
-    const next24Hours = forecast ? forecast.slice(0, 2) : [];
-    const next3Days = forecast ? forecast.slice(2, 5) : []; // Forecast for the next 3 days beyond 24 hours
+    if (!forecast || forecast.length === 0) return <p>No forecast data available.</p>;
+
+    const next24Hours = forecast.slice(0, 2);
+    const next3Days = forecast.slice(2, 5);
 
     return (
         <div className="forecast-container">

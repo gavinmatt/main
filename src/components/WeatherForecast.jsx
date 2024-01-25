@@ -14,7 +14,11 @@ const WeatherForecast = () => {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
                 const data = await response.json();
-                setForecast(data.properties.periods);
+                if (data && data.properties && data.properties.periods) {
+                    setForecast(data.properties.periods);
+                } else {
+                    throw new Error('Invalid forecast data structure');
+                }
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -45,15 +49,18 @@ const WeatherForecast = () => {
         <div className="forecast-container">
             <h2 className="forecast-header">Forecast</h2>
             <div className="forecast-row">
-                {[...next24Hours, ...next3Days].map((period, index) => (
-                    <div key={index} className="forecast-box">
-                        <p className="forecast-day">{period.name}</p>
-                        <p className="forecast-emoji">{getWeatherEmoji(period.shortForecast)}</p>
-                        <p className="forecast-temperature">{period.temperature}°{period.temperatureUnit}</p>
-                        <p>{period.shortForecast}</p>
-                        <p>Precipitation: {period.detailedForecast.match(/(\d+\.\d+ inches)|(\d+ inches)|(\d+\.\d+ cm)|(\d+ cm)/g) || 'None'}</p>
-                    </div>
-                ))}
+                {[...next24Hours, ...next3Days].map((period, index) => {
+                    if (!period) return null; // Additional check for undefined period
+                    return (
+                        <div key={index} className="forecast-box">
+                            <p className="forecast-day">{period.name}</p>
+                            <p className="forecast-emoji">{getWeatherEmoji(period.shortForecast)}</p>
+                            <p className="forecast-temperature">{period.temperature}°{period.temperatureUnit}</p>
+                            <p>{period.shortForecast}</p>
+                            <p>Precipitation: {period.detailedForecast.match(/(\d+\.\d+ inches)|(\d+ inches)|(\d+\.\d+ cm)|(\d+ cm)/g) || 'None'}</p>
+                        </div>
+                    );
+                })}
             </div>
         </div>
     );

@@ -1,4 +1,3 @@
-// /api/weather.js
 export default async function(req, res) {
     const applicationKey = process.env.APPLICATION_KEY;
     const apiKey = process.env.API_KEY;

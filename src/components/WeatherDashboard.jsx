@@ -53,9 +53,7 @@ const WeatherDashboard = ({ apiEndpoint }) => {
     return (
         <div>
             {dataDate && <p className="text-center pb-5"><b>Weather data pulled at:</b> {dataDate} (Mountain Time)</p>}
-            <div className="text-center text-2xl font-bold my-4">
-                {headerContent.text} {headerContent.emoji}
-            </div>
+            <p className="text-center"><b>Current Weather {getWeatherEmoji(weatherData[0].lastData.shortForecast)}</b></p>
 
             {weatherData && <WeatherForecast />}
 

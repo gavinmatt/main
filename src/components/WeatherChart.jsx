@@ -32,6 +32,8 @@ const WeatherChart = ({ apiEndpoint }) => {
 
     useEffect(() => {
         if (chartData.length && chartRef.current) {
+                console.log('Initializing chart with data:', chartData); // Add this line
+                // Chart initialization code
             const chartContext = chartRef.current.getContext('2d');
             new Chart(chartContext, {
                 type: 'line',

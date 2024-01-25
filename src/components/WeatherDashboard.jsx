@@ -10,6 +10,7 @@ import Humidity from './Humidity.jsx';
 import Pressure from './Pressure.jsx';
 import WeatherForecast from './WeatherForecast.jsx';
 
+
 const WeatherDashboard = ({ apiEndpoint }) => {
     const [weatherData, setWeatherData] = useState(null);
     const [dataDate, setDataDate] = useState('');

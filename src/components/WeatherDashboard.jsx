@@ -8,6 +8,7 @@ import RainYear from './RainYear.jsx';
 import FeelsLike from './FeelsLike.jsx';
 import Humidity from './Humidity.jsx';
 import Pressure from './Pressure.jsx';
+import WeatherForecast from './WeatherForecast.jsx';
 
 const WeatherDashboard = ({ apiEndpoint }) => {
     const [weatherData, setWeatherData] = useState(null);
@@ -79,6 +80,10 @@ const WeatherDashboard = ({ apiEndpoint }) => {
                 {weatherData && <RainDay data={weatherData} />}
                 {weatherData && <RainYear data={weatherData} />}
             </div>
+
+    <div>
+        <WeatherForecast />
+    </div>
         </div>
     );
 };

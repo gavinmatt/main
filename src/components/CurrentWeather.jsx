@@ -43,7 +43,7 @@ const CurrentWeather = () => {
     return (
         <div className="text-center">
             <h3 style={{ fontSize: '6rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{currentEmoji}</h3>
-            <h3 style={{ fontSize: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center', padding-bottom: '10px'}}>{currentShortCondition}</h3>
+            <h3 style={{ fontSize: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center', padding-bottom: '10px' }}>{currentShortCondition}</h3>
         </div>
     );
 };

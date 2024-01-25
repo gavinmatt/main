@@ -37,25 +37,25 @@ const WeatherDashboard = ({ apiEndpoint }) => {
         fetchData();
     }, [apiEndpoint]);
 
-    const getWeatherEmoji = (shortForecast) => {
-        if (shortForecast.includes("Snow")) return "❄️";
-        if (shortForecast.includes("Rain") || shortForecast.includes("Showers")) return "🌧️";
-        if (shortForecast.includes("Cloudy")) return "☁️";
-        if (shortForecast.includes("Sunny") || shortForecast.includes("Clear")) return "☀️";
-        return "🌤️"; // Default for other conditions
+    const getTemperatureHeader = (temp) => {
+        if (temp <= 32) return { text: "Freezing", emoji: "🥶" };
+        if (temp > 32 && temp <= 50) return { text: "Cold", emoji: "❄️" };
+        if (temp > 50 && temp <= 75) return { text: "Perfect", emoji: "😎" };
+        if (temp > 75 && temp <= 90) return { text: "Warm", emoji: "🌶" };
+        return { text: "Hot", emoji: "🔥" };
     };
 
     if (loading) return <p className="text-center">Loading weather data...</p>;
     if (error) return <p className="text-center">Error loading data: {error.message}</p>;
 
-    const currentConditions = weatherData ? weatherData[0].lastData : null;
+    let headerContent = weatherData ? getTemperatureHeader(weatherData[0].lastData.tempf) : { text: "", emoji: "" };
 
     return (
         <div>
             {dataDate && <p className="text-center pb-5"><b>Weather data pulled at:</b> {dataDate} (Mountain Time)</p>}
-            {currentConditions && (
-                <h3 className="text-center">{getWeatherEmoji(currentConditions.shortForecast)}</h3>
-            )}
+            <div className="text-center text-2xl font-bold my-4">
+                {headerContent.text} {headerContent.emoji}
+            </div>
 
             <p className="text-center pb-1"><b>Current Weather 🌤</b></p>
 

@@ -8,7 +8,12 @@ const WeatherChart = ({ apiEndpoint2 }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(apiEndpoint2);
+                const response = await fetch(apiEndpoint2) {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                };
                 const data = await response.json();
 
                 const formattedData = data.map(item => {

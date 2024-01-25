@@ -9,6 +9,7 @@ import FeelsLike from './FeelsLike.jsx';
 import Humidity from './Humidity.jsx';
 import Pressure from './Pressure.jsx';
 import WeatherForecast from './WeatherForecast.jsx';
+import CurrentWeather from './CurrentWeather.jsx';
 
 
 
@@ -59,10 +60,9 @@ const WeatherDashboard = ({ apiEndpoint }) => {
         <div>
         
             {dataDate && <p className="text-center pb-5"><b>Weather data pulled at:</b> {dataDate} (Mountain Time)</p>}
-            <div className="text-center text-2xl font-bold my-4">
-                {headerContent.text} {headerContent.emoji}
-            </div>
 
+            <CurrentWeather />
+            
             <p className="text-center pb-1"><b>Current Weather 🌤</b></p>
 
             <div className="lg:flex justify-center items-center gap-4 pb-4">

@@ -4,15 +4,12 @@
     padding: 0 20px;
 }
 
-.forecast-section {
-    margin-bottom: 20px;
-}
-
 .forecast-row {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
     justify-content: center;
+    margin-bottom: 20px;
 }
 
 .forecast-box {
@@ -21,7 +18,7 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 10px;
     text-align: center;
-    width: 250px; /* Adjust based on your design preference */
+    flex: 0 1 calc(33.333% - 20px); /* Three items per row minus the gap */
     min-height: 100px;
     display: flex;
     flex-direction: column;
@@ -31,6 +28,6 @@
 /* Responsive design for smaller screens */
 @media (max-width: 768px) {
     .forecast-box {
-        width: 100%;
+        flex: 0 1 100%; /* Full width on smaller screens */
     }
 }

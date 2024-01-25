@@ -13,7 +13,7 @@ const WeatherForecast = () => {
                 const data = await response.json();
                 setForecast(data.properties.periods);
             } catch (err) {
-                setError(err.message); // Storing the error message
+                setError(err.message);
             } finally {
                 setLoading(false);
             }
@@ -27,42 +27,36 @@ const WeatherForecast = () => {
 
     const currentConditions = forecast && forecast[0];
     const next24Hours = forecast && forecast.slice(1, 3);
-    const longTermForecast = forecast && forecast.slice(3);
+    const next3Days = forecast && forecast.slice(3, 6); // Forecast for the next 3 days beyond 24 hours
 
     return (
         <div className="forecast-container">
-            <div className="forecast-section">
-                <h2>Current Conditions</h2>
+            <div className="forecast-row">
                 {currentConditions && (
                     <div className="forecast-box">
-                        <p>{currentConditions.name}: {currentConditions.temperature}°{currentConditions.temperatureUnit}</p>
+                        <p>{currentConditions.name}</p>
+                        <p>{currentConditions.temperature}°{currentConditions.temperatureUnit}</p>
                         <p>{currentConditions.shortForecast}</p>
                     </div>
                 )}
+
+                {next24Hours.map((period, index) => (
+                    <div key={index} className="forecast-box">
+                        <p>{period.name}</p>
+                        <p>{period.temperature}°{period.temperatureUnit}</p>
+                        <p>{period.shortForecast}</p>
+                    </div>
+                ))}
             </div>
 
-            <div className="forecast-section">
-                <h2>Next 24 Hours</h2>
-                <div className="forecast-row">
-                    {next24Hours.map((period, index) => (
-                        <div key={index} className="forecast-box">
-                            <p>{period.name}: {period.temperature}°{period.temperatureUnit}</p>
-                            <p>{period.shortForecast}</p>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            <div className="forecast-section">
-                <h2>Long-Term Forecast</h2>
-                <div className="forecast-row">
-                    {longTermForecast.map((period, index) => (
-                        <div key={index} className="forecast-box">
-                            <p>{period.name}: {period.temperature}°{period.temperatureUnit}</p>
-                            <p>{period.shortForecast}</p>
-                        </div>
-                    ))}
-                </div>
+            <div className="forecast-row">
+                {next3Days.map((period, index) => (
+                    <div key={index} className="forecast-box">
+                        <p>{period.name}</p>
+                        <p>{period.temperature}°{period.temperatureUnit}</p>
+                        <p>{period.shortForecast}</p>
+                    </div>
+                ))}
             </div>
         </div>
     );

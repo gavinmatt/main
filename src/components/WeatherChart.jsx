@@ -11,19 +11,13 @@ const WeatherChart = () => {
                 const response = await fetch('/api/getWeatherData');
                 const data = await response.json();
         
-                let allData = [];
-                Object.keys(data).forEach(key => {
-                    if (Array.isArray(data[key])) {
-                        allData = allData.concat(data[key]);
-                    }
-                });
-        
-                // Now allData is a single array containing all items
-                const formattedData = allData.map(item => {
-                    const localDate = new Date(item.dateutc).toLocaleString();
+                const formattedData = data.map(item => {
+                    const date = new Date(item.dateutc); // Convert UNIX timestamp to Date object
+                    const formattedDate = date.toLocaleString(); // Format date to a readable string
+    
                     return {
-                        label: localDate,
-                        value: item.tempf
+                        label: formattedDate,
+                        value: item.tempf // Temperature in Fahrenheit
                     };
                 });
         
@@ -32,6 +26,9 @@ const WeatherChart = () => {
                 console.error('Error fetching data:', error);
             }
         };
+    
+        fetchData();
+    }, []);
         
 
         fetchData();

@@ -29,10 +29,6 @@ const WeatherChart = () => {
     
         fetchData();
     }, []);
-        
-
-        fetchData();
-    }, []);
     
 
     useEffect(() => {

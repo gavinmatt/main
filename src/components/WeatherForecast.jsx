@@ -40,7 +40,7 @@ const WeatherForecast = () => {
     return (
         <div className="forecast-container">
 
-            <h2 className="forecast-header">Forecast</h2>
+<p className="text-center pb-1"><b>Forecast</b></p>
             <div className="forecast-row">
                 {[...next24Hours, ...next3Days].map((period, index) => (
                     <div key={index} className="forecast-box">

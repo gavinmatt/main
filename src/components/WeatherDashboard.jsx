@@ -79,7 +79,7 @@ const WeatherDashboard = ({ apiEndpoint }) => {
 
             <p className="text-center pb-1"><b>Precipitation Totals 🌧</b></p>
 
-            <div className="lg:flex justify-center items-center gap-4">
+            <div className="lg:flex justify-center items-center gap-4 pb-5">
                 {weatherData && <RainHour data={weatherData} />}
                 {weatherData && <RainDay data={weatherData} />}
                 {weatherData && <RainYear data={weatherData} />}

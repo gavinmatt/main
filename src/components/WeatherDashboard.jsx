@@ -12,7 +12,7 @@ const WeatherDashboard = ({ apiEndpoint }) => {
         const fetchData = async () => {
             try {
                 const response = await fetch(apiEndpoint);
-                const data = await weatherData.json();
+                const data = await response.json();
                 setWeatherData(data);
 
                 if (data && data.length > 0) {

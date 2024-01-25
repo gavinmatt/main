@@ -5,6 +5,9 @@ import WindDirection from './WindDirection.jsx';
 import RainHour from './RainHour.jsx';
 import RainDay from './RainDay.jsx';
 import RainYear from './RainYear.jsx';
+import FeelsLike from './FeelsLike.jsx';
+import Humidity from './Humidity.jsx';
+import Pressure from './Pressure.jsx';
 
 
 

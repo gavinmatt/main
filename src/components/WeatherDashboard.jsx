@@ -2,6 +2,10 @@ import React, { useEffect, useState } from 'react';
 import Temperature from './Temperature.jsx';
 import WindSpeed from './WindSpeed.jsx';
 import WindDirection from './WindDirection.jsx';
+import RainHour from './RainHour.jsx';
+import RainDay from './RainDay.jsx';
+import RainYear from './RainYear.jsx';
+
 
 
 const WeatherDashboard = ({ apiEndpoint }) => {

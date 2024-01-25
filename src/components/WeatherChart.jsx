@@ -11,13 +11,14 @@ const WeatherChart = ({ apiEndpoint2 }) => {
                 const response = await fetch(apiEndpoint2);
                 const data = await response.json();
 
-                const formattedData = data.map(item => {
-                    const date = new Date(dateutc); // Convert UNIX timestamp to Date object
+                // Assuming data is an array of arrays
+                const formattedData = data.map((array, index) => {
+                    const date = new Date(array.dateutc); // Convert UNIX timestamp to Date object
                     const formattedDate = date.toLocaleString(); // Format date to a readable string
 
                     return {
                         label: formattedDate,
-                        value: tempf  // Assuming 'tempf' is the temperature field
+                        value: array.tempf  // Assuming 'tempf' is the temperature field in each array
                     };
                 });
                 console.log('Formatted chart data:', formattedData); // Log formatted data

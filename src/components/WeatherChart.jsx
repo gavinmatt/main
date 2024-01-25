@@ -1,35 +1,34 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Chart from 'chart.js/auto';
 
-const WeatherChart = () => {
+const WeatherChart = ({ apiEndpoint }) => {
     const [chartData, setChartData] = useState([]);
     const chartRef = useRef(null);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('/api/getWeatherData');
+                const response = await fetch(apiEndpoint);
                 const data = await response.json();
-        
+
                 const formattedData = data.map(item => {
                     const date = new Date(item.dateutc); // Convert UNIX timestamp to Date object
                     const formattedDate = date.toLocaleString(); // Format date to a readable string
-    
+
                     return {
                         label: formattedDate,
-                        value: item.tempf // Temperature in Fahrenheit
+                        value: item.tempf  // Assuming 'tempf' is the temperature field
                     };
                 });
-        
+
                 setChartData(formattedData);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
         };
-    
+
         fetchData();
-    }, []);
-    
+    }, [apiEndpoint]);
 
     useEffect(() => {
         if (chartData.length && chartRef.current) {
@@ -56,9 +55,7 @@ const WeatherChart = () => {
         }
     }, [chartData]);
 
-    return <canvas ref={chartRef} id="weatherChart"></canvas>;
+    return <canvas ref={chartRef}></canvas>;
 };
 
 export default WeatherChart;
-
-

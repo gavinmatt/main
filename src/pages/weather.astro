@@ -1,9 +1,10 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import WeatherDashboard from "../components/WeatherDashboard.jsx";
-import WeatherChart from "../components/WeatherChart.jsx";
+import WeatherChart from '../components/WeatherChart.jsx';
 
 const apiEndpoint = "/api/weather"; // Endpoint of your serverless function
+const apiEndpoint = '/api/getWeatherData';
 ---
 
 <BaseLayout sideBarActiveItemID="weather">

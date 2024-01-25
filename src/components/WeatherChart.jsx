@@ -20,7 +20,7 @@ const WeatherChart = ({ apiEndpoint }) => {
                         value: item.tempf  // Assuming 'tempf' is the temperature field
                     };
                 });
-
+                console.log('Formatted chart data:', formattedData); // Log formatted data
                 setChartData(formattedData);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -31,8 +31,9 @@ const WeatherChart = ({ apiEndpoint }) => {
     }, [apiEndpoint]);
 
     useEffect(() => {
+        console.log('Initializing chart with data:', chartData); // Add this line
+
         if (chartData.length && chartRef.current) {
-                console.log('Initializing chart with data:', chartData); // Add this line
                 // Chart initialization code
             const chartContext = chartRef.current.getContext('2d');
             new Chart(chartContext, {

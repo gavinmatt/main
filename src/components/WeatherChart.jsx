@@ -20,10 +20,10 @@ const WeatherChart = () => {
         
                 // Now allData is a single array containing all items
                 const formattedData = allData.map(item => {
-                    const localDate = new Date(dateutc).toLocaleString();
+                    const localDate = new Date(item.dateutc).toLocaleString();
                     return {
                         label: localDate,
-                        value: tempf
+                        value: item.tempf
                     };
                 });
         

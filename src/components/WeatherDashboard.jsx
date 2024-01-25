@@ -41,7 +41,7 @@ const WeatherDashboard = ({ apiEndpoint }) => {
     return (
         <div>
             {dataDate && <p className="text-center pb-5"><b>Weather data timestamp:</b> {dataDate} (Mountain Time)</p>}
-            <p>Current Weather</p>
+            <p className="text-center pb-1">Current Weather</p>
 
             <div className="flex justify-center items-center gap-4 pb-4">
                 {weatherData && <Temperature data={weatherData} />}
@@ -49,7 +49,7 @@ const WeatherDashboard = ({ apiEndpoint }) => {
                 {weatherData && <WindDirection data={weatherData} />}
 
             </div>
-            <p>Precipitation</p>
+            <p className="text-center pb-1">Precipitation</p>
 
             <div className="flex justify-center items-center gap-4">
                 {weatherData && <RainHour data={weatherData} />}

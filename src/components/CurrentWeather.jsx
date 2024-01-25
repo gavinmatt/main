@@ -1,18 +1,21 @@
 import React, { useState, useEffect } from 'react';
 
 const CurrentWeather = () => {
-    const [currentCondition, setCurrentCondition] = useState(null);
+    const [currentEmoji, setCurrentEmoji] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchCurrentCondition = async () => {
+        const fetchCurrentWeather = async () => {
             try {
                 const response = await fetch('https://api.weather.gov/gridpoints/PUB/89,89/forecast');
                 const data = await response.json();
-                // Assuming the current condition is in the first element of the forecast array
-                const currentCondition = data.properties.periods[0].shortForecast;
-                setCurrentCondition(currentCondition);
+                if (data.properties && data.properties.periods && data.properties.periods[0]) {
+                    const shortForecast = data.properties.periods[0].shortForecast;
+                    setCurrentEmoji(getWeatherEmoji(shortForecast));
+                } else {
+                    setCurrentEmoji('❓'); // Use a question mark emoji as a fallback
+                }
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -20,7 +23,7 @@ const CurrentWeather = () => {
             }
         };
 
-        fetchCurrentCondition();
+        fetchCurrentWeather();
     }, []);
 
     const getWeatherEmoji = (shortForecast) => {
@@ -31,15 +34,12 @@ const CurrentWeather = () => {
         return "🌤️"; // Default for other conditions
     };
 
-    if (loading) return <p>Loading current weather condition...</p>;
-    if (error) return <p>Error loading weather condition: {error}</p>;
-
-    const emoji = getWeatherEmoji(currentCondition);
+    if (loading) return null; // Return null while loading
+    if (error) return <p>Error loading current weather: {error}</p>;
 
     return (
-        <div>
-            <h2>Current Weather</h2>
-            <p className="emoji">{emoji}</p>
+        <div className="text-center">
+            <h3 style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{currentEmoji}</h3>
         </div>
     );
 };

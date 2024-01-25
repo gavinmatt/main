@@ -40,7 +40,7 @@ const WeatherDashboard = ({ apiEndpoint }) => {
     if (error) return <p className="text-center">Error loading data: {error.message}</p>;
 
     return (
-        <div className="container">
+        <div className="weather-container">
             {dataDate && <p className="text-center pb-5"><b>Weather data pulled at:</b> {dataDate} (Mountain Time)</p>}
             <p className="text-center pb-1"><b>Current Weather 🌤</b></p>
 

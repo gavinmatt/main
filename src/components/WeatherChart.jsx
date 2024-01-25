@@ -3,12 +3,17 @@ import Chart from 'chart.js/auto';
 
 const WeatherChart = ({ apiEndpoint2 }) => {
     const [chartData, setChartData] = useState([]);
+    const [error, setError] = useState(null);
     const chartRef = useRef(null);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await fetch(apiEndpoint2);
+                if (!response.ok) {
+                    throw new Error(`Error fetching data: ${response.status} ${response.statusText}`);
+                }
+
                 const data = await response.json();
 
                 // Assuming data is an array of arrays
@@ -25,6 +30,7 @@ const WeatherChart = ({ apiEndpoint2 }) => {
                 setChartData(formattedData);
             } catch (error) {
                 console.error('Error fetching data:', error);
+                setError(error.message);
             }
         };
 
@@ -33,30 +39,40 @@ const WeatherChart = ({ apiEndpoint2 }) => {
 
     useEffect(() => {
         if (chartData.length && chartRef.current) {
-            const chartContext = chartRef.current.getContext('2d');
-            new Chart(chartContext, {
-                type: 'line',
-                data: {
-                    labels: chartData.map(item => item.label),
-                    datasets: [{
-                        label: 'Temperature (°F)',
-                        data: chartData.map(item => item.value),
-                        borderColor: 'rgb(75, 192, 192)',
-                        tension: 0.1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: false
+            try {
+                const chartContext = chartRef.current.getContext('2d');
+                new Chart(chartContext, {
+                    type: 'line',
+                    data: {
+                        labels: chartData.map(item => item.label),
+                        datasets: [{
+                            label: 'Temperature (°F)',
+                            data: chartData.map(item => item.value),
+                            borderColor: 'rgb(75, 192, 192)',
+                            tension: 0.1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: false
+                            }
                         }
                     }
-                }
-            });
+                });
+            } catch (chartError) {
+                console.error('Error rendering chart:', chartError);
+                setError(chartError.message);
+            }
         }
     }, [chartData]);
 
-    return <canvas ref={chartRef} id="weatherChart"></canvas>;
+    return (
+        <div>
+            {error && <p className="text-center text-red-500">{error}</p>}
+            <canvas ref={chartRef} id="weatherChart"></canvas>
+        </div>
+    );
 };
 
 export default WeatherChart;

@@ -10,7 +10,6 @@ import Humidity from './Humidity.jsx';
 import Pressure from './Pressure.jsx';
 import WeatherForecast from './WeatherForecast.jsx';
 
-
 const WeatherDashboard = ({ apiEndpoint }) => {
     const [weatherData, setWeatherData] = useState(null);
     const [dataDate, setDataDate] = useState('');
@@ -58,6 +57,8 @@ const WeatherDashboard = ({ apiEndpoint }) => {
                 {headerContent.text} {headerContent.emoji}
             </div>
 
+            {weatherData && <WeatherForecast />}
+
             <p className="text-center pb-1"><b>Current Weather 🌤</b></p>
 
             <div className="lg:flex justify-center items-center gap-4 pb-4">
@@ -79,8 +80,6 @@ const WeatherDashboard = ({ apiEndpoint }) => {
                 {weatherData && <RainDay data={weatherData} />}
                 {weatherData && <RainYear data={weatherData} />}
             </div>
-
-            <WeatherForecast />
         </div>
     );
 };

@@ -9,8 +9,6 @@ import FeelsLike from './FeelsLike.jsx';
 import Humidity from './Humidity.jsx';
 import Pressure from './Pressure.jsx';
 
-
-
 const WeatherDashboard = ({ apiEndpoint }) => {
     const [weatherData, setWeatherData] = useState(null);
     const [dataDate, setDataDate] = useState('');
@@ -42,30 +40,27 @@ const WeatherDashboard = ({ apiEndpoint }) => {
     if (error) return <p className="text-center">Error loading data: {error.message}</p>;
 
     return (
-        <div>
+        <div className="container">
             {dataDate && <p className="text-center pb-5"><b>Weather data pulled at:</b> {dataDate} (Mountain Time)</p>}
             <p className="text-center pb-1"><b>Current Weather 🌤</b></p>
 
-            <div className="flex justify-center items-center gap-4 pb-4">
+            <div className="content-row">
                 {weatherData && <Temperature data={weatherData} />}
                 {weatherData && <WindSpeed data={weatherData} />}
                 {weatherData && <WindDirection data={weatherData} />}
-
             </div>
 
-            <div className="flex justify-center items-center gap-4 pb-5">
+            <div className="content-row">
                 {weatherData && <FeelsLike data={weatherData} />}
                 {weatherData && <Humidity data={weatherData} />}
                 {weatherData && <Pressure data={weatherData} />}
-
             </div>
             <p className="text-center pb-1"><b>Precipitation Totals 🌧</b></p>
 
-            <div className="flex justify-center items-center gap-4">
+            <div className="content-row">
                 {weatherData && <RainHour data={weatherData} />}
                 {weatherData && <RainDay data={weatherData} />}
                 {weatherData && <RainYear data={weatherData} />}
-
             </div>
         </div>
     );

@@ -26,7 +26,7 @@ const WeatherForecast = () => {
         if (shortForecast.includes("Snow")) return "❄️";
         if (shortForecast.includes("Rain") || shortForecast.includes("Showers")) return "🌧️";
         if (shortForecast.includes("Cloudy")) return "☁️";
-        if (shortForecast.includes("Sunny") or shortForecast.includes("Clear")) return "☀️";
+        if (shortForecast.includes("Sunny") || shortForecast.includes("Clear")) return "☀️";
         return "🌤️"; // Default for other conditions
     };
 

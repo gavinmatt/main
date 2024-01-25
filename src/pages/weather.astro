@@ -1,6 +1,8 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import WeatherDashboard from '../components/WeatherDashboard.jsx';
+import WeatherChartfrom '../components/Temperaturehart.jsx';
+
 
 const apiEndpoint = '/api/weather'; // Endpoint of your serverless function
 ---
@@ -12,6 +14,8 @@ const apiEndpoint = '/api/weather'; // Endpoint of your serverless function
   <div style="padding-top:50px">
     <WeatherDashboard client:load apiEndpoint={apiEndpoint} />
     </div>
+
+    <WeatherChart client:load data={chartData} />
   
 </BaseLayout>
 

@@ -8,7 +8,7 @@ import RainYear from './RainYear.jsx';
 import FeelsLike from './FeelsLike.jsx';
 import Humidity from './Humidity.jsx';
 import Pressure from './Pressure.jsx';
-import WeatherForecast from './WeatherForecast.jsx';
+import WeatherForecast, { getWeatherEmoji } from './WeatherForecast.jsx'; // Import getWeatherEmoji
 
 const WeatherDashboard = ({ apiEndpoint }) => {
     const [weatherData, setWeatherData] = useState(null);

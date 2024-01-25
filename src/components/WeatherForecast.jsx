@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './WeatherForecast.css'; // Ensure to create this CSS file
+import './WeatherForecast.css'; // Ensure this CSS file is correctly linked
 
 const WeatherForecast = () => {
     const [forecast, setForecast] = useState(null);
@@ -33,25 +33,12 @@ const WeatherForecast = () => {
     if (loading) return <p>Loading forecast...</p>;
     if (error) return <p>Error loading forecast: {error}</p>;
 
-    const currentConditions = forecast ? forecast[0] : null;
-    const next24Hours = forecast ? forecast.slice(1, 3) : [];
-    const next3Days = forecast ? forecast.slice(3, 6) : []; // Forecast for the next 3 days beyond 24 hours
+    // Adjusted to start the forecast from the next 24 hours
+    const next24Hours = forecast ? forecast.slice(0, 2) : [];
+    const next3Days = forecast ? forecast.slice(2, 5) : []; // Forecast for the next 3 days beyond 24 hours
 
     return (
         <div className="forecast-container">
-            <h2 className="forecast-header">Current Conditions</h2>
-            <div className="forecast-row">
-                {currentConditions && (
-                    <div className="forecast-box">
-                        <p className="forecast-day">{currentConditions.name}</p>
-                        <p className="forecast-emoji">{getWeatherEmoji(currentConditions.shortForecast)}</p>
-                        <p className="forecast-temperature">{currentConditions.temperature}°{currentConditions.temperatureUnit}</p>
-                        <p>{currentConditions.shortForecast}</p>
-                        <p>Precipitation: {currentConditions.detailedForecast.match(/(\d+\.\d+ inches)|(\d+ inches)|(\d+\.\d+ cm)|(\d+ cm)/g) || 'None'}</p>
-                    </div>
-                )}
-            </div>
-
             <h2 className="forecast-header">Forecast</h2>
             <div className="forecast-row">
                 {[...next24Hours, ...next3Days].map((period, index) => (

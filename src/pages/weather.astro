@@ -2,10 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import WeatherDashboard from '../components/WeatherDashboard.jsx';
 
-// Construct the API endpoint using both environment variables
-const applicationKey = import.meta.env.APPLICATION_KEY;
-const apiKey = import.meta.env.API_KEY;
-const apiEndpoint = `https://rt.ambientweather.net/v1/devices?applicationKey=${applicationKey}&apiKey=${apiKey}`;
+const apiEndpoint = '/api/weather'; // Endpoint of your serverless function
 ---
 
 <BaseLayout sideBarActiveItemID="weather">

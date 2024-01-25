@@ -12,10 +12,13 @@ const WeatherChart = () => {
                 const data = await response.json();
                 
                 // Process the data
-                const formattedData = data.map(item => ({
-                    label: new Date(item.date).toLocaleTimeString(),
-                    value: item.tempf // Adjust this based on the actual data structure
-                }));
+                const formattedData = data.map(item => {
+                    const localDate = new Date(item.lastData.dateutc).toLocaleString();
+                    return {
+                        label: localDate,
+                        value: item.lastData.tempf
+                    };
+                });
 
                 setChartData(formattedData);
             } catch (error) {

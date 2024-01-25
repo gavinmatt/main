@@ -15,14 +15,6 @@ const WeatherDashboard = ({ apiEndpoint }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const getTemperatureHeader = (temp) => {
-        if (temp <= 32) return { text: "Freezing", emoji: "🥶" };
-        if (temp > 32 && temp <= 50) return { text: "Cold", emoji: "❄️" };
-        if (temp > 50 && temp <= 75) return { text: "Perfect", emoji: "😎" };
-        if (temp > 75 && temp <= 90) return { text: "Warm", emoji: "🌶" };
-        return { text: "Hot", emoji: "🔥" };
-    };
-
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -40,9 +32,18 @@ const WeatherDashboard = ({ apiEndpoint }) => {
                 setLoading(false);
             }
         };
+        
 
         fetchData();
     }, [apiEndpoint]);
+
+    const getTemperatureHeader = (temp) => {
+        if (temp <= 32) return { text: "Freezing", emoji: "🥶" };
+        if (temp > 32 && temp <= 50) return { text: "Cold", emoji: "❄️" };
+        if (temp > 50 && temp <= 75) return { text: "Perfect", emoji: "😎" };
+        if (temp > 75 && temp <= 90) return { text: "Warm", emoji: "🌶" };
+        return { text: "Hot", emoji: "🔥" };
+    };
 
     if (loading) return <p className="text-center">Loading weather data...</p>;
     if (error) return <p className="text-center">Error loading data: {error.message}</p>;

@@ -10,21 +10,11 @@ import Humidity from './Humidity.jsx';
 import Pressure from './Pressure.jsx';
 import WeatherForecast from './WeatherForecast.jsx';
 
-const getWeatherEmoji = (shortForecast) => {
-    if (shortForecast.includes("Snow")) return "❄️";
-    if (shortForecast.includes("Rain") || shortForecast.includes("Showers")) return "🌧️";
-    if (shortForecast.includes("Cloudy")) return "☁️";
-    if (shortForecast.includes("Sunny") || shortForecast.includes("Clear")) return "☀️";
-    return "🌤️"; // Default for other conditions
-};
-
 const WeatherDashboard = ({ apiEndpoint }) => {
     const [weatherData, setWeatherData] = useState(null);
     const [dataDate, setDataDate] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
-    
 
     useEffect(() => {
         const fetchData = async () => {
@@ -43,7 +33,6 @@ const WeatherDashboard = ({ apiEndpoint }) => {
                 setLoading(false);
             }
         };
-        
 
         fetchData();
     }, [apiEndpoint]);
@@ -62,33 +51,37 @@ const WeatherDashboard = ({ apiEndpoint }) => {
     let headerContent = weatherData ? getTemperatureHeader(weatherData[0].lastData.tempf) : { text: "", emoji: "" };
 
     return (
-        <div className="forecast-container">
-            <h2 className="forecast-header">Current Conditions</h2>
-            <div className="forecast-row">
-                {currentConditions && (
-                    <div className="forecast-box">
-                        <p className="forecast-emoji">{getWeatherEmoji(currentConditions.shortForecast)}</p>
-                        <p className="forecast-temperature">{currentConditions.temperature}°{currentConditions.temperatureUnit}</p>
-                        <p>{currentConditions.shortForecast}</p>
-                        <p>Precipitation: {currentConditions.detailedForecast.match(/(\d+\.\d+ inches)|(\d+ inches)|(\d+\.\d+ cm)|(\d+ cm)/g) || 'None'}</p>
-                    </div>
-                )}
+        <div>
+            {dataDate && <p className="text-center pb-5"><b>Weather data pulled at:</b> {dataDate} (Mountain Time)</p>}
+            <div className="text-center text-2xl font-bold my-4">
+                {headerContent.text} {headerContent.emoji}
             </div>
 
-            <h2 className="forecast-header">Forecast</h2>
-            <div className="forecast-row">
-                {[...next24Hours, ...next3Days].map((period, index) => (
-                    <div key={index} className="forecast-box">
-                        <p className="forecast-emoji">{getWeatherEmoji(period.shortForecast)}</p>
-                        <p className="forecast-temperature">{period.temperature}°{period.temperatureUnit}</p>
-                        <p>{period.shortForecast}</p>
-                        <p>Precipitation: {period.detailedForecast.match(/(\d+\.\d+ inches)|(\d+ inches)|(\d+\.\d+ cm)|(\d+ cm)/g) || 'None'}</p>
-                    </div>
-                ))}
+            <p className="text-center pb-1"><b>Current Weather 🌤</b></p>
+
+            <div className="lg:flex justify-center items-center gap-4 pb-4">
+                {weatherData && <Temperature data={weatherData} />}
+                {weatherData && <WindSpeed data={weatherData} />}
+                {weatherData && <WindDirection data={weatherData} />}
             </div>
+
+            <div className="lg:flex justify-center items-center gap-4 pb-5">
+                {weatherData && <FeelsLike data={weatherData} />}
+                {weatherData && <Humidity data={weatherData} />}
+                {weatherData && <Pressure data={weatherData} />}
+            </div>
+
+            <p className="text-center pb-1"><b>Precipitation Totals 🌧</b></p>
+
+            <div className="lg:flex justify-center items-center gap-4">
+                {weatherData && <RainHour data={weatherData} />}
+                {weatherData && <RainDay data={weatherData} />}
+                {weatherData && <RainYear data={weatherData} />}
+            </div>
+
+            <WeatherForecast />
         </div>
     );
 };
-
 
 export default WeatherDashboard;

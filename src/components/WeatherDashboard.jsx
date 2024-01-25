@@ -53,7 +53,7 @@ const WeatherDashboard = ({ apiEndpoint }) => {
 
             </div>
 
-            <div className="flex justify-center items-center gap-4">
+            <div className="flex justify-center items-center gap-4 pb-5">
                 {weatherData && <FeelsLike data={weatherData} />}
                 {weatherData && <Humidity data={weatherData} />}
                 {weatherData && <Pressure data={weatherData} />}

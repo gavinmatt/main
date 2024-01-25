@@ -14,7 +14,7 @@ const WeatherChart = () => {
                 
                 // Process the data
                 const formattedData = data.map(item => {
-                    const localDate = new Date(item.lastData.dateutc).toLocaleString();
+                    const localDate = new Date(data[0].dateutc).toLocaleString();
                     return {
                         label: localDate,
                         value: item.lastData.tempf

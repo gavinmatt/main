@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Chart from 'chart.js/auto';
 
-const WeatherChart = ({ apiEndpoint }) => {
+const WeatherChart = ({ apiEndpoint2 }) => {
     const [chartData, setChartData] = useState([]);
     const chartRef = useRef(null);
 
@@ -28,7 +28,7 @@ const WeatherChart = ({ apiEndpoint }) => {
         };
 
         fetchData();
-    }, [apiEndpoint]);
+    }, [apiEndpoint2]);
 
     useEffect(() => {
         if (chartData.length && chartRef.current) {

@@ -1,0 +1,21 @@
+---
+// Import BaseLayout
+import BaseLayout from "./BaseLayout.astro";
+
+// Props for Weather Layout
+const { 
+  customTitle = "Weather Page - Default Title", 
+  customDescription = "Default description for Weather Page", 
+  customImage = "/path/to/default/weather/image.jpg",
+  ...otherProps 
+} = Astro.props;
+---
+
+<BaseLayout 
+  title={customTitle} 
+  description={customDescription} 
+  image={customImage}
+  {...otherProps}
+>
+  <slot />
+</BaseLayout>

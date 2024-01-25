@@ -1,5 +1,5 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
+import WeatherLayout from "../layouts/WeatherLayout.astro";
 import WeatherDashboard from "../components/WeatherDashboard.jsx";
 import WeatherChart from '../components/WeatherChart.jsx';
 
@@ -8,7 +8,9 @@ const apiEndpoint = '/api/weather';
 const apiEndpoint2 = '/api/getWeatherData';
 ---
 
-<BaseLayout sideBarActiveItemID="weather">
+<WeatherLayout sideBarActiveItemID="weather" customTitle="Colorado Springs Weather" 
+customDescription="My weather station and ChatGPT combine to give you the weather!" 
+customImage="/colorado-springs-weather.png">
     <div class="text-5xl font-bold" style="text-align: center">
         Current Weather in Colorado Springs
     </div>
@@ -26,4 +28,4 @@ const apiEndpoint2 = '/api/getWeatherData';
         <WeatherChart client:load apiEndpoint={apiEndpoint2}/>
     </div>
 -->
-</BaseLayout>
+</WeatherLayout>

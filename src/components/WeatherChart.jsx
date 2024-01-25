@@ -9,7 +9,7 @@ const WeatherChart = ({ apiEndpoint2 }) => {
         const fetchData = async () => {
             try {
                 const response = await fetch(apiEndpoint2);
-                const data = await response.data();
+                const data = await response.json();
 
                 const formattedData = data.map(item => {
                     const date = new Date(item.dateutc); // Convert UNIX timestamp to Date object

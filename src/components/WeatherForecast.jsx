@@ -1,69 +1,87 @@
-import React, { useState, useEffect } from 'react';
-import './WeatherForecast.css'; // Ensure to create this CSS file
+import React, { useEffect, useState } from 'react';
+import Temperature from './Temperature.jsx';
+import WindSpeed from './WindSpeed.jsx';
+import WindDirection from './WindDirection.jsx';
+import RainHour from './RainHour.jsx';
+import RainDay from './RainDay.jsx';
+import RainYear from './RainYear.jsx';
+import FeelsLike from './FeelsLike.jsx';
+import Humidity from './Humidity.jsx';
+import Pressure from './Pressure.jsx';
+import WeatherForecast from './WeatherForecast.jsx';
 
-const WeatherForecast = () => {
-    const [forecast, setForecast] = useState(null);
+const WeatherDashboard = ({ apiEndpoint }) => {
+    const [weatherData, setWeatherData] = useState(null);
+    const [dataDate, setDataDate] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchForecast = async () => {
+        const fetchData = async () => {
             try {
-                const response = await fetch('https://api.weather.gov/gridpoints/PUB/89,89/forecast');
+                const response = await fetch(apiEndpoint);
                 const data = await response.json();
-                setForecast(data.properties.periods);
+                setWeatherData(data);
+
+                if (data && data.length > 0) {
+                    const date = new Date(data[0].lastData.date);
+                    setDataDate(date.toLocaleString('en-US', { timeZone: 'America/Denver' }));
+                }
             } catch (err) {
-                setError(err.message);
+                setError(err);
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchForecast();
-    }, []);
+        fetchData();
+    }, [apiEndpoint]);
 
-    const getWeatherEmoji = (shortForecast) => {
-        if (shortForecast.includes("Snow")) return "❄️";
-        if (shortForecast.includes("Rain") || shortForecast.includes("Showers")) return "🌧️";
-        if (shortForecast.includes("Cloudy")) return "☁️";
-        if (shortForecast.includes("Sunny") || shortForecast.includes("Clear")) return "☀️";
-        return "🌤️"; // Default for other conditions
+    const getTemperatureHeader = (temp) => {
+        if (temp <= 32) return { text: "Freezing", emoji: "🥶" };
+        if (temp > 32 && temp <= 50) return { text: "Cold", emoji: "❄️" };
+        if (temp > 50 && temp <= 75) return { text: "Perfect", emoji: "😎" };
+        if (temp > 75 && temp <= 90) return { text: "Warm", emoji: "🌶" };
+        return { text: "Hot", emoji: "🔥" };
     };
 
-    if (loading) return <p>Loading forecast...</p>;
-    if (error) return <p>Error loading forecast: {error}</p>;
+    if (loading) return <p className="text-center">Loading weather data...</p>;
+    if (error) return <p className="text-center">Error loading data: {error.message}</p>;
 
-    const currentConditions = forecast ? forecast[0] : null;
-    const next24Hours = forecast ? forecast.slice(1, 3) : [];
-    const next3Days = forecast ? forecast.slice(3, 6) : []; // Forecast for the next 3 days beyond 24 hours
+    let headerContent = weatherData ? getTemperatureHeader(weatherData[0].lastData.tempf) : { text: "", emoji: "" };
 
     return (
-        <div className="forecast-container">
-            <h2 className="forecast-header">Current Conditions</h2>
-            <div className="forecast-row">
-                {currentConditions && (
-                    <div className="forecast-box">
-                        <p className="forecast-emoji">{getWeatherEmoji(currentConditions.shortForecast)}</p>
-                        <p className="forecast-temperature">{currentConditions.temperature}°{currentConditions.temperatureUnit}</p>
-                        <p>{currentConditions.shortForecast}</p>
-                        <p>Precipitation: {currentConditions.detailedForecast.match(/(\d+\.\d+ inches)|(\d+ inches)|(\d+\.\d+ cm)|(\d+ cm)/g) || 'None'}</p>
-                    </div>
-                )}
+        <div>
+            {dataDate && <p className="text-center pb-5"><b>Weather data pulled at:</b> {dataDate} (Mountain Time)</p>}
+            <div className="text-center text-2xl font-bold my-4">
+                {headerContent.text} {headerContent.emoji}
             </div>
 
-            <h2 className="forecast-header">Forecast</h2>
-            <div className="forecast-row">
-                {[...next24Hours, ...next3Days].map((period, index) => (
-                    <div key={index} className="forecast-box">
-                        <p className="forecast-emoji">{getWeatherEmoji(period.shortForecast)}</p>
-                        <p className="forecast-temperature">{period.temperature}°{period.temperatureUnit}</p>
-                        <p>{period.shortForecast}</p>
-                        <p>Precipitation: {period.detailedForecast.match(/(\d+\.\d+ inches)|(\d+ inches)|(\d+\.\d+ cm)|(\d+ cm)/g) || 'None'}</p>
-                    </div>
-                ))}
+            <p className="text-center pb-1"><b>Current Weather 🌤</b></p>
+
+            <div className="lg:flex justify-center items-center gap-4 pb-4">
+                {weatherData && <Temperature data={weatherData} />}
+                {weatherData && <WindSpeed data={weatherData} />}
+                {weatherData && <WindDirection data={weatherData} />}
             </div>
+
+            <div className="lg:flex justify-center items-center gap-4 pb-5">
+                {weatherData && <FeelsLike data={weatherData} />}
+                {weatherData && <Humidity data={weatherData} />}
+                {weatherData && <Pressure data={weatherData} />}
+            </div>
+
+            <p className="text-center pb-1"><b>Precipitation Totals 🌧</b></p>
+
+            <div className="lg:flex justify-center items-center gap-4">
+                {weatherData && <RainHour data={weatherData} />}
+                {weatherData && <RainDay data={weatherData} />}
+                {weatherData && <RainYear data={weatherData} />}
+            </div>
+
+            <WeatherForecast />
         </div>
     );
 };
 
-export default WeatherForecast;
+export default WeatherDashboard;

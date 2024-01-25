@@ -40,30 +40,43 @@ const WeatherDashboard = ({ apiEndpoint }) => {
     if (error) return <p className="text-center">Error loading data: {error.message}</p>;
 
     return (
-        <div className="weather-container">
+        <div>
             {dataDate && <p className="text-center pb-5"><b>Weather data pulled at:</b> {dataDate} (Mountain Time)</p>}
             <p className="text-center pb-1"><b>Current Weather 🌤</b></p>
 
-            <div className="content-row">
+            <div className="flex justify-center items-center gap-4 pb-4">
                 {weatherData && <Temperature data={weatherData} />}
                 {weatherData && <WindSpeed data={weatherData} />}
                 {weatherData && <WindDirection data={weatherData} />}
+
             </div>
 
-            <div className="content-row">
+            <div className="flex justify-center items-center gap-4 pb-5">
                 {weatherData && <FeelsLike data={weatherData} />}
                 {weatherData && <Humidity data={weatherData} />}
                 {weatherData && <Pressure data={weatherData} />}
+
             </div>
             <p className="text-center pb-1"><b>Precipitation Totals 🌧</b></p>
 
-            <div className="content-row">
+            <div className="flex justify-center items-center gap-4">
                 {weatherData && <RainHour data={weatherData} />}
                 {weatherData && <RainDay data={weatherData} />}
                 {weatherData && <RainYear data={weatherData} />}
+
             </div>
         </div>
     );
 };
 
 export default WeatherDashboard;
+
+// Media queries for mobile devices
+<style>
+@media (max-width: 768px) {
+    /* Adjust styles for smaller screens here */
+    .flex {
+        flex-direction: column; /* Example: Stack elements vertically */
+    }
+}
+</style>

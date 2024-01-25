@@ -52,11 +52,12 @@ const WeatherDashboard = ({ apiEndpoint }) => {
 
     return (
         <div>
+        
+            {dataDate && <p className="text-center pb-5"><b>Weather data pulled at:</b> {dataDate} (Mountain Time)</p>}
             <div className="text-center text-2xl font-bold my-4">
                 {headerContent.text} {headerContent.emoji}
             </div>
 
-            {dataDate && <p className="text-center pb-5"><b>Weather data pulled at:</b> {dataDate} (Mountain Time)</p>}
             <p className="text-center pb-1"><b>Current Weather 🌤</b></p>
 
             <div className="lg:flex justify-center items-center gap-4 pb-4">

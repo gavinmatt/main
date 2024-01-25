@@ -1,0 +1,29 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import WeatherDashboard from "../components/WeatherDashboard.jsx";
+import WeatherChart from '../components/WeatherChart.jsx';
+
+
+const apiEndpoint = '/api/weather';
+const apiEndpoint2 = '/api/getWeatherData';
+---
+
+<BaseLayout sideBarActiveItemID="weather">
+    <div class="text-5xl font-bold" style="text-align: center">
+        Current Weather in Colorado Springs
+    </div>
+    <p style="text-align: center;padding-top:20px">
+        This data is captured from my home weather station! This is an
+        experiment using ChatGPT to create the components and pull data from
+        Ambient Weather. I have very rough JS knowledge, so I want to see how far I can push it just using GPT-generated code and my own FE skills.
+    </p>
+    <div style="padding-top:50px">
+        <WeatherDashboard client:load apiEndpoint={apiEndpoint} />
+    </div>
+
+    <!--
+    <div style="padding-top:50px">
+        <WeatherChart client:load apiEndpoint={apiEndpoint2}/>
+    </div>
+-->
+</BaseLayout>

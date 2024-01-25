@@ -10,6 +10,7 @@ const WeatherChart = () => {
             try {
                 const response = await fetch('/api/getWeatherData');
                 const data = await response.json();
+                console.log(data); // Log the data to inspect its structure
                 
                 // Process the data
                 const formattedData = data.map(item => {

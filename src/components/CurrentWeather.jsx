@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 const CurrentWeather = () => {
     const [currentEmoji, setCurrentEmoji] = useState('');
+    const [currentShortCondition, setCurrentShortCondition] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -13,8 +14,10 @@ const CurrentWeather = () => {
                 if (data.properties && data.properties.periods && data.properties.periods[0]) {
                     const shortForecast = data.properties.periods[0].shortForecast;
                     setCurrentEmoji(getWeatherEmoji(shortForecast));
+                    setCurrentShortCondition(shortForecast);
                 } else {
                     setCurrentEmoji('❓'); // Use a question mark emoji as a fallback
+                    setCurrentShortCondition('Unknown'); // Use 'Unknown' as a fallback
                 }
             } catch (err) {
                 setError(err.message);
@@ -39,7 +42,8 @@ const CurrentWeather = () => {
 
     return (
         <div className="text-center">
-            <h3 style={{ fontSize: '3rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{currentEmoji}</h3>
+            <h3 style={{ fontSize: '4rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{currentEmoji}</h3>
+            <p>{currentShortCondition}</p>
         </div>
     );
 };

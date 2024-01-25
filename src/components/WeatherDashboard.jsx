@@ -32,16 +32,32 @@ const WeatherDashboard = ({ apiEndpoint }) => {
                 setLoading(false);
             }
         };
+        
 
         fetchData();
     }, [apiEndpoint]);
 
+    const getTemperatureHeader = (temp) => {
+        if (temp <= 32) return { text: "Freezing", emoji: "🥶" };
+        if (temp > 32 && temp <= 50) return { text: "Cold", emoji: "❄️" };
+        if (temp > 50 && temp <= 75) return { text: "Perfect", emoji: "😎" };
+        if (temp > 75 && temp <= 90) return { text: "Warm", emoji: "🌶" };
+        return { text: "Hot", emoji: "🔥" };
+    };
+
     if (loading) return <p className="text-center">Loading weather data...</p>;
     if (error) return <p className="text-center">Error loading data: {error.message}</p>;
 
+    let headerContent = weatherData ? getTemperatureHeader(weatherData[0].lastData.tempf) : { text: "", emoji: "" };
+
     return (
         <div>
+        
             {dataDate && <p className="text-center pb-5"><b>Weather data pulled at:</b> {dataDate} (Mountain Time)</p>}
+            <div className="text-center text-2xl font-bold my-4">
+                {headerContent.text} {headerContent.emoji}
+            </div>
+
             <p className="text-center pb-1"><b>Current Weather 🌤</b></p>
 
             <div className="lg:flex justify-center items-center gap-4 pb-4">

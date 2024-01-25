@@ -1,0 +1,36 @@
+.forecast-container {
+    margin: 0 auto;
+    max-width: 1200px;
+    padding: 0 20px;
+}
+
+.forecast-section {
+    margin-bottom: 20px;
+}
+
+.forecast-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.forecast-box {
+    border: 1px solid gray;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    text-align: center;
+    width: 250px; /* Adjust based on your design preference */
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+    .forecast-box {
+        width: 100%;
+    }
+}

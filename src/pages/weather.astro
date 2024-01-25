@@ -1,0 +1,21 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import WeatherDashboard from '../components/WeatherDashboard.jsx';
+
+// Construct the API endpoint using both environment variables
+const applicationKey = import.meta.env.APPLICATION_KEY;
+const apiKey = import.meta.env.API_KEY;
+const apiEndpoint = `https://rt.ambientweather.net/v1/devices?applicationKey=${applicationKey}&apiKey=${apiKey}`;
+---
+
+<BaseLayout sideBarActiveItemID="weather">
+    
+    <div class="text-5xl font-bold" style="text-align: center">Current Weather in Colorado Springs</div>
+    <p style="text-align: center;padding-top:20px">This data is captured from my home weather station! This is an experiment using ChatGPT to create the components and pull data from Ambient Weather.</div>
+  <div style="padding-top:50px">
+    <WeatherDashboard client:load apiEndpoint={apiEndpoint} />
+    </div>
+  
+</BaseLayout>
+
+

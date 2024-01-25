@@ -7,7 +7,7 @@ const RainYear = ({ data }) => {
                 <div key={index} className="border border-gray-200 rounded shadow p-4 text-center w-32 h-32 flex items-center justify-center">
                     <div>
                         <p className="font-bold">Rain This Year</p>
-                        <p>{degreesToCardinal(item.lastData.yearlyrainin)} in</p>
+                        <p>{item.lastData.yearlyrainin} in</p>
                     </div>
                 </div>
             ))}

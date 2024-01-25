@@ -19,6 +19,4 @@ export default async function(req, res) {
         res.status(500).json({ message: "Error fetching weather data" });
     }
 }
-console.log(formattedData); // Add this line
-setChartData(formattedData);
 

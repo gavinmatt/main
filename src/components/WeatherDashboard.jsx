@@ -43,6 +43,12 @@ const WeatherDashboard = ({ apiEndpoint }) => {
                 {weatherData && <WindDirection data={weatherData} />}
 
             </div>
+            <div className="flex justify-center items-center gap-4">
+                {weatherData && <RainHour data={weatherData} />}
+                {weatherData && <RainDay data={weatherData} />}
+                {weatherData && <RainYear data={weatherData} />}
+
+            </div>
         </div>
     );
 };

@@ -1,4 +1,3 @@
-// This is an example serverless function in Node.js
 export default async function(req, res) {
     const applicationKey = process.env.APPLICATION_KEY;
     const apiKey = process.env.API_KEY;
@@ -19,4 +18,5 @@ export default async function(req, res) {
         res.status(500).json({ message: "Error fetching weather data" });
     }
 }
+
 

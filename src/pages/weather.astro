@@ -1,23 +1,24 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import WeatherDashboard from '../components/WeatherDashboard.jsx';
-import WeatherChart from '../components/TemperatureChart.jsx';
+import WeatherDashboard from "../components/WeatherDashboard.jsx";
+import WeatherChart from "../components/WeatherChart.jsx";
 
-
-const apiEndpoint = '/api/weather'; // Endpoint of your serverless function
+const apiEndpoint = "/api/weather"; // Endpoint of your serverless function
 ---
 
 <BaseLayout sideBarActiveItemID="weather">
-    
-    <div class="text-5xl font-bold" style="text-align: center">Current Weather in Colorado Springs</div>
-    <p style="text-align: center;padding-top:20px">This data is captured from my home weather station! This is an experiment using ChatGPT to create the components and pull data from Ambient Weather.</div>
-  <div style="padding-top:50px">
-    <WeatherDashboard client:load apiEndpoint={apiEndpoint} />
+    <div class="text-5xl font-bold" style="text-align: center">
+        Current Weather in Colorado Springs
+    </div>
+    <p style="text-align: center;padding-top:20px">
+        This data is captured from my home weather station! This is an
+        experiment using ChatGPT to create the components and pull data from
+        Ambient Weather.
+    </p>
+    <div style="padding-top:50px">
+        <WeatherDashboard client:load apiEndpoint={apiEndpoint} />
     </div>
     <div style="padding-top:50px">
-
         <WeatherChart client:load />
-        </div>
+    </div>
 </BaseLayout>
-
-

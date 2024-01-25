@@ -8,18 +8,14 @@ const WeatherChart = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // Update the endpoint to match your serverless function's route
                 const response = await fetch('/api/getWeatherData');
                 const data = await response.json();
                 
-                // Process and format the data for Chart.js
-                const formattedData = data.map(item => {
-                    return {
-                        // Adjust these fields based on the structure of your API response
-                        label: new Date(item.lastData.date).toLocaleTimeString(),
-                        value: item.lastData.tempf
-                    };
-                });
+                // Process the data
+                const formattedData = data.map(item => ({
+                    label: new Date(item.date).toLocaleTimeString(),
+                    value: item.tempf // Adjust this based on the actual data structure
+                }));
 
                 setChartData(formattedData);
             } catch (error) {
@@ -38,7 +34,7 @@ const WeatherChart = () => {
                 data: {
                     labels: chartData.map(item => item.label),
                     datasets: [{
-                        label: 'Temperature',
+                        label: 'Temperature (°F)',
                         data: chartData.map(item => item.value),
                         borderColor: 'rgb(75, 192, 192)',
                         tension: 0.1
@@ -47,7 +43,7 @@ const WeatherChart = () => {
                 options: {
                     scales: {
                         y: {
-                            beginAtZero: true
+                            beginAtZero: false
                         }
                     }
                 }

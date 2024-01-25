@@ -1,0 +1,135 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import TimeLineElement from "../components/experience/TimeLine.astro";
+---
+
+<BaseLayout title="My Experience" sideBarActiveItemID="experience">
+  <div class="mb-5">
+    <div class="text-3xl w-full font-bold">Who Am I?</div>
+  </div>
+
+  <div class="mb-10 text-justify">
+    Hello! I'm Gavin Matthews, a seasoned Product leader, professional writer, technical advocate, and habitual project starter located in Colorado Springs, Colorado! At work, I focus on developing highly engaged product teams that solve complex problems and build 0->1 products. I'm passionate about Product Led Growth, coaching and development, customer discovery, strong triad relationships with design and engineering, and truly knowing your product. I'm also familiar with a wide range of products, including cybersecurity, EDR/MDR, content and CMS, AI/ML, and marketplaces. At home, I'm drowning in dogs while taking on projects across home improvement, gardening, technology, and media preservation. 
+  </div>
+
+<div class="mb-10 text-justify">
+    I own Matthews Editorial, LLC and would love to work on your next ebook, build professional content, or any content need you have! <a href="mailto:gavindmatthews+website@gmail.com" target="_blank">Reach out!</a>
+</div>
+
+  <div class="mb-5">
+    <div class="text-3xl w-full font-bold">Education</div>
+  </div>
+
+  <div class="time-line-container grid gap-2 mb-10">
+    <TimeLineElement
+      title="Tufts University"
+      subtitle="2009-2013, B.A. Russian Studies, B.A. Archaeology, Minor in Geology"
+    />
+  </div>
+
+  <div class="mb-5">
+    <div class="text-3xl w-full font-bold">Experience</div>
+  </div>
+
+  <div class="time-line-container mb-10">
+    <TimeLineElement
+      title="Group Product Manager, Contentful"
+      subtitle="June 2022-Current, Denver, CO"
+    >
+    People manager responsible for Contentful's global integration Marketplace, Developer Experience, and integration framework. At Contentful, I focus on connecting the world's largest brands to apps and integrations that make it easier than ever to manage content at scale. I manage two teams covering topics as broad as integration frameworks, developer tooling and experience, AI and ML, and hyper-personalization. As a product leader at Contentful, I also participate in continual process improvement, customer feedback processes, and educating and enabling our field, customers, and broader market.
+    </TimeLineElement>
+      <TimeLineElement
+      title="Product, 1build"
+      subtitle="December 2021-June 2022, Los Angeles, CA"
+    >
+    Served as a Product lead for 1build's construction price and takeoff software.
+    </TimeLineElement>
+    <TimeLineElement
+      title="Senior Product Manager, Red Canary"
+      subtitle="September 2020-December 2021, Denver, CO"
+    >
+      Served as the product lead for Red Canary's Linux EDR and detection platform! Over my time at Red Canary, I participated in product leadership, security advocacy and public speaking, response, and 0->1 growth of our Linux EDR product. 
+    </TimeLineElement>
+    <TimeLineElement
+      title="Freelance Product Manager, Private"
+      subtitle="April 2020-September 2021, Denver, CO"
+    >
+    Freelance product lead engaged on several very well known brands! Message me for details on who I worked with!
+    </TimeLineElement>
+    <TimeLineElement
+      title="Senior Product Manager, Automox"
+      subtitle="April 2018-April 2020, Boulder, CO"
+    >
+      Product lead focused on the platform, software patch availability, Linux, and Product Led Growth.
+    </TimeLineElement>
+    <TimeLineElement
+      title="CommercialTribe, Enterprise Product Manager and Privacy Specialist"
+      subtitle="September 2015-May 2018, Denver, CO"
+    >
+      Product lead for CommercialTribe's sales training and assessment products and privacy and security specialist. 
+    </TimeLineElement>
+  </div>
+
+  <div class="mb-5">
+    <div class="text-3xl w-full font-bold">Certifications</div>
+  </div>
+
+  <ul class="list-disc mx-6 mb-10 grid gap-2">
+    <li>
+      <a href="https://iapp.org/certify/cipp/" target="_blank">CIPP/US</a>
+    </li>
+    <li>
+      <a href="https://www.scrumalliance.org/get-certified/product-owner-track/certified-scrum-product-owner" target="_blank">Certified Scrum Product Owner</a>
+    </li>
+    <li>
+      <a href="https://www.nremt.org/" target="_blank">NREMT Certified EMT</a>
+    </li>
+  </ul>
+
+  <div class="mb-5">
+    <div class="text-3xl w-full font-bold">Volunteering</div>
+  </div>
+ 
+  <div class="time-line-container grid gap-2 mb-10">
+    <TimeLineElement
+      title="Broadmoor Information & Security"
+      subtitle="Board Member" />
+      Member of the board and volunteer for BIS, the Broadmoor area's security organization.
+  </div>
+  
+    <div class="time-line-container grid gap-2 mb-10">
+    <TimeLineElement
+      title="Colorado Department of Public Health & Environment"
+      subtitle="Emergency Medical Technician (EMT)"
+    />
+    State and nationally registered EMT.
+  </div>
+
+  <div class="mb-5">
+    <div class="text-3xl w-full font-bold">Publications</div>
+  </div>
+
+  <div class="time-line-container grid gap-2 mb-10">
+    <TimeLineElement
+      title="Anthropology & Archeology of Eurasia"
+      subtitle="Volume 51, 2012 - Issue 1 - Graffiti on the Walls of Buildings in Scythian Neapolis"
+    />
+    Translated the original work by Ol'ga D. Dashnevskaia from Russian to English.
+
+  </div>
+
+  <div class="mb-5">
+    <div class="text-3xl w-full font-bold">Skills</div>
+  </div>
+
+  <ul class="list-disc md:columns-3 columns-3 mx-1">
+    <li>Product Leadership</li>
+    <li>Product Led Growth</li>
+    <li>AI/ML Products</li>
+    <li>Scrum/Agile</li>
+    <li>Technical Product Management</li>
+    <li>Marketplaces and Integrations</li>
+    <li>0 -> 1 Product Growth</li>
+    <li>APIs</li>
+  </ul>
+</BaseLayout>

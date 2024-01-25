@@ -8,13 +8,8 @@ const WeatherChart = ({ apiEndpoint2 }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(apiEndpoint2) {
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    }
-                };
-                const data = await response.json();
+                const response = await fetch(apiEndpoint2) {};
+                const data = await response.data();
 
                 const formattedData = data.map(item => {
                     const date = new Date(item.dateutc); // Convert UNIX timestamp to Date object

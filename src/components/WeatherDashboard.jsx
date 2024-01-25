@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Temperature from './Temperature.jsx';
 import WindSpeed from './WindSpeed.jsx';
+import WindDirection from './WindDirection.jsx';
+
 
 const WeatherDashboard = ({ apiEndpoint }) => {
     const [weatherData, setWeatherData] = useState(null);
@@ -38,6 +40,8 @@ const WeatherDashboard = ({ apiEndpoint }) => {
             <div className="flex justify-center items-center gap-4">
                 {weatherData && <Temperature data={weatherData} />}
                 {weatherData && <WindSpeed data={weatherData} />}
+                {weatherData && <WindDirection data={weatherData} />}
+
             </div>
         </div>
     );

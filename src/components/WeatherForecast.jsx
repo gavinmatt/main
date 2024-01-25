@@ -1,27 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './WeatherForecast.css'; // Ensure to create this CSS file
 
-const CurrentCondition = ({ currentConditions }) => {
-    const getWeatherEmoji = (shortForecast) => {
-        if (shortForecast.includes("Snow")) return "❄️";
-        if (shortForecast.includes("Rain") || shortForecast.includes("Showers")) return "🌧️";
-        if (shortForecast.includes("Cloudy")) return "☁️";
-        if (shortForecast.includes("Sunny") || shortForecast.includes("Clear")) return "☀️";
-        return "🌤️"; // Default for other conditions
-    };
-
-    return (
-        <div className="forecast-container">
-            {currentConditions && (
-                <div className="forecast-box">
-                    <h2 className="forecast-header">Current Conditions</h2>
-                    <p className="forecast-emoji">{getWeatherEmoji(currentConditions.shortForecast)}</p>
-                </div>
-            )}
-        </div>
-    );
-};
-
 const WeatherForecast = () => {
     const [forecast, setForecast] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -43,13 +22,35 @@ const WeatherForecast = () => {
         fetchForecast();
     }, []);
 
+    const getWeatherEmoji = (shortForecast) => {
+        if (shortForecast.includes("Snow")) return "❄️";
+        if (shortForecast.includes("Rain") || shortForecast.includes("Showers")) return "🌧️";
+        if (shortForecast.includes("Cloudy")) return "☁️";
+        if (shortForecast.includes("Sunny") || shortForecast.includes("Clear")) return "☀️";
+        return "🌤️"; // Default for other conditions
+    };
+
+    if (loading) return <p>Loading forecast...</p>;
+    if (error) return <p>Error loading forecast: {error}</p>;
+
     const currentConditions = forecast ? forecast[0] : null;
     const next24Hours = forecast ? forecast.slice(1, 3) : [];
     const next3Days = forecast ? forecast.slice(3, 6) : []; // Forecast for the next 3 days beyond 24 hours
 
     return (
-        <div>
-            <CurrentCondition currentConditions={currentConditions} />
+        <div className="forecast-container">
+            <h2 className="forecast-header">Current Conditions</h2>
+            <div className="forecast-row">
+                {currentConditions && (
+                    <div className="forecast-box">
+                        <p className="forecast-day">{currentConditions.name}</p>
+                        <p className="forecast-emoji">{getWeatherEmoji(currentConditions.shortForecast)}</p>
+                        <p className="forecast-temperature">{currentConditions.temperature}°{currentConditions.temperatureUnit}</p>
+                        <p>{currentConditions.shortForecast}</p>
+                        <p>Precipitation: {currentConditions.detailedForecast.match(/(\d+\.\d+ inches)|(\d+ inches)|(\d+\.\d+ cm)|(\d+ cm)/g) || 'None'}</p>
+                    </div>
+                )}
+            </div>
 
             <h2 className="forecast-header">Forecast</h2>
             <div className="forecast-row">

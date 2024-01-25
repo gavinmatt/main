@@ -8,13 +8,17 @@ import RainYear from './RainYear.jsx';
 import FeelsLike from './FeelsLike.jsx';
 import Humidity from './Humidity.jsx';
 import Pressure from './Pressure.jsx';
-import WeatherForecast, { getWeatherEmoji } from './WeatherForecast.jsx'; // Import getWeatherEmoji
+import WeatherForecast from './WeatherForecast.jsx';
+
+
 
 const WeatherDashboard = ({ apiEndpoint }) => {
     const [weatherData, setWeatherData] = useState(null);
     const [dataDate, setDataDate] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    
 
     useEffect(() => {
         const fetchData = async () => {
@@ -33,6 +37,7 @@ const WeatherDashboard = ({ apiEndpoint }) => {
                 setLoading(false);
             }
         };
+        
 
         fetchData();
     }, [apiEndpoint]);
@@ -52,10 +57,11 @@ const WeatherDashboard = ({ apiEndpoint }) => {
 
     return (
         <div>
+        
             {dataDate && <p className="text-center pb-5"><b>Weather data pulled at:</b> {dataDate} (Mountain Time)</p>}
-            <p className="text-center"><b>Current Weather {getWeatherEmoji(weatherData[0].lastData.shortForecast)}</b></p>
-
-            {weatherData && <WeatherForecast />}
+            <div className="text-center text-2xl font-bold my-4">
+                {headerContent.text} {headerContent.emoji}
+            </div>
 
             <p className="text-center pb-1"><b>Current Weather 🌤</b></p>
 
@@ -78,6 +84,10 @@ const WeatherDashboard = ({ apiEndpoint }) => {
                 {weatherData && <RainDay data={weatherData} />}
                 {weatherData && <RainYear data={weatherData} />}
             </div>
+
+    <div>
+        <WeatherForecast />
+    </div>
         </div>
     );
 };

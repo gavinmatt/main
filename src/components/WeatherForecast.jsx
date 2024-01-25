@@ -39,18 +39,6 @@ const WeatherForecast = () => {
 
     return (
         <div className="forecast-container">
-            <h2 className="forecast-header">Current Conditions</h2>
-            <div className="forecast-row">
-                {currentConditions && (
-                    <div className="forecast-box">
-                        <p className="forecast-day">{currentConditions.name}</p>
-                        <p className="forecast-emoji">{getWeatherEmoji(currentConditions.shortForecast)}</p>
-                        <p className="forecast-temperature">{currentConditions.temperature}°{currentConditions.temperatureUnit}</p>
-                        <p>{currentConditions.shortForecast}</p>
-                        <p>Precipitation: {currentConditions.detailedForecast.match(/(\d+\.\d+ inches)|(\d+ inches)|(\d+\.\d+ cm)|(\d+ cm)/g) || 'None'}</p>
-                    </div>
-                )}
-            </div>
 
             <h2 className="forecast-header">Forecast</h2>
             <div className="forecast-row">

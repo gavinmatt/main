@@ -61,9 +61,10 @@ const WeatherDashboard = ({ apiEndpoint }) => {
         
             {dataDate && <p className="text-center pb-5"><b>Weather data pulled at:</b> {dataDate} (Mountain Time)</p>}
 
+            <h3 className="text-center pb-1">Current Conditions</h3>
+
             <CurrentWeather />
-            
-            <p className="text-center pb-1"><b>Current Weather 🌤</b></p>
+            <p className="text-center pb-1"><b>Raw Data 📊</b></p>
 
             <div className="lg:flex justify-center items-center gap-4 pb-4">
                 {weatherData && <Temperature data={weatherData} />}

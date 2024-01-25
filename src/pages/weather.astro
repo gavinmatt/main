@@ -3,8 +3,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import WeatherDashboard from "../components/WeatherDashboard.jsx";
 import WeatherChart from '../components/WeatherChart.jsx';
 
-const apiEndpoint = "/api/weather"; // Endpoint of your serverless function
-const apiEndpoint = '/api/getWeatherData';
+
+const apiEndpoint1 = '/api/weather';
+const apiEndpoint2 = '/api/getWeatherData';
 ---
 
 <BaseLayout sideBarActiveItemID="weather">
@@ -20,6 +21,6 @@ const apiEndpoint = '/api/getWeatherData';
         <WeatherDashboard client:load apiEndpoint={apiEndpoint} />
     </div>
     <div style="padding-top:50px">
-        <WeatherChart client:load />
+        <WeatherChart client:load apiEndpoint={apiEndpoint2}/>
     </div>
 </BaseLayout>

@@ -58,7 +58,7 @@ const WeatherChart = ({ apiEndpoint }) => {
         }
     }, [chartData]);
 
-    return <canvas ref={chartRef}></canvas>;
+    return <canvas ref={chartRef} id="weatherChart"></canvas>;
 };
 
 export default WeatherChart;

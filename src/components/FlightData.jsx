@@ -17,7 +17,7 @@ function FlightData() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://192.168.68.137:5000/flight_data');
+        const response = await fetch('https://192.168.68.137:5000/flight_data');
         if (!response.ok) {
           throw new Error('Failed to fetch data');
         }

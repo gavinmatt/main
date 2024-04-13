@@ -1,33 +1,10 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import FlightData from "../components/FlightData"; // Import the FlightData component
+
+const { title = 'Flight Tracker', description = 'Track flight data' } = Astro.props;
 ---
 
-<BaseLayout title="Flight Tracker" sideBarActiveItemID="flight-tracker">
-
-    <template>
-        <div class="map-container" ref="map"></div>
-      </template>
-      
-      <script setup>
-        import { onMount } from 'astro';
-      
-        onMount(() => {
-          // Initialize Leaflet map
-          const map = L.map($refs.map).setView([51.505, -0.09], 13);
-          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          }).addTo(map);
-      
-          // Add a marker to the map
-          L.marker([51.505, -0.09]).addTo(map)
-            .bindPopup('Hello from Leaflet!');
-        });
-      </script>
-      
-      <style>
-        .map-container {
-          height: 400px;
-        }
-      </style>
-      
-  
+<BaseLayout title={title} description={description}>
+    <FlightData /> <!-- Render the FlightData component -->
+</BaseLayout>

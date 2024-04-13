@@ -4,48 +4,30 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
 <BaseLayout title="Flight Tracker" sideBarActiveItemID="flight-tracker">
 
-<template>
-    <div class="flight-tracker">
-      <div ref="map" class="map"></div>
-    </div>
-  </template>
-  
-  <script>
-    import L from 'leaflet';
-  
-    export default {
-      async mounted() {
-        // Fetch flight data from Flask server
-        const response = await fetch('http://192.168.68.137:5000/flight_data');
-        const flightData = await response.json();
-  
-        // Initialize Leaflet map
-        const map = L.map(this.$refs.map).setView([0, 0], 2);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-  
-        // Add plane icons to map for each flight
-        flightData.forEach(flight => {
-          const icon = L.icon({
-            iconUrl: 'plane-icon.png',
-            iconSize: [32, 32],
-            iconAnchor: [16, 16]
-          });
-          L.marker([flight.latitude, flight.longitude], { icon }).addTo(map)
-            .bindPopup(`<b>${flight.callsign}</b><br>Altitude: ${flight.altitude} ft`);
+    <template>
+        <div class="map-container" ref="map"></div>
+      </template>
+      
+      <script setup>
+        import { onMount } from 'astro';
+      
+        onMount(() => {
+          // Initialize Leaflet map
+          const map = L.map($refs.map).setView([51.505, -0.09], 13);
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          }).addTo(map);
+      
+          // Add a marker to the map
+          L.marker([51.505, -0.09]).addTo(map)
+            .bindPopup('Hello from Leaflet!');
         });
-      }
-    }
-  </script>
-  
-  <style>
-    .flight-tracker {
-      height: 600px;
-    }
-    .map {
-      width: 100%;
-      height: 100%;
-    }
-  </style>
+      </script>
+      
+      <style>
+        .map-container {
+          height: 400px;
+        }
+      </style>
+      
   

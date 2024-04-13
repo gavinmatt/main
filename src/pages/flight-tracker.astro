@@ -5,29 +5,61 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 <BaseLayout title="Flight Tracker" sideBarActiveItemID="flight-tracker">
 
     <template>
-        <div class="map-container" ref="map"></div>
+        <div class="flight-tracker">
+          <div ref="map" class="map"></div>
+        </div>
       </template>
       
       <script setup>
-        import { onMount } from 'astro';
+        import L from 'leaflet';
       
-        onMount(() => {
+        // Fetch flight data from the server
+        const fetchFlightData = async () => {
+          try {
+            const response = await fetch('http://192.168.68.137:5000/flight_data');
+            if (!response.ok) {
+              throw new Error('Failed to fetch flight data');
+            }
+            return await response.json();
+          } catch (error) {
+            console.error(error);
+            return [];
+          }
+        };
+      
+        onMounted(async () => {
           // Initialize Leaflet map
-          const map = L.map($refs.map).setView([51.505, -0.09], 13);
+          const map = L.map($refs.map).setView([37.7749, -122.4194], 10);
+      
+          // Add OpenStreetMap tile layer
           L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           }).addTo(map);
       
-          // Add a marker to the map
-          L.marker([51.505, -0.09]).addTo(map)
-            .bindPopup('Hello from Leaflet!');
+          // Fetch flight data
+          const flightData = await fetchFlightData();
+      
+          // Add plane icons for each flight
+          flightData.forEach(flight => {
+            const icon = L.icon({
+              iconUrl: 'plane-icon.png',
+              iconSize: [32, 32],
+              iconAnchor: [16, 16]
+            });
+            L.marker([flight.latitude, flight.longitude], { icon }).addTo(map)
+              .bindPopup(`<b>${flight.callsign}</b><br>Altitude: ${flight.altitude} ft`);
+          });
         });
       </script>
       
-      <style>
-        .map-container {
-          height: 400px;
+      <style scoped>
+        .flight-tracker {
+          height: 600px;
+        }
+        .map {
+          width: 100%;
+          height: 100%;
         }
       </style>
-      
-  
+
+</BaseLayout>

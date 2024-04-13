@@ -6,5 +6,5 @@ const { title = 'Flight Tracker', description = 'Track flight data' } = Astro.pr
 ---
 
 <BaseLayout title={title} description={description}>
-    <FlightData /> <!-- Render the FlightData component -->
+    <FlightData client:load /> <!-- Render the FlightData component -->
 </BaseLayout>

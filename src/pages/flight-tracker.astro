@@ -1,66 +1,10 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import FlightData from "../components/FlightData"; // Import the FlightData component
+
+const { title = 'Flight Tracker', description = 'Track flight data' } = Astro.props;
 ---
 
-<BaseLayout title="Flight Tracker" sideBarActiveItemID="flight-tracker">
-
-    Teest works
-    <template>
-        <div class="flight-tracker">
-          <div ref="map" class="map"></div>
-        </div>
-      </template>
-      
-      <script setup>
-        import L from 'leaflet';
-      
-        // Fetch flight data from the server
-        const fetchFlightData = async () => {
-          try {
-            const response = await fetch('http://192.168.68.137:5000/flight_data');
-            if (!response.ok) {
-              throw new Error('Failed to fetch flight data');
-            }
-            return await response.json();
-          } catch (error) {
-            console.error(error);
-            return [];
-          }
-        };
-      
-        onMounted(async () => {
-          // Initialize Leaflet map
-          const map = L.map($refs.map).setView([37.7749, -122.4194], 10);
-      
-          // Add OpenStreetMap tile layer
-          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          }).addTo(map);
-      
-          // Fetch flight data
-          const flightData = await fetchFlightData();
-      
-          // Add plane icons for each flight
-          flightData.forEach(flight => {
-            const icon = L.icon({
-              iconUrl: 'plane-icon.png',
-              iconSize: [32, 32],
-              iconAnchor: [16, 16]
-            });
-            L.marker([flight.latitude, flight.longitude], { icon }).addTo(map)
-              .bindPopup(`<b>${flight.callsign}</b><br>Altitude: ${flight.altitude} ft`);
-          });
-        });
-      </script>
-      
-      <style scoped>
-        .flight-tracker {
-          height: 600px;
-        }
-        .map {
-          width: 100%;
-          height: 100%;
-        }
-      </style>
-
+<BaseLayout title={title} description={description}>
+    <FlightData /> <!-- Render the FlightData component -->
 </BaseLayout>

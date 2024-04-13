@@ -1,14 +1,25 @@
 import { useEffect } from 'react';
+import 'ol/ol.css';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import TileLayer from 'ol/layer/Tile';
+import OSM from 'ol/source/OSM';
 
 function FlightData() {
   useEffect(() => {
     // Initialize map
-    const map = L.map('map').setView([51.505, -0.09], 2);
-    
-    // Add tile layer
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
+    const map = new Map({
+      target: 'map',
+      layers: [
+        new TileLayer({
+          source: new OSM(),
+        }),
+      ],
+      view: new View({
+        center: [38.894021227029974, -104.7945291896578],
+        zoom: 2,
+      }),
+    });
   }, []);
 
   return (

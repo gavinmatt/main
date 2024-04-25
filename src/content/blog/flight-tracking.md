@@ -17,7 +17,7 @@ Collecting this data is about as barebones of a project as you can get. You need
 <li>A Raspberry Pi, hopefully a 3 or newer</li>
 <li>A microSD card</li>
 <li>A RTL-SDR dongle or similar USB antenna and tuner (you will have to buy this; get one with an antenna)</li>
-<li>Basic knowledge of Linux, enough to bash (heh) around `apt` and `systemctl`</li>
+<li>Basic knowledge of Linux, enough to bash (heh) around <code>apt</code> and <code>systemctl</code></li>
 <li>Free time and incredible patience troubleshooting your feeders using out of date forums</li>
 </ul>
 

@@ -18,6 +18,11 @@
   <priority>0.80</priority>
 </url>
 <url>
+  <loc>https://www.gavmatt.com/blog/flight-tracker</loc>
+  <lastmod>2024-04-25T00:05:26+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
   <loc>https://www.gavmatt.com/blog/product-manager-ai-thoughts</loc>
   <lastmod>2024-01-15T00:07:26+00:00</lastmod>
   <priority>0.80</priority>
@@ -40,6 +45,16 @@
 <url>
   <loc>https://www.gavmatt.com/projects</loc>
   <lastmod>2024-01-15T00:07:26+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://www.gavmatt.com/weather</loc>
+  <lastmod>2023-12-15T00:07:26+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://www.gavmatt.com/flight-tracker</loc>
+  <lastmod>2024-02-15T00:07:26+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>

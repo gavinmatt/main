@@ -5,7 +5,7 @@ pubDate: "April 25 2024"
 heroImage: "https://res.cloudinary.com/draaqu0o9/image/upload/f_auto,q_auto/v1/flight-tracker/dwueajqpt7oiiud9alkl"
 tags: ["DIY", "Technology"]
 ---
-<i>Plane goes woosh!</i>
+<i>Plane goes whoosh!</i>
 
 This month, I had a spark of inspiration and decided to finally do something with the growing pile of Raspberry Pis and the radio USB dongle I had lying around (thanks Micro Center!). Most of these toys came from since abandoned projects like Piholes and shortwave radio scanning. Thankfully, I had an idea in mind already - tracking flights!
 

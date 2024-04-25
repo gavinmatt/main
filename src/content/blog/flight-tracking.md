@@ -2,7 +2,7 @@
 title: "ADS-B: How to Waste Time and Money in the Name of Open Data"
 description: "How to build your own ADS-B reciever and escalate into madness"
 pubDate: "April 25 2024"
-heroImage: "https://asset.cloudinary.com/draaqu0o9/cf729292e02cabee7ddc430a3f305da7"
+heroImage: "https://res.cloudinary.com/draaqu0o9/image/upload/f_auto,q_auto/v1/flight-tracker/Screen_Shot_2024-04-25_at_1.23.08_PM_pkoyxy"
 tags: ["DIY", "Technology"]
 ---
 <i>Content by Gavin, images by boops and beeps</i>

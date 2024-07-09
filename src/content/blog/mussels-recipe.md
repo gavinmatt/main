@@ -6,7 +6,7 @@ heroImage: "https://res.cloudinary.com/draaqu0o9/image/upload/c_crop,g_center,h_
 tags: ["Cooking", "Recipe"]
 ---
 
-<i>You will literally dream about these</i>
+<i>Get ready for your new "seafood" addiction</i>
 
 As part of a new series - Quick Hits - I'll document recipes I've spent quite some time toying with and perfecting. If these are borrowed from an existing recipe and modified, I will share the original. Otherwise, consider these novel creations or go-to essentials we eat weekly.
 

@@ -2,7 +2,7 @@
 title: "Quick Hit: Perfected Steamed Mussels"
 description: "A recipe born out of cosntant trial and error"
 pubDate: "July 09 2024"
-heroImage: "https://res.cloudinary.com/draaqu0o9/image/upload/f_auto,q_auto/v1/flight-tracker/dwueajqpt7oiiud9alkl"
+heroImage: "https://res.cloudinary.com/draaqu0o9/image/upload/c_crop,g_center,h_800,w_1200/dsk1j7hizmeel3staxye.jpg"
 tags: ["Cooking", "Recipe"]
 ---
 
@@ -55,7 +55,7 @@ Set mussels aside in a bowl.</li>
 <li>Add your mussels and cover, steaming for 2-3 minutes until all mussels are open.</li>
 <li>Strain out the mussels and set aside. Assuming your pasta was timed correctly, handle that but save a ladle of the pasta water and add it to the broth. Add the heavy cream and cook down for 3-5 minutes until the sauce starts to thicken.</li>
 <li>Add the pasta, add back the mussels, stir, and serve! Top with parsley and eat with crusty bread.</li>
-<ol>
+</ol>
 
 The result is a deliciously complex, creamy, addictive broth that perfectly matches the briny mussels. I guarantee you'll find yourself snagging mussels every time you can from here out!
 

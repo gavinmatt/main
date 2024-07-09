@@ -10,11 +10,11 @@ tags: ["Cooking", "Recipe"]
 
 As part of a new series - Quick Hits - I'll document recipes I've spent quite some time toying with and perfecting. If these are borrowed from an existing recipe and modified, I will share the original. Otherwise, consider these novel creations or go-to essentials we eat weekly.
 
-Now to the recipe - Steamed Mussels.
+Now to the recipe - Steamed Mussels!
 
-When I was a boy, my family would often travel to...
+<i>When I was a boy, my family would often travel to...</i>
 
-Just kidding; no sob story, just the recipe!
+Just kidding; no SEO sob story, just the recipe!
 
 <h2>Steamed Mussels</h2>
 
@@ -43,13 +43,12 @@ This most recent batch was by far the best yet - rich and creamy, perfect sour f
 
 <ol>
 <li>Start with some mise en place and prepare your ingredients. Finely mince your white onion and crush your garlic and set aside into seperate piles. Pour separate volumes of wine, broth, and cream. Chop your parsley. Your aim is to get your workspace ready by prepping the ingredients you need before you start cooking, limiting stress and mistakes.</li>
-<li>Next, clean and debeard the mussels. Cleaning means scrubbing off obvious barnacles, muck, or other unsavories. Debearding means removing the seaweed/hair looking bits from the flat side of the mussel. You'll know it when you see it.</li>
-<li>Try to time your pasta to finish about the same time as your mussels. That means starting the pasta (actually dropping it in) right around when you start cooking the onions. Do that now.
+<li>Next, clean and debeard the mussels. Cleaning means scrubbing off obvious barnacles, muck, or other unsavories. Debearding means removing the seaweed/hair looking bits from the flat side of the mussel. You'll know it when you see it.
 
 This is also the time when you get rid of any cracked or dead mussels. Dead mussles are typically open in the bag, but may also be slighly cracked open. You can try to push the mussel closed to see if it stays closed and thus is alive, or just move on. I don't play the game of risky mussels.
 
 Set mussels aside in a bowl.</li>
-
+<li>Try to time your pasta to finish about the same time as your mussels. That means starting the pasta (actually dropping it in) right around when you start cooking the onions. Do that now.</li>
 <li>In a large saucepan with a lid, add your butter and cook in the onions until translucent (or push it for more flavor). Add salt and pepper now and at each step. Salt here helps sweat out the onions. Add your garlic and cook for 30 seconds to a minute, stirring constantly.</li>
 <li>Deglaze the onions and garlic with wine, then the lemon juice, and finally the broth. Let this combination come to a hard simmer.</li>
 <li>Add your mussels and cover, steaming for 2-3 minutes until all mussels are open.</li>

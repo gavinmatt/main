@@ -57,6 +57,6 @@ Set mussels aside in a bowl.</li>
 <li>Add the pasta, add back the mussels, stir, and serve! Top with parsley and eat with crusty bread.</li>
 </ol>
 
-The result is a deliciously complex, creamy, addictive broth that perfectly matches the briny mussels. I guarantee you'll find yourself snagging mussels every time you can from here out! The same recipe will work with clams as well - just aim for the smallest clams that you can find.
+The result is a deliciously complex, creamy, addictive broth that perfectly matches the briny mussels. I guarantee you'll find yourself snagging mussels every time you can from here on out! The same recipe will work with clams as well - just aim for the smallest clams that you can find.
 
 Have a different take on mussels or a recipe you want to see me cover? Let me know!

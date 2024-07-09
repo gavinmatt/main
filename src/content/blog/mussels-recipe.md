@@ -42,7 +42,7 @@ This most recent batch stayed in on the traditional side and was by far the best
 <b>Steps</b>
 
 <ol>
-<li>Start with some mise en place and prepare your ingredients. Finely mince your white onion and crush your garlic and set aside into individual piles. Pour separate volumes of wine, broth, and cream. Chop your parsley. Your aim is to get your workspace ready by prepping the ingredients you need before you start cooking, limiting stress and mistakes.</li>
+<li>Start with some mise en place and prepare your ingredients. Finely mince your white onion and crush your garlic and set aside into individual piles. Pour separate volumes of wine, broth, and cream in measuring cups. Chop your parsley and throw it in a ramekin. Your aim is to get your workspace ready by prepping the ingredients you need before you start cooking, limiting stress and mistakes.</li>
 <li>Next, clean and debeard the mussels. Cleaning means scrubbing off obvious barnacles, muck, or other unsavories. Debearding means removing the seaweed/hair looking bits from the flat side of the mussel. You'll know it when you see it.
 
 This is also the time when you get rid of any cracked or dead mussels. Dead mussels are typically open in the bag, but may also be slightly cracked open. If slightly cracked open, you can try to push the mussel closed to see if it stays closed and thus is alive, or just move on. I don't play the game of risky mussels - they're cheap.

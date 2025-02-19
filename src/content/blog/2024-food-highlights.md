@@ -5,7 +5,7 @@ pubDate: "Feb 19 2025"
 heroImage: "https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/82B647AE-37EA-4EBD-9735-6446D66FA8DB_ekyhdn.jpg"
 tags: ["Cooking", "Hobbies"]
 ---
-<i>This time with more children</i>
+<i>This time with more children, worse pictures, and fewer ambitions...</i>
 
 Yet another year over, and dozens more recipes in the books. Despite adding another baby to the mix with John John and watching Morgan turn into an...opinionated eater, we managed to work through meals as simple as bulk pasta sauce to as complicated as bulk pasta sauce. The months in between were filled with a ton of fresh ingredients thanks to our new garden beds and few more exploratory bets across the protein spectrum.
 

@@ -33,9 +33,13 @@ By far one of the best deals in cooking occurs annually roughly between December
 Steak tartare is one of those must-do dishes that makes for a perfect meal or ludicrous appetizer. While simple to make - basically just a mix of raw steak, egg, mustard, worcestershire sauce, and capers - tartare just has a presence to it that makes it feel decadent. The main trick is to freeze your steak before slicing, as you can cut it into smaller pieces without fighting the muscle or warming it up too much.
 
 
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/IMG_8219_lqrawp.heic" alt="Make beef tartare tomorrow!">
+
 <b>Long Cook, Short Ribs</b>
 
-Just like last year, we broke out beef short ribs several times in 2024, both for friends/family and just because they are still SO good. We still cook ours down over several hours with a sauce of garlic, onions, a decent Italian red, beef stock, and butter, and serve with polenta and broccolini or asparagus. I cannot overstate how wonderful these are for how little work they take. The only major con is that Costco no longer carries true bone in short ribs (just Flanken style) meaning you’re on the hunt for pricey versions at Sprouts or similar.
+Just like last year, we broke out beef short ribs several times in 2024, both for friends/family and just because they are still SO good. We still cook ours down over several hours with a sauce of garlic, onions, a decent Italian red, beef stock, and butter, and now just serve with mashed potatoes, broccolini or asparagus, and gluten free biscuits. I cannot overstate how wonderful these are for how little work they take. The only major con is that Costco no longer carries true bone in short ribs (just Flanken style) meaning you’re on the hunt for pricey versions at Sprouts or similar.
+
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/IMG_4741_l3pnuq.jpg" alt="Short ribs with mashed potatoes, broccolini, and gluten-free biscuits">
 
 <h2>Fresh from the Garden</h2>
 
@@ -45,6 +49,9 @@ We finally got our long-planned raised bed garden in place last year! The subjec
 
 I grew up gardening and I’m used to blowout harvests. Last year was easily 10x more than that and became a crisis around September. We ended up with literally dozens of pounds of herbs, with easily 50 bundles of parsley, basil, and sage. The piles got so large that we had to bribe friends and family to take raw herbs, and even tried donating them to local restaurants. Something about the combination of seed, soil, and sun was ideal for explosive growth despite harvesting weekly over the summer.
 
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/IMG_1241_s4gdrn.heic" alt="Way too much produce">
+
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/IMG_6986_mmrxbf.heic" alt="The best helper">
 
 
 We had to find some way to preserve all of these herbs, and ended up focused on chimichurri and pesto. Pesto was the main hit - we went through around 10lb of pine nuts to create enough pesto to make you hate it. Anyone who asked (or stupidly came by the house) ended up with 2-3 meals worth of it, and we are still sitting on easily 6–8 more full servings for a family. After all of that pesto, we still had to give out easily 10lb of fresh basil.

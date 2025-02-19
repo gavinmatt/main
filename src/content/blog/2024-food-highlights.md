@@ -19,13 +19,14 @@ While we ordered a quarter cow in late 2024, it didn’t show up until 2025. How
 
 TL;DR we bought a massive 13lb prime rib roast to end the year, breaking it up into two roasts with two different cooking methods. To give people options, we cooked one roast traditionally with a basic rub sitting on an inverted rib rack, and the other with a mustard-forward rub and the ribs covering the fat cap to promote wall-to-wall medium-rare. Both ended up amazing, so much so that we failed to get a single picture of either sliced!
 
-
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/IMG_1824_jrb9tn.heic" alt="Prime Rib #1">
 
 
 <b>New Year’s Discount Roast</b>
 
 By far one of the best deals in cooking occurs annually roughly between December 26th and January 5th. All of the prime rib and “prime rib” roasts from the holidays go on sale, often for literally pennies on the dollar. If you have storage space and some patience, it’s a great time to snag bulk ribeye on the cheap. We snagged a few such “choice rib” roasts, which usually consist of 3-4 bone sections of meat. You can butcher these down easily and vacuum seal them for later, scoring really good ribeye for literally $4-$6 a pound.
 
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/IMG_9096_q6mbna.heic" alt="Buy leftover choice roast to save money on ribeye">
 
 <b>Celebratory Tartate</b>
 

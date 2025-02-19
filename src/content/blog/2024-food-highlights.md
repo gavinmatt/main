@@ -96,7 +96,7 @@ My stupid self wandered over to local produce vendor Spencer’s to “accidenta
 
 <img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/IMG_0784_ii6wt2.heic" alt="Selecting the right peaches">
 
-What resulted was an epic battle to break down ~100lb of peaches before they rotted and canning half of that. We wound up giving out a few dozen jars of preserves, as well as making peach ice cream and pancakes. The battle against the gnats was so fierce that we didn’t even capture a picture of all of the jars.
+What resulted was an epic battle to break down ~100lb of peaches before they rotted, and canning about half of that. We wound up giving out a few dozen jars of preserves, as well as making peach ice cream and pancakes. The battle against the gnats was so fierce that we didn’t even capture a picture of all of the jars.
 
 <img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/IMG_6239_erhlgf.heic" alt="But a smattering of jars">
 

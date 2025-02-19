@@ -26,6 +26,7 @@ const WeatherDashboard = ({ apiEndpoint }) => {
             try {
                 const response = await fetch(apiEndpoint);
                 const data = await response.json();
+                console.log('Fetched data:', data); // Log the fetched data
                 setWeatherData(data);
 
                 if (data && data.length > 0) {

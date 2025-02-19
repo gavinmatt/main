@@ -94,6 +94,9 @@ My stupid self wandered over to local produce vendor Spencer’s to “accidenta
 
 <img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/IMG_5329_cuaixo.jpg" alt="Our best produce expert">
 
+<div align="center" style="padding-bottom:10px"><i>Our little scholar</i></div>
+
+
 <img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/IMG_0784_ii6wt2.heic" alt="Selecting the right peaches">
 
 What resulted was an epic battle to break down ~100lb of peaches before they rotted, and canning about half of that. We wound up giving out a few dozen jars of preserves, as well as making peach ice cream and pancakes. The battle against the gnats was so fierce that we didn’t even capture a picture of all of the jars.
@@ -138,7 +141,7 @@ We started the year with another 10lb slab of bacon and didn’t look back. This
 
 <b>Gluten Free “Pizza”</b>
 
-With gluten free friends and family, I’ve had to spend a lot of time finding good gluten free alternatives to foods like bread and pizza dough. We’ve become big fans of Caputo’s FioreGlut, a deglutenized flour that makes for truly close to normal baked goods. The resulting pizzas are close enough to regular Neapolitan equivalents to feel right while having so little gluten as to not trigger a celiac. 
+With gluten free friends and family, I’ve had to spend a lot of time finding good gluten free alternatives to foods like bread and pizza dough. We’ve become big fans of <a href="https://caputoflour.com/products/caputo-gluten-free-flour">Caputo’s FioreGlut</a>, a deglutenized flour that makes for truly close to normal baked goods. The resulting pizzas are close enough to regular Neapolitan equivalents to feel right while having so little gluten as to not trigger a celiac. 
 
 <img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/IMG_1801_mufkin.heic" alt="Surprisingly airy gluten free dough">
 

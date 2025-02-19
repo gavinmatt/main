@@ -28,7 +28,7 @@ By far one of the best deals in cooking occurs annually roughly between December
 
 <img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/IMG_9096_q6mbna.heic" alt="Buy leftover choice roast to save money on ribeye">
 
-<b>Celebratory Tartate</b>
+<b>Celebratory Tartare</b>
 
 Steak tartare is one of those must-do dishes that makes for a perfect meal or ludicrous appetizer. While simple to make - basically just a mix of raw steak, egg, mustard, worcestershire sauce, and capers - tartare just has a presence to it that makes it feel decadent. The main trick is to freeze your steak before slicing, as you can cut it into smaller pieces without fighting the muscle or warming it up too much.
 
@@ -106,13 +106,13 @@ Who doesn't love a run of toddlers eating like loons? In true fashion, Morgan de
 
 A (very safe) Dark Knight tribute.
 
-<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/IMG_3639_eybhlu.jpg" alt="Toddler knife">
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/Screenshot_2025-02-18_at_10.53.09_PM_higk9k.png" alt="Toddler knife">
 
 Oatmeal with a record <b>four</b> spoons.
 
 <img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/IMG_3342_eq4wey.jpg" alt="The best way to eat oatmeal">
 
-The largest "pandake."
+The largest "pantake."
 
 <img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/IMG_0161_fsiayi.heic" alt="He did not finish it.">
 

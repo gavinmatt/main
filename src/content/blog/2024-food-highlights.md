@@ -142,4 +142,4 @@ With gluten free friends and family, I’ve had to spend a lot of time finding g
 
 <img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/IMG_1801_mufkin.heic" alt="Surprisingly airy gluten free dough">
 
-Like before, here’s to another year of food down, and another exciting one already underway! Just in 2025, we’ve already cracked gluten free sourdough, received our quarter cow, and even prepared Duck a l'Orange!
+Like before, here’s to another year of food down, and another exciting one already underway! Just so far in 2025, we’ve already nailed gluten free sourdough, finally received our quarter cow, and even prepared Duck a l'Orange!

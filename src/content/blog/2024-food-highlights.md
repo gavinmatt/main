@@ -100,7 +100,7 @@ What resulted was an epic battle to break down ~100lb of peaches before they rot
 
 <img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/IMG_6239_erhlgf.heic" alt="But a smattering of jars">
 
-<h2>Morgan Meals</h2>
+<h2>Things My Toddler Ate</h2>
 
 Who doesn't love a run of toddlers eating like loons? In true fashion, Morgan delivered some hits this year including:
 

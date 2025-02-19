@@ -24,7 +24,7 @@ TL;DR we bought a massive 13lb prime rib roast to end the year, breaking it up i
 
 <b>New Year’s Discount Roast</b>
 
-By far one of the best deals in cooking occurs annually roughly between December 26th and January 5th. All of the prime rib and “prime rib” roasts from the holidays go on sale, often for literally pennies on the dollar. If you have storage space and some patience, it’s a great time to snag bulk ribeye on the cheap. We snagged a few such “choice rib” roasts, which usually consist of 3-4 bone sections of meat. You can butcher these down easily and vacuum seal them for later, scoring really good ribeye for literally $4-$6 a pound.
+By far one of the best deals in cooking occurs annually roughly between December 26th and April 20th or so. All of the prime rib and “prime rib” roasts from the holidays go on sale, often for literally pennies on the dollar. If you have storage space and some patience, it’s a great time to snag bulk rib roast on the cheap. We snagged a few such “choice rib” roasts, which usually consist of 3-4 bone sections of meat. You can butcher these down easily and vacuum seal them for later, scoring really good ribeye for literally $4-$6 a pound.
 
 <img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/IMG_9096_q6mbna.heic" alt="Buy leftover choice roast to save money on ribeye">
 
@@ -61,7 +61,11 @@ We had to find some way to preserve all of these herbs, and ended up focused on 
 
 Despite the dream basil harvest, we also experienced a phenomenally low yield of pumpkins, cucumbers, and eggplant. Likely due to too much sun/too much powdery mildew, we ended up fighting for our lives to bring in a small handful of food. 
 
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/IMG_5909_t6ezmt.jpg" alt="The best helper">
+
 Our main victory was finally pulling off Jack-o'-lantern pumpkins in Colorado’s very short growing season! Four pumpkins made it (lovingly called Dada, Momma, Morgan, and John John by Morgan) with constant milk baths to fight mildew. We let them go as long as we could before a true 15° frost claimed the whole garden.
+
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/IMG_1245_zrdrog.heic" alt="Pregnant belly, pregnant pumpkin">
 
 We’ve learned a lot for next year, namely moving around a few beds to optimize for sun-friendly produce. Expect another wave of far too much fresh produce coming to a guilt-ridden text message near you!
 
@@ -70,20 +74,32 @@ We’ve learned a lot for next year, namely moving around a few beds to optimize
 
 We did welcome another baby in 2024, which meant time to cook was surprisingly limited. To prepare, we went a hair crazy with the food prep, even running into multiple recalls via contaminated eggs and chicken. Still, we powered through, and ended up with a freezer full of pesto, pasta sauce, butter chicken, and more. While last year had more hits, this year focused more on consistency. We started with the aforementioned ribeye…
 
-
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/IMG_9102_n2jajn.heic" alt="All one $60 roast">
 
 …before making another massive batch of Cornell chicken.
+
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/IMG_8807_pclkro.heic" alt="Dr. Baker would be proud">
 
 <b>DID I MENTION PESTO</b>
 
 We made truly shocking and horrifying volumes of pesto. Whatever you’re thinking, quadruple it. We filled up 5-6 4L prep containers with pesto only using homegrown basil. The main trick is to quickly blanch the basil leaves if you intend to freeze the pesto - the process preserves the green color without sacrificing any flavor. We use big whiskey ice molds to freeze the pesto and cover with a light layer of olive oil to reduce freezer burn impact. This holds for easily 3-4 months without issue.
 
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/IMG_0699_ptmou8.heic" alt="Plenty of inputs">
+
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/IMG_4196_vpf5n1.heic" alt="Tons of pesto outputs">
 
 <b>Peach for the Stars</b>
 
 My stupid self wandered over to local produce vendor Spencer’s to “accidentally” find their 2nds bin. This is a pile of boxes of fresh fruit that failed to meet “1sts” standards, usually fruit with bruises, unsightly dents, or other battle wounds. You know, jam fodder.
 
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/IMG_5329_cuaixo.jpg" alt="Our best produce expert">
+
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/IMG_0784_ii6wt2.heic" alt="Selecting the right peaches">
+
 What resulted was an epic battle to break down ~100lb of peaches before they rotted and canning half of that. We wound up giving out a few dozen jars of preserves, as well as making peach ice cream and pancakes. The battle against the gnats was so fierce that we didn’t even capture a picture of all of the jars.
+
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/IMG_6239_erhlgf.heic" alt="But a smattering of jars">
+
 
 
 <h2>Misc</h2>

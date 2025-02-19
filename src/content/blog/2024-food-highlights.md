@@ -100,6 +100,26 @@ What resulted was an epic battle to break down ~100lb of peaches before they rot
 
 <img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/IMG_6239_erhlgf.heic" alt="But a smattering of jars">
 
+<h2>Morgan Meals</h2>
+
+Who doesn't love a run of toddlers eating like loons? In true fashion, Morgan delivered some hits this year including:
+
+A (very safe) Dark Knight tribute.
+
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/IMG_3639_eybhlu.jpg" alt="Toddler knife">
+
+Oatmeal with a record <b>four</b> spoons.
+
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/IMG_3342_eq4wey.jpg" alt="The best way to eat oatmeal">
+
+The largest "pandake."
+
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/IMG_0161_fsiayi.heic" alt="He did not finish it.">
+
+A raw lemon.
+
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/IMG_5030_vsbqh4.jpg" alt="Not a fan.">
+
 <h2>Misc</h2>
 
 We cooked a lot that didn’t make a category but still get a mention. This ranges from staples to Instagram meme meals.
@@ -114,12 +134,12 @@ This was an Instagram rip that blends leeks, spinach, salmon, cream, and more in
 
 We started the year with another 10lb slab of bacon and didn’t look back. This year, I returned to fresh juniper berries, and I think it makes all the difference. A few handfuls gives the bacon a spruce flavor that just takes it to another level.
 
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/IMG_8607_jk9oep.heic" alt="Amazing slab of bacon">
 
 <b>Gluten Free “Pizza”</b>
 
 With gluten free friends and family, I’ve had to spend a lot of time finding good gluten free alternatives to foods like bread and pizza dough. We’ve become big fans of Caputo’s FioreGlut, a deglutenized flour that makes for truly close to normal baked goods. The resulting pizzas are close enough to regular Neapolitan equivalents to feel right while having so little gluten as to not trigger a celiac. 
 
-
-<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/food/frbpbkjiwwbysn6cxqxu" alt="Bulk butter chicken">
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/IMG_1801_mufkin.heic" alt="Surprisingly airy gluten free dough">
 
 Like before, here’s to another year of food down, and another exciting one already underway! Just in 2025, we’ve already cracked gluten free sourdough, received our quarter cow, and even prepared Duck a l'Orange!

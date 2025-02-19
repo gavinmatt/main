@@ -100,8 +100,6 @@ What resulted was an epic battle to break down ~100lb of peaches before they rot
 
 <img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/IMG_6239_erhlgf.heic" alt="But a smattering of jars">
 
-
-
 <h2>Misc</h2>
 
 We cooked a lot that didn’t make a category but still get a mention. This ranges from staples to Instagram meme meals.
@@ -110,6 +108,7 @@ We cooked a lot that didn’t make a category but still get a mention. This rang
 
 This was an Instagram rip that blends leeks, spinach, salmon, cream, and more into a now-favorite poached salmon recipe. The result is a really delicate salmon with a rich and interesting sauce. Easy for a weekday, but easily classed up for a special occasion. 
 
+<img src="https://res.cloudinary.com/draaqu0o9/image/upload/w_1000/f_auto/q_auto:best/v1/2024%20Food/IMG_1065_sjfyqr.heic" alt="Absolutely decadent and amazing">
 
 <b>Even More Bacon</b>
 

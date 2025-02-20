@@ -66,13 +66,13 @@ const WeatherDashboard = ({ apiEndpoint }) => {
             <CurrentWeather />
             <p className="text-center pb-1"><b>Raw Data 📊</b></p>
 
-            <div className="lg:flex justify-center items-center gap-4 pb-4 pt-1">
+            <div className="lg:flex flex-wrap justify-center items-center gap-4 pb-4 pt-1">
                 {weatherData && <Temperature data={weatherData} />}
                 {weatherData && <WindSpeed data={weatherData} />}
                 {weatherData && <WindDirection data={weatherData} />}
             </div>
 
-            <div className="lg:flex justify-center items-center gap-4 pb-5">
+            <div className="lg:flex flex-wrap justify-center items-center gap-4 pb-5">
                 {weatherData && <FeelsLike data={weatherData} />}
                 {weatherData && <Humidity data={weatherData} />}
                 {weatherData && <Pressure data={weatherData} />}
@@ -80,7 +80,7 @@ const WeatherDashboard = ({ apiEndpoint }) => {
 
             <p className="text-center pb-1"><b>Precipitation Totals 🌧</b></p>
 
-            <div className="lg:flex justify-center items-center gap-4 pb-5">
+            <div className="lg:flex flex-wrap justify-center items-center gap-4 pb-5">
                 {weatherData && <RainHour data={weatherData} />}
                 {weatherData && <RainDay data={weatherData} />}
                 {weatherData && <RainYear data={weatherData} />}

@@ -1,29 +1,54 @@
---- 
+---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import PlanterBox from "../components/PlanterBox.jsx";
+
+const currentSeason = "winter"; // Change this to "spring" later
 ---
 
 <BaseLayout sideBarActiveItemID="garden-palooza" customTitle="GARDENPALOOZA">
-    <div class="header-container">
-        GARDENPALOOZA
-    </div>
+  <div class="header-container">
+    GARDENPALOOZA
+  </div>
+  <p style="text-align: center; padding-top: 20px; padding-bottom: 20px;">
+This is another ChatGPT (4o) generated experience. This <i>should</i> show my garden beds, seasonally show either snow texture or the plants I've added, and eventually show a live stream of my garden! I chose sprite sheets here and want to handle this all as pixel art, fully AI generated and without my intervention except to flag what was planted.</p>
+  <div class="flex justify-center mt-8">
+          <div class="flex justify-center mt-8">
+    <PlanterBox client:visible season={currentSeason} />  <!-- ✅ Correct prop passing -->
+  </div>
 </BaseLayout>
 
+<p style="text-align: center; padding-top: 20px; padding-bottom: 20px;">
+    Wasted hour count: 3</p>
+    <p style="text-align: center; padding-top: 20px; padding-bottom: 20px;">
+        <b>Changelog</b>
+        <ul>2/21/25 - Initial commit. ChatGPT is HORRIBLE at sprite sheets. I've lost so much time to having it try to handle pixel art and it crashed/hit its limits. More later. I want to hire a pixel artist once stable, but am using ChatGPT to mock.</ul>
+    </p>
+
 <style>
-    .header-container {
-        font-family: 'Comic Sans MS', cursive, sans-serif;
-        font-size: 6rem; /* Adjusted font size */
-        font-weight: bold;
-        text-align: center;
-        text-transform: uppercase;
-        background-image: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
-        -webkit-background-clip: text;
-        color: transparent;
-        padding: 40px;
-        border: 5px solid black;
-        margin-top: 50px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-        white-space: nowrap; /* Prevents text from wrapping */
-        overflow: hidden; /* Ensures text stays inside the box */
-        width: 100%; /* Ensures it stretches to the full width */
-    }
+  .header-container {
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+
+    /* Make sure the font size scales properly */
+    font-size: min(8vw, 5rem);
+    
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+    background-image: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
+    -webkit-background-clip: text;
+    color: transparent;
+
+    /* Keep it on one line */
+    white-space: nowrap;
+    overflow: hidden;
+    width: 100%;
+    max-width: 100%; /* Ensure it fits inside content */
+
+    /* Centers the text properly */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 1rem 0; /* Adjust padding as needed */
+  }
 </style>

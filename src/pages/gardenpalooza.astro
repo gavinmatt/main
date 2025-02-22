@@ -11,7 +11,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 <style>
     .header-container {
         font-family: 'Comic Sans MS', cursive, sans-serif;
-        font-size: 8rem;
+        font-size: 6rem; /* Adjusted font size */
         font-weight: bold;
         text-align: center;
         text-transform: uppercase;
@@ -22,5 +22,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         border: 5px solid black;
         margin-top: 50px;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        white-space: nowrap; /* Prevents text from wrapping */
+        overflow: hidden; /* Ensures text stays inside the box */
+        width: 100%; /* Ensures it stretches to the full width */
     }
 </style>

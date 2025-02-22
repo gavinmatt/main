@@ -1,0 +1,26 @@
+--- 
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout sideBarActiveItemID="garden-palooza" customTitle="GARDENPALOOZA">
+    <div class="header-container">
+        GARDENPALOOZA
+    </div>
+</BaseLayout>
+
+<style>
+    .header-container {
+        font-family: 'Comic Sans MS', cursive, sans-serif;
+        font-size: 8rem;
+        font-weight: bold;
+        text-align: center;
+        text-transform: uppercase;
+        background-image: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
+        -webkit-background-clip: text;
+        color: transparent;
+        padding: 40px;
+        border: 5px solid black;
+        margin-top: 50px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+</style>

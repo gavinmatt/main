@@ -67,7 +67,7 @@ const currentSeason = "winter"; // Change this to "spring" later
     width: 100%;
     max-width: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: center; /* Changed from 'left' to 'center' */
     align-items: center;
     padding: 1rem 0;
   }
@@ -120,7 +120,7 @@ const currentSeason = "winter"; // Change this to "spring" later
   /* Styling for the date cell */
   .date-cell {
     display: inline-flex;
-    align-items: center;
+    align-items: left;
     padding: 4px 8px;
     border-radius: 4px;
     font-size: 0.9rem;
@@ -129,5 +129,10 @@ const currentSeason = "winter"; // Change this to "spring" later
 
   .calendar-icon {
     margin-right: 5px;
+  }
+
+  /* Ensure the contents of the changelog data rows are left aligned */
+  .changelog-table tbody .pill-row.old td {
+    text-align: left;
   }
 </style>

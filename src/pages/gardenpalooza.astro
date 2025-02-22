@@ -10,45 +10,124 @@ const currentSeason = "winter"; // Change this to "spring" later
     GARDENPALOOZA
   </div>
   <p style="text-align: center; padding-top: 20px; padding-bottom: 20px;">
-This is another ChatGPT (4o) generated experience. This <i>should</i> show my garden beds, seasonally show either snow texture or the plants I've added, and eventually show a live stream of my garden! I chose sprite sheets here and want to handle this all as pixel art, fully AI generated and without my intervention except to flag what was planted.</p>
+    This is another ChatGPT (4o) generated experience. This <i>should</i> show my garden beds, seasonally show either snow texture or the plants I've added, and eventually show a live stream of my garden! I chose sprite sheets here and want to handle this all as pixel art, fully AI generated and without my intervention except to flag what was planted.
+  </p>
   <div class="flex justify-center mt-8">
-          <div class="flex justify-center mt-8">
-    <PlanterBox client:visible season={currentSeason} />  <!-- ✅ Correct prop passing -->
+    <div class="flex justify-center mt-8">
+      <PlanterBox client:visible season={currentSeason} />  <!-- ✅ Correct prop passing -->
+    </div>
+  </div>
+
+  <p style="text-align: center; padding-top: 20px; padding-bottom: 20px;">
+    Wasted hour count: 3
+  </p>
+
+  <div style="text-align: center; padding-top: 20px; padding-bottom: 20px;">
+    <b>Changelog</b>
+    <table class="changelog-table">
+      <thead>
+        <tr class="pill-row">
+          <th>Date</th>
+          <th>Sentiment</th>
+          <th>Change</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="pill-row old">
+          <td>
+            <span class="date-cell">
+              <span class="calendar-icon">📅</span>
+              <time datetime="2025-02-21">February 21, 2025</time>
+            </span>
+          </td>
+          <td>😭</td>
+          <td>Initial commits. We got there, but ChatGPT is HORRIBLE at sprite sheets. I've lost so much time to having it try to handle pixel art and it crashed/hit its limits. More later. I want to hire a pixel artist once stable, but am using ChatGPT to mock.</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </BaseLayout>
 
-<p style="text-align: center; padding-top: 20px; padding-bottom: 20px;">
-    Wasted hour count: 3</p>
-    <p style="text-align: center; padding-top: 20px; padding-bottom: 20px;">
-        <b>Changelog</b>
-        <ul>2/21/25 - Initial commit. ChatGPT is HORRIBLE at sprite sheets. I've lost so much time to having it try to handle pixel art and it crashed/hit its limits. More later. I want to hire a pixel artist once stable, but am using ChatGPT to mock.</ul>
-    </p>
-
 <style>
-  .header-container {
-    font-family: 'Comic Sans MS', cursive, sans-serif;
+  /* Import Comic Neue at the top */
+  @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
 
-    /* Make sure the font size scales properly */
+  /* Header styling with Comic Sans-inspired font stack */
+  .header-container {
+    font-family: 'Comic Sans MS', 'Comic Neue', 'Chalkboard SE', cursive, sans-serif;
     font-size: min(8vw, 5rem);
-    
     font-weight: bold;
     text-align: center;
     text-transform: uppercase;
     background-image: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
     -webkit-background-clip: text;
     color: transparent;
-
-    /* Keep it on one line */
     white-space: nowrap;
     overflow: hidden;
     width: 100%;
-    max-width: 100%; /* Ensure it fits inside content */
-
-    /* Centers the text properly */
+    max-width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 1rem 0;
+  }
 
-    padding: 1rem 0; /* Adjust padding as needed */
+  /* Table styling for Changelog */
+  .changelog-table {
+    margin: 20px auto;
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 90%;
+  }
+
+  /* Pill row styling for header and data rows */
+  .pill-row th,
+  .pill-row td {
+    padding: 12px 16px;
+    /* Remove default borders so the row appears as a single pill */
+    border: 1px solid transparent;
+    color: #fff;
+  }
+
+  /* Header row: lighter brown pill */
+  .changelog-table thead .pill-row {
+    background-color: #4CAF50; /* Sienna */
+  }
+
+  /* Data row: darker brown pill (simulate older post) */
+  .changelog-table tbody .pill-row.old {
+    background-color: #CD853F; /* SaddleBrown */
+  }
+
+  /* Make entire row a pill with rounded corners (apply to first and last cells) */
+  .changelog-table thead .pill-row th:first-child {
+    border-top-left-radius: 9999px;
+    border-bottom-left-radius: 9999px;
+  }
+  .changelog-table thead .pill-row th:last-child {
+    border-top-right-radius: 9999px;
+    border-bottom-right-radius: 9999px;
+  }
+  .changelog-table tbody .pill-row.old td:first-child {
+    border-top-left-radius: 9999px;
+    border-bottom-left-radius: 9999px;
+  }
+  .changelog-table tbody .pill-row.old td:last-child {
+    border-top-right-radius: 9999px;
+    border-bottom-right-radius: 9999px;
+  }
+
+  /* Styling for the date cell */
+  .date-cell {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    color: #fff;
+  }
+
+  .calendar-icon {
+    margin-right: 5px;
   }
 </style>

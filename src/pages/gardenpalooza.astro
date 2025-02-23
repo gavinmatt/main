@@ -261,103 +261,71 @@ const currentSeason = "winter"; // Change this to "spring" later
 
   /* Header styling with Comic Sans-inspired font stack */
   .header-container {
-  font-family: 'Comic Sans MS', 'Comic Neue', 'Chalkboard SE', cursive, sans-serif;
-  font-size: min(8vw, 5rem);
-  font-weight: bold;
-  text-align: center;
-  text-transform: uppercase;
-  background-image: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
-  -webkit-background-clip: text;
-  color: transparent;
-  white-space: nowrap;
-  overflow: hidden;
-  width: 100%;
-  max-width: 100%;
-  padding: 1rem 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+    font-family: 'Comic Sans MS', 'Comic Neue', 'Chalkboard SE', cursive, sans-serif;
+    font-size: min(8vw, 5rem);
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+    background-image: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
+    -webkit-background-clip: text;
+    color: transparent;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 100%;
+    max-width: 100%;
+    padding: 1rem 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
   /* Table styling for Changelog */
   .changelog-table {
     margin: 20px auto;
-    border-collapse: separate;
+    border-collapse: collapse; /* Ensures no spacing between cells */
     border-spacing: 0;
     width: 90%;
+    max-width: 90vw;
+    table-layout: auto; /* Adjust column widths dynamically */
   }
-  /* Make columns wider */
+
+  /* Remove all borders and spacing between cells */
   .changelog-table th,
   .changelog-table td {
-    padding: 12px 16px;
-    border: 1px solid #fff;
+    padding: 8px 12px; /* Reduce padding */
+    border: none; /* Remove borders */
     color: #fff;
-    white-space: nowrap;
-    min-width: 140px; /* Increase width */
+    vertical-align: middle; /* Align content to center vertically */
+    white-space: normal; /* Allow text wrapping */
   }
-  /* Pill row styling for header and data rows */
-.pill-row th,
-.pill-row td {
-  padding: 12px 16px;
-  border: 1px solid transparent;
-  color: #fff;
-  word-break: break-word;
-  overflow-wrap: anywhere;
-}
 
-
-  /* Header row: lighter brown pill */
+  /* Header row */
   .changelog-table thead .pill-row {
-    background-color: #4CAF50; /* Sienna */
+    background-color: #4CAF50;
     text-align: center;
   }
 
-  /* Data row: darker brown pill (simulate older post) */
+  /* Regular row */
   .changelog-table tbody .pill-row.old {
-  background-color: #CD853F;
-  border-radius: 12px; /* Reduce to a more natural shape */
-  padding: 10px;
-  max-width: 95vw;
-}
-
-.changelog-table tbody .pill-row.old td {
-  border-radius: 8px; /* Ensure each cell stays rectangular */
-}
-
-
-  /* Make entire row a pill with rounded corners (apply to first and last cells) */
-  .changelog-table thead .pill-row th:first-child {
-    border-top-left-radius: 9999px;
-    border-bottom-left-radius: 9999px;
-  }
-  .changelog-table thead .pill-row th:last-child {
-    border-top-right-radius: 9999px;
-    border-bottom-right-radius: 9999px;
-  }
-  .changelog-table tbody .pill-row.old td:first-child {
-    border-top-left-radius: 9999px;
-    border-bottom-left-radius: 9999px;
-  }
-  .changelog-table tbody .pill-row.old td:last-child {
-    border-top-right-radius: 9999px;
-    border-bottom-right-radius: 9999px;
+    background-color: #CD853F;
   }
 
-  /* Styling for the date cell */
+  /* Date cell */
   .date-cell {
-    display: inline-flex;
-    align-items: left;
-    padding: 4px 8px;
-    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 6px; /* Reduce padding */
     font-size: 0.9rem;
     color: #fff;
+    text-align: center;
   }
 
   .calendar-icon {
     margin-right: 5px;
   }
 
-  /* Align columns in the visible row: Date and Sentiment center, Change left */
+  /* Align columns in the visible row */
   .changelog-table tbody .pill-row.old td:nth-child(1),
   .changelog-table tbody .pill-row.old td:nth-child(2) {
     text-align: center;
@@ -366,3 +334,4 @@ const currentSeason = "winter"; // Change this to "spring" later
     text-align: left;
   }
 </style>
+

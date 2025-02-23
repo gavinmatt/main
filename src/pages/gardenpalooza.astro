@@ -286,15 +286,25 @@ const currentSeason = "winter"; // Change this to "spring" later
     border-spacing: 0;
     width: 90%;
   }
-
-  /* Pill row styling for header and data rows */
-  .pill-row th,
-  .pill-row td {
+  /* Make columns wider */
+  .changelog-table th,
+  .changelog-table td {
     padding: 12px 16px;
-    /* Remove default borders so the row appears as a single pill */
-    border: 1px solid transparent;
+    border: 1px solid #fff;
     color: #fff;
+    white-space: nowrap;
+    min-width: 140px; /* Increase width */
   }
+  /* Pill row styling for header and data rows */
+.pill-row th,
+.pill-row td {
+  padding: 12px 16px;
+  border: 1px solid transparent;
+  color: #fff;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
 
   /* Header row: lighter brown pill */
   .changelog-table thead .pill-row {
@@ -304,8 +314,16 @@ const currentSeason = "winter"; // Change this to "spring" later
 
   /* Data row: darker brown pill (simulate older post) */
   .changelog-table tbody .pill-row.old {
-    background-color: #CD853F; /* Starting shade for visible row */
-  }
+  background-color: #CD853F;
+  border-radius: 12px; /* Reduce to a more natural shape */
+  padding: 10px;
+  max-width: 95vw;
+}
+
+.changelog-table tbody .pill-row.old td {
+  border-radius: 8px; /* Ensure each cell stays rectangular */
+}
+
 
   /* Make entire row a pill with rounded corners (apply to first and last cells) */
   .changelog-table thead .pill-row th:first-child {

@@ -20,7 +20,7 @@ const currentSeason = "winter"; // Change this to "spring" later
 
 
   <p style="text-align: center; padding-top: 20px; padding-bottom: 20px;">
-    Wasted hour count: 5
+    Wasted hour count: 6
   </p>
 
   <div style="text-align: center; padding-top: 20px; padding-bottom: 20px;">
@@ -39,27 +39,27 @@ const currentSeason = "winter"; // Change this to "spring" later
           <td>
             <span class="date-cell">
               <span class="calendar-icon">📅</span>
-              <time datetime="2025-02-21">February 22, 2025</time>
+              <time datetime="2025-02-21">February 23, 2025</time>
             </span>
           </td>
-          <td>🙃</td>
-          <td>Basically the same outcomes but with better mobile handling.</td>
+          <td>🍃</td>
+          <td>Attempted to fix the rows on mobile and add a grass texture to the table. ChatGPT is horribly error prone and slow.</td>
         </tr>
         <tr class="pill-row old" style="background-color: #CA833E;">
           <td><span class="date-cell">
             <span class="calendar-icon">📅</span>
-            <time datetime="2025-02-22">February 21, 2025</time>
+            <time datetime="2025-02-22">February 22, 2025</time>
           </span>
         </td>
+          <td>🙃</td>
+          <td>Basically the same outcomes but with better mobile handling.</td>
+        </tr>
+        <tr class="pill-row old" style="background-color: #C7813D;">
+          <td><span class="date-cell"><span class="calendar-icon">📅</span>February 21, 2025</span></td>
           <td>😭</td>
           <td>Initial commits. We got there, but ChatGPT is HORRIBLE at sprite sheets. I've lost so much time to having it try to handle pixel art and it crashed/hit its limits. More later. I want to hire a pixel artist once stable, but am using ChatGPT to mock.</td>
         </tr>
-        <!--  <tr class="pill-row old" style="background-color: #C7813D;">
-          <td><span class="date-cell"><span class="calendar-icon">📅</span> Dummy Date 3</span></td>
-          <td>😐</td>
-          <td>Dummy changelog row 3.</td>
-        </tr>
-        <tr class="pill-row old" style="background-color: #C47F3C;">
+        <!--<tr class="pill-row old" style="background-color: #C47F3C;">
           <td><span class="date-cell"><span class="calendar-icon">📅</span> Dummy Date 4</span></td>
           <td>😐</td>
           <td>Dummy changelog row 4.</td>
@@ -261,85 +261,71 @@ const currentSeason = "winter"; // Change this to "spring" later
 
   /* Header styling with Comic Sans-inspired font stack */
   .header-container {
-  font-family: 'Comic Sans MS', 'Comic Neue', 'Chalkboard SE', cursive, sans-serif;
-  font-size: min(8vw, 5rem);
-  font-weight: bold;
-  text-align: center;
-  text-transform: uppercase;
-  background-image: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
-  -webkit-background-clip: text;
-  color: transparent;
-  white-space: nowrap;
-  overflow: hidden;
-  width: 100%;
-  max-width: 100%;
-  padding: 1rem 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+    font-family: 'Comic Sans MS', 'Comic Neue', 'Chalkboard SE', cursive, sans-serif;
+    font-size: min(8vw, 5rem);
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+    background-image: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
+    -webkit-background-clip: text;
+    color: transparent;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 100%;
+    max-width: 100%;
+    padding: 1rem 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
   /* Table styling for Changelog */
   .changelog-table {
     margin: 20px auto;
-    border-collapse: separate;
+    border-collapse: collapse; /* Ensures no spacing between cells */
     border-spacing: 0;
     width: 90%;
+    max-width: 90vw;
+    table-layout: auto; /* Adjust column widths dynamically */
   }
 
-  /* Pill row styling for header and data rows */
-  .pill-row th,
-  .pill-row td {
-    padding: 12px 16px;
-    /* Remove default borders so the row appears as a single pill */
-    border: 1px solid transparent;
+  /* Remove all borders and spacing between cells */
+  .changelog-table th,
+  .changelog-table td {
+    padding: 8px 12px; /* Reduce padding */
+    border: none; /* Remove borders */
     color: #fff;
+    vertical-align: middle; /* Align content to center vertically */
+    white-space: normal; /* Allow text wrapping */
   }
 
-  /* Header row: lighter brown pill */
+  /* Header row */
   .changelog-table thead .pill-row {
-    background-color: #4CAF50; /* Sienna */
+    background-color: #4CAF50;
     text-align: center;
   }
 
-  /* Data row: darker brown pill (simulate older post) */
+  /* Regular row */
   .changelog-table tbody .pill-row.old {
-    background-color: #CD853F; /* Starting shade for visible row */
+    background-color: #CD853F;
   }
 
-  /* Make entire row a pill with rounded corners (apply to first and last cells) */
-  .changelog-table thead .pill-row th:first-child {
-    border-top-left-radius: 9999px;
-    border-bottom-left-radius: 9999px;
-  }
-  .changelog-table thead .pill-row th:last-child {
-    border-top-right-radius: 9999px;
-    border-bottom-right-radius: 9999px;
-  }
-  .changelog-table tbody .pill-row.old td:first-child {
-    border-top-left-radius: 9999px;
-    border-bottom-left-radius: 9999px;
-  }
-  .changelog-table tbody .pill-row.old td:last-child {
-    border-top-right-radius: 9999px;
-    border-bottom-right-radius: 9999px;
-  }
-
-  /* Styling for the date cell */
+  /* Date cell */
   .date-cell {
-    display: inline-flex;
-    align-items: left;
-    padding: 4px 8px;
-    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 6px; /* Reduce padding */
     font-size: 0.9rem;
     color: #fff;
+    text-align: center;
   }
 
   .calendar-icon {
     margin-right: 5px;
   }
 
-  /* Align columns in the visible row: Date and Sentiment center, Change left */
+  /* Align columns in the visible row */
   .changelog-table tbody .pill-row.old td:nth-child(1),
   .changelog-table tbody .pill-row.old td:nth-child(2) {
     text-align: center;
@@ -348,3 +334,4 @@ const currentSeason = "winter"; // Change this to "spring" later
     text-align: left;
   }
 </style>
+

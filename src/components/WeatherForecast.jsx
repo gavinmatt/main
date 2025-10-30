@@ -9,7 +9,7 @@ const WeatherForecast = () => {
     useEffect(() => {
         const fetchForecast = async () => {
             try {
-                const response = await fetch('https://api.weather.gov/gridpoints/PUB/89,89/forecast');
+                const response = await fetch('https://api.weather.gov/gridpoints/MSO/101,206/forecast');
                 const data = await response.json();
                 setForecast(data.properties.periods);
             } catch (err) {

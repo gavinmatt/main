@@ -10,7 +10,7 @@ import Humidity from './Humidity.jsx';
 import Pressure from './Pressure.jsx';
 import WeatherForecast from './WeatherForecast.jsx';
 import CurrentWeather from './CurrentWeather.jsx';
-import aiForecast from './aiforecast.jsx'; 
+import { aiForecast } from './aiforecast.jsx'; 
 
 
 const WeatherDashboard = ({ apiEndpoint }) => {

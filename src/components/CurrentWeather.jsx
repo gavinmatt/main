@@ -9,7 +9,7 @@ const CurrentWeather = () => {
     useEffect(() => {
         const fetchCurrentWeather = async () => {
             try {
-                const response = await fetch('https://api.weather.gov/gridpoints/PUB/89,89/forecast');
+                const response = await fetch('https://api.weather.gov/gridpoints/PUB/101,206/forecast');
                 const data = await response.json();
                 if (data.properties && data.properties.periods && data.properties.periods[0]) {
                     const shortForecast = data.properties.periods[0].shortForecast;

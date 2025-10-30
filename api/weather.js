@@ -1,7 +1,7 @@
 export default async function(req, res) {
     const applicationKey = process.env.APPLICATION_KEY;
     const apiKey = process.env.API_KEY;
-    const apiUrl = `https://rt.ambientweather.net/v1/devices/${macAddress}?applicationKey=${applicationKey}&apiKey=${apiKey}`;
+    const apiUrl = `https://rt.ambientweather.net/v1/devices/?applicationKey=${applicationKey}&apiKey=${apiKey}`;
 
     try {
         const weatherResponse = await fetch(apiUrl);

@@ -10,7 +10,7 @@ import Humidity from './Humidity.jsx';
 import Pressure from './Pressure.jsx';
 import WeatherForecast from './WeatherForecast.jsx';
 import CurrentWeather from './CurrentWeather.jsx';
-
+import { aiForecast } from '../lib/aiForecast.js'; // ✅ Add this import
 
 
 const WeatherDashboard = ({ apiEndpoint }) => {
@@ -18,28 +18,42 @@ const WeatherDashboard = ({ apiEndpoint }) => {
     const [dataDate, setDataDate] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [nwsData, setNwsData] = useState(null); // ✅ add storage for NWS data
+    const [aiInsight, setAiInsight] = useState(''); // ✅ new forecast state
 
-    
 
     useEffect(() => {
         const fetchData = async () => {
             try {
+                // Fetch your station data
                 const response = await fetch(apiEndpoint);
                 const data = await response.json();
-                console.log('Fetched data:', data); // Log the fetched data
                 setWeatherData(data);
 
                 if (data && data.length > 0) {
                     const date = new Date(data[0].lastData.date);
                     setDataDate(date.toLocaleString('en-US', { timeZone: 'America/Denver' }));
                 }
+
+                // ✅ Fetch Weather.gov data using your gridpoint (replace these)
+                const nwsRes = await fetch('https://api.weather.gov/gridpoints/TFX/74,121/forecast');
+                const nwsJson = await nwsRes.json();
+                setNwsData(nwsJson);
+
+                // ✅ Generate AI forecast once both are loaded
+                if (data && nwsJson) {
+                    const station = data[0].lastData;
+                    const insight = aiForecast(station, nwsJson);
+                    setAiInsight(insight);
+                }
+
             } catch (err) {
+                console.error(err);
                 setError(err);
             } finally {
                 setLoading(false);
             }
         };
-        
 
         fetchData();
     }, [apiEndpoint]);
@@ -59,11 +73,11 @@ const WeatherDashboard = ({ apiEndpoint }) => {
 
     return (
         <div>
-        
             {dataDate && <p className="text-center pb-5"><b>Weather data pulled at:</b> {dataDate} (Mountain Time)</p>}
 
             <h3 className="text-center" style={{ fontSize: '3rem' }}>Current Conditions</h3>
             <CurrentWeather />
+
             <p className="text-center pb-1"><b>Raw Data 📊</b></p>
 
             <div className="lg:flex flex-wrap justify-center items-center gap-4 pb-4 pt-1">
@@ -86,9 +100,17 @@ const WeatherDashboard = ({ apiEndpoint }) => {
                 {weatherData && <RainYear data={weatherData} />}
             </div>
 
-    <div>
-        <WeatherForecast />
-    </div>
+            {/* ✅ AI Forecast Section */}
+            {aiInsight && (
+                <div className="bg-neutral-800 text-neutral-100 rounded-lg p-6 my-6 mx-auto max-w-3xl shadow-md">
+                    <h2 className="text-2xl font-semibold mb-3 text-center">AI Forecast Insight 🤖</h2>
+                    <p style={{ fontSize: '1.1rem', lineHeight: '1.6' }}>{aiInsight}</p>
+                </div>
+            )}
+
+            <div>
+                <WeatherForecast />
+            </div>
         </div>
     );
 };

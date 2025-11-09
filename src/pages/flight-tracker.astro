@@ -12,4 +12,64 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     <div style="display: flex; justify-content: center;">
         <iframe src="https://globe.adsbexchange.com/?feed=dzxvAzrTfUSY&hideSidebar&?rangeRings=1&hideButtons&zoom=7&lat=48.415&lon=-114.459" width="800" height="600" frameborder="0" style="border: 0;"></iframe>
     </div>
+
+    <!-- BEGIN live flight table -->
+<section id="flight-feed" style="margin:2rem auto;max-width:900px;">
+    <h2>Flights Detected by My Station</h2>
+    <table style="width:100%;border-collapse:collapse;">
+      <thead>
+        <tr>
+          <th style="border-bottom:1px solid #ddd;text-align:left;padding:.4rem;">Airline</th>
+          <th style="border-bottom:1px solid #ddd;text-align:left;padding:.4rem;">Flight</th>
+          <th style="border-bottom:1px solid #ddd;text-align:left;padding:.4rem;">From</th>
+          <th style="border-bottom:1px solid #ddd;text-align:left;padding:.4rem;">To</th>
+          <th style="border-bottom:1px solid #ddd;text-align:left;padding:.4rem;">Alt (ft)</th>
+        </tr>
+      </thead>
+      <tbody id="flightBody">
+        <tr><td colspan="5" style="padding:.4rem;">Loading…</td></tr>
+      </tbody>
+    </table>
+  </section>
+  
+  <script type="module">
+    const tbody = document.getElementById('flightBody');
+    async function updateFlights() {
+      try {
+        const res = await fetch('/api/flights');
+        const data = await res.json();
+        const flights = data?.acList ?? [];
+        if (!flights.length) {
+          tbody.innerHTML = '<tr><td colspan="5" style="padding:.4rem;">No flights detected.</td></tr>';
+          return;
+        }
+        tbody.innerHTML = flights.map(ac => {
+          const airline = ac.Op || '—';
+          const call = ac.Call || '—';
+          const from = ac.From || '—';
+          const to = ac.To || '—';
+          const alt = ac.Alt ? Math.round(ac.Alt) : '—';
+          const prefix = call.match(/^[A-Z]{2,3}/)?.[0];
+          const logo = prefix
+            ? `<img src="https://content.airhex.com/content/logos/airlines_${prefix}_50_50_s.png" width="22" height="22" style="vertical-align:middle;margin-right:6px;">`
+            : '';
+          return `
+            <tr>
+              <td style="border-bottom:1px solid #eee;padding:.4rem;">${logo}${airline}</td>
+              <td style="border-bottom:1px solid #eee;padding:.4rem;">${call}</td>
+              <td style="border-bottom:1px solid #eee;padding:.4rem;">${from}</td>
+              <td style="border-bottom:1px solid #eee;padding:.4rem;">${to}</td>
+              <td style="border-bottom:1px solid #eee;padding:.4rem;">${alt}</td>
+            </tr>
+          `;
+        }).join('');
+      } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="5" style="padding:.4rem;">Error loading feed.</td></tr>';
+      }
+    }
+    updateFlights();
+    setInterval(updateFlights, 10000); // refresh data only
+  </script>
+  <!-- END live flight table -->
+  
 </BaseLayout>

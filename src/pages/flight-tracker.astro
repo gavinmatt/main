@@ -12,25 +12,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     <div style="display: flex; justify-content: center;">
         <iframe src="https://globe.adsbexchange.com/?feed=dzxvAzrTfUSY&hideSidebar&?rangeRings=1&hideButtons&zoom=7&lat=48.415&lon=-114.459" width="800" height="600" frameborder="0" style="border: 0;"></iframe>
     </div>
-
-    <!-- BEGIN live flight table -->
-<section id="flight-feed" style="margin:2rem auto;max-width:900px;">
-    <h2>Flights Detected by My Station</h2>
-    <table style="width:100%;border-collapse:collapse;">
-      <thead>
-        <tr>
-          <th style="border-bottom:1px solid #ddd;text-align:left;padding:.4rem;">Airline</th>
-          <th style="border-bottom:1px solid #ddd;text-align:left;padding:.4rem;">Flight</th>
-          <th style="border-bottom:1px solid #ddd;text-align:left;padding:.4rem;">From</th>
-          <th style="border-bottom:1px solid #ddd;text-align:left;padding:.4rem;">To</th>
-          <th style="border-bottom:1px solid #ddd;text-align:left;padding:.4rem;">Alt (ft)</th>
-        </tr>
-      </thead>
-      <tbody id="flightBody">
-        <tr><td colspan="5" style="padding:.4rem;">Loading…</td></tr>
-      </tbody>
-    </table>
-  </section>
   
   <script type="module">
     const tbody = document.getElementById('flightBody');

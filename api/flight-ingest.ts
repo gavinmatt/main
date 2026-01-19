@@ -20,7 +20,6 @@ export default async function handler(
   }
 
   let payload: any;
-
   try {
     payload =
       typeof req.body === 'string'
@@ -41,7 +40,7 @@ export default async function handler(
       data: payload
     }),
     'EX',
-    180
+    180 // ✅ TTL safely longer than push interval
   );
 
   return res.status(200).send('OK');

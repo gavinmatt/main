@@ -7,22 +7,17 @@ export default async function handler(
   _req: VercelRequest,
   res: VercelResponse
 ) {
-  try {
-    const raw = await redis.get('latest-flights');
+  const raw = await redis.get('latest-flights');
 
-    if (!raw) {
-      return res.status(204).end();
-    }
-
-    const data = JSON.parse(raw);
-
-    return res.status(200).json({
-      receivedAt: data.receivedAt,
-      count: data.data.count,
-      aircraft: data.data.aircraft
-    });
-  } catch (err) {
-    console.error('Redis read failed', err);
-    return res.status(500).send('Redis read failed');
+  if (!raw) {
+    return res.status(204).end();
   }
+
+  const parsed = JSON.parse(raw);
+
+  return res.status(200).json({
+    receivedAt: parsed.receivedAt,
+    count: parsed.data.count,
+    aircraft: parsed.data.aircraft
+  });
 }

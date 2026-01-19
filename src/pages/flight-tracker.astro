@@ -3,114 +3,90 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout sideBarActiveItemID="flight-tracker" customTitle="What's Overhead?">
-
-  <div class="text-5xl font-bold" style="text-align: center;">
+  <div class="text-5xl font-bold text-center">
     Live air traffic near Whitefish, MT
   </div>
 
-  <p style="text-align: center; padding-top: 20px; padding-bottom: 20px;">
-    All data is captured from my home ADS-B antenna setup, feeding to providers
-    including Flightradar24, ADS-B Exchange, and FlightAware.
-    Want to try this yourself?
-    <a href="https://www.gavmatt.com/blog/flight-tracking">Learn more</a>.
+  <p class="text-center py-4">
+    All data is captured from my home ADS-B antenna setup.
+    <a href="/blog/flight-tracking">Learn more</a>.
   </p>
 
-  <div style="display: flex; justify-content: center;">
+  <div class="flex justify-center">
     <iframe
-      src="https://globe.adsbexchange.com/?feed=dzxvAzrTfUSY&hideSidebar&rangeRings=1&hideButtons&zoom=7&lat=48.415&lon=-114.459"
+      src="https://globe.adsbexchange.com/?feed=dzxvAzrTfUSY&hideSidebar&zoom=7&lat=48.415&lon=-114.459"
       width="800"
       height="600"
       frameborder="0"
-      style="border: 0;"
     ></iframe>
   </div>
 
-  <!-- BEGIN local ADS-B flight table -->
-  <div style="max-width: 1000px; margin: 50px auto 0 auto;">
-    <h2 class="text-3xl font-bold" style="text-align:center; margin-bottom: 10px;">
-      Aircraft currently received by my antenna
-    </h2>
+  <p id="lastUpdated" class="text-center text-sm text-gray-500 mt-3"></p>
 
-    <p style="text-align:center; color:#666; margin-bottom: 20px;">
-      Live data from my local ADS-B receiver (updates every 10 seconds)
-    </p>
-
-    <table style="width:100%; border-collapse:collapse; font-size:0.9rem;">
-      <thead>
-        <tr style="background:#f5f5f5;">
-          <th style="padding:.4rem; text-align:left;">Callsign</th>
-          <th style="padding:.4rem; text-align:left;">ICAO</th>
-          <th style="padding:.4rem; text-align:right;">Altitude (ft)</th>
-          <th style="padding:.4rem; text-align:right;">Speed (kt)</th>
-          <th style="padding:.4rem; text-align:right;">Track</th>
-          <th style="padding:.4rem; text-align:right;">Last Seen (s)</th>
-        </tr>
-      </thead>
-      <tbody id="flightBody">
-        <tr>
-          <td colspan="6" style="padding:.4rem;">Loading…</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <table class="w-full mt-4 text-sm">
+    <thead>
+      <tr class="border-b">
+        <th>Callsign</th>
+        <th>ICAO</th>
+        <th>Altitude (ft)</th>
+        <th>Speed (kt)</th>
+        <th>Track</th>
+        <th>Last Seen (s)</th>
+      </tr>
+    </thead>
+    <tbody id="flightBody"></tbody>
+  </table>
 
   <script type="module">
     const tbody = document.getElementById('flightBody');
+    const lastUpdatedEl = document.getElementById('lastUpdated');
+
+    let lastGoodFlights = [];
+    let lastReceivedAt = 0;
+
+    function render(flights) {
+      tbody.innerHTML = flights.map(f => `
+        <tr class="border-b">
+          <td>${f.flight?.trim() || '—'}</td>
+          <td>${f.hex || '—'}</td>
+          <td class="text-right">${f.alt_baro ?? f.alt_geom ?? '—'}</td>
+          <td class="text-right">${f.gs ?? '—'}</td>
+          <td class="text-right">${f.track ?? '—'}</td>
+          <td class="text-right">${f.seen ?? '—'}</td>
+        </tr>
+      `).join('');
+    }
 
     async function updateFlights() {
       try {
-        const res = await fetch('/api/flights', { cache: 'no-store' });
+        const res = await fetch('/api/flights');
 
         if (res.status === 204) {
-          tbody.innerHTML =
-            '<tr><td colspan="6" style="padding:.4rem;">No flights detected.</td></tr>';
+          // Do NOT clear table on transient gaps
           return;
-        }
-
-        if (!res.ok) {
-          throw new Error('Bad response');
         }
 
         const data = await res.json();
-        const flights = data.aircraft || [];
+        const flights = data.aircraft ?? [];
 
-        if (!flights.length) {
-          tbody.innerHTML =
-            '<tr><td colspan="6" style="padding:.4rem;">No flights detected.</td></tr>';
-          return;
+        if (flights.length) {
+          lastGoodFlights = flights;
+          lastReceivedAt = data.receivedAt;
+          render(lastGoodFlights);
         }
 
-        tbody.innerHTML = flights.map(f => `
-          <tr>
-            <td style="border-bottom:1px solid #eee;padding:.4rem;">
-              ${f.flight || '—'}
-            </td>
-            <td style="border-bottom:1px solid #eee;padding:.4rem;">
-              ${f.hex || '—'}
-            </td>
-            <td style="border-bottom:1px solid #eee;padding:.4rem; text-align:right;">
-              ${f.altitude ?? '—'}
-            </td>
-            <td style="border-bottom:1px solid #eee;padding:.4rem; text-align:right;">
-              ${f.speed ?? '—'}
-            </td>
-            <td style="border-bottom:1px solid #eee;padding:.4rem; text-align:right;">
-              ${f.track ?? '—'}
-            </td>
-            <td style="border-bottom:1px solid #eee;padding:.4rem; text-align:right;">
-              ${f.seen ?? '—'}
-            </td>
-          </tr>
-        `).join('');
+        const age = Date.now() - lastReceivedAt;
+        lastUpdatedEl.textContent =
+          'Last updated ' +
+          new Date(lastReceivedAt).toLocaleTimeString() +
+          (age > 30000 ? ' (stale)' : '');
+
       } catch {
-        tbody.innerHTML =
-          '<tr><td colspan="6" style="padding:.4rem;">Error loading local feed.</td></tr>';
+        // Ignore transient fetch failures
       }
     }
 
     updateFlights();
     setInterval(updateFlights, 10000);
   </script>
-  <!-- END local ADS-B flight table -->
-
 </BaseLayout>

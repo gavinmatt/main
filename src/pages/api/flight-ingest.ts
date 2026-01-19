@@ -1,7 +1,9 @@
 import type { APIRoute } from 'astro';
 
 export const POST: APIRoute = async ({ request }) => {
-  const secret = request.headers.get('x-flight-secret');
+    const secret =
+    request.headers.get('x-flight-secret') ??
+    request.headers.get('X-Flight-Secret');
 
   if (!secret || secret !== import.meta.env.FLIGHT_INGEST_SECRET) {
     return new Response('Unauthorized', { status: 401 });

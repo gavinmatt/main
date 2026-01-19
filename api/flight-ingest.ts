@@ -1,4 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { Redis } from '@upstash/redis';
+
+const redis = Redis.fromEnv();
 
 export default async function handler(
   req: VercelRequest,
@@ -26,11 +29,10 @@ export default async function handler(
     return res.status(400).send('Invalid payload');
   }
 
-  // Store latest snapshot (memory only)
-  globalThis.__LATEST_FLIGHTS__ = {
+  await redis.set('latest-flights', {
     receivedAt: Date.now(),
     data: payload
-  };
+  }, { ex: 60 }); // auto-expire after 60s (safe for free tier)
 
   return res.status(200).send('OK');
 }

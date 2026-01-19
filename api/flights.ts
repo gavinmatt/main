@@ -1,13 +1,16 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { Redis } from '@upstash/redis';
+
+const redis = Redis.fromEnv();
 
 export default async function handler(
   _req: VercelRequest,
   res: VercelResponse
 ) {
-  const data = (globalThis as any).__LATEST_FLIGHTS__;
+  const data = await redis.get<any>('latest-flights');
 
   if (!data) {
-    return res.status(204).end(); // no data yet
+    return res.status(204).end();
   }
 
   return res.status(200).json({

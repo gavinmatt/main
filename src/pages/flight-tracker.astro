@@ -32,11 +32,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   </div>
   
   <p class="text-center">
-    More data about the planes currently flying in reach of my antenna! — and missing data are expected - not all planes send the full array of flight data.
-  </p>
-  
-  <div class="pb-12 mt-5"></div>
-  
+    More data about the planes currently flying in reach of my antenna! "—" and missing data are expected - not all planes send a full array of flight data.
+  </p>  
 
   <!-- STATUS -->
   <p id="lastUpdated" class="text-center text-sm text-gray-500 mt-3"></p>
@@ -48,6 +45,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         <th class="text-left">Flag</th>
         <th class="text-left">Airline</th>
         <th class="text-left">Callsign</th>
+        <th class="text-left">Type</th>
         <th class="text-left">ICAO</th>
         <th class="text-right">Altitude (ft)</th>
         <th class="text-right">Speed (kt)</th>
@@ -73,40 +71,54 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       UAL: "United Airlines",
       ASA: "Alaska Airlines",
       SWA: "Southwest Airlines",
+      JBU: "JetBlue Airways",
       NKS: "Spirit Airlines",
       FFT: "Frontier Airlines",
-      JBU: "JetBlue Airways",
       ACA: "Air Canada",
-      BAW: "British Airways",
+      WJA: "WestJet",
+      UPS: "UPS Airlines",
+      FDX: "FedEx Express",
+      GTI: "Atlas Air",
+      CKS: "Kalitta Air",
+      ABX: "ABX Air",
       AFR: "Air France",
+      BAW: "British Airways",
       DLH: "Lufthansa",
       KLM: "KLM Royal Dutch Airlines",
       QTR: "Qatar Airways",
       UAE: "Emirates",
       THY: "Turkish Airlines",
       ANA: "All Nippon Airways",
-      JAL: "Japan Airlines",
-      KAL: "Korean Air",
-      CPA: "Cathay Pacific",
-      SIA: "Singapore Airlines",
-      UPS: "UPS Airlines",
-      FDX: "FedEx Express"
+      JAL: "Japan Airlines"
     };
 
+    // Airlines that should NEVER be flagged as "uncommon" here
     const COMMON_AIRLINES = new Set([
       "United Airlines",
       "Delta Air Lines",
       "American Airlines",
       "Alaska Airlines",
       "Southwest Airlines",
+      "JetBlue Airways",
+      "Spirit Airlines",
+      "Frontier Airlines",
+      "Air Canada",
+      "WestJet",
       "FedEx Express",
-      "UPS Airlines"
+      "UPS Airlines",
+      "Atlas Air",
+      "Kalitta Air",
+      "ABX Air"
     ]);
 
     function airlineFromFlight(f) {
       if (f.op && f.op.trim()) return f.op.trim();
       const prefix = f.flight?.trim().match(/^[A-Z]{2,3}/)?.[0];
       return AIRLINE_NAMES[prefix] || "—";
+    }
+
+    function aircraftType(f) {
+      return f.t || f.type || "—";
     }
 
     /* -------- NOTABILITY LOGIC -------- */
@@ -120,7 +132,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
 
     function isRareType(f) {
-      return /^(B52|B1|B2|U2|E3|E6|E4B|KC|C17|GLF|GLEX)/i.test(f.t || "");
+      return /^(B52|B1|B2|U2|E3|E6|E4B|KC|C17|C5|GLF|GLEX)/i.test(aircraftType(f));
     }
 
     function isHighPerformance(f) {
@@ -162,6 +174,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
             </td>
             <td>${airlineFromFlight(f)}</td>
             <td>${f.flight?.trim() || "—"}</td>
+            <td>${aircraftType(f)}</td>
             <td>${f.hex || "—"}</td>
             <td class="text-right">${f.alt_baro ?? f.alt_geom ?? "—"}</td>
             <td class="text-right">${f.gs ?? "—"}</td>
@@ -190,7 +203,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         lastUpdatedEl.textContent =
           "Last updated " +
           new Date(lastReceivedAt).toLocaleTimeString() +
-          (age > 30000 ? " (refresh coming)" : "");
+          (age > 30000 ? " (refresh incoming)" : "");
       } catch {
         // ignore transient errors
       }

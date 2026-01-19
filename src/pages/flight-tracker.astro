@@ -26,12 +26,13 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   <table class="w-full mt-4 text-sm">
     <thead>
       <tr class="border-b">
+        <th>Airline</th>
         <th>Callsign</th>
         <th>ICAO</th>
-        <th>Altitude (ft)</th>
-        <th>Speed (kt)</th>
-        <th>Track</th>
-        <th>Last Seen (s)</th>
+        <th class="text-right">Altitude (ft)</th>
+        <th class="text-right">Speed (kt)</th>
+        <th class="text-right">Track</th>
+        <th class="text-right">Last Seen (s)</th>
       </tr>
     </thead>
     <tbody id="flightBody"></tbody>
@@ -44,9 +45,21 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     let lastGoodFlights = [];
     let lastReceivedAt = 0;
 
+    function airlineFromFlight(f) {
+      if (f.op) return f.op;
+
+      if (f.flight) {
+        const prefix = f.flight.trim().match(/^[A-Z]{2,3}/);
+        if (prefix) return prefix[0];
+      }
+
+      return '—';
+    }
+
     function render(flights) {
       tbody.innerHTML = flights.map(f => `
         <tr class="border-b">
+          <td>${airlineFromFlight(f)}</td>
           <td>${f.flight?.trim() || '—'}</td>
           <td>${f.hex || '—'}</td>
           <td class="text-right">${f.alt_baro ?? f.alt_geom ?? '—'}</td>
@@ -60,11 +73,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     async function updateFlights() {
       try {
         const res = await fetch('/api/flights');
-
-        if (res.status === 204) {
-          // Do NOT clear table on transient gaps
-          return;
-        }
+        if (res.status === 204) return;
 
         const data = await res.json();
         const flights = data.aircraft ?? [];
@@ -80,9 +89,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           'Last updated ' +
           new Date(lastReceivedAt).toLocaleTimeString() +
           (age > 30000 ? ' (stale)' : '');
-
       } catch {
-        // Ignore transient fetch failures
+        // ignore transient errors
       }
     }
 

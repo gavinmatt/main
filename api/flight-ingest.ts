@@ -42,7 +42,7 @@ export const POST: APIRoute = async ({ request }) => {
       await redis.set(key, JSON.stringify(merged), "EX", TTL_SECONDS);
     }
 
-    return new Respnse("OK", { status: 200 });
+    return new Response("OK", { status: 200 });
   } catch {
     return new Response("Internal Server Error", { status: 500 });
   }

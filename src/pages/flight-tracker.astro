@@ -25,6 +25,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     ></iframe>
   </div>
 
+  <div>
+    <div class="text-3xl w-full font-bold mb-5 mt-10">What's overhead?</div>
+  </div>
+  <p>More data about the planes currently flying in reach of my antenna! — and missing data are expected - not all planes send the full array of flight data.</p>
+  <div class="pb-12 mt-5"></div>
+
   <!-- STATUS -->
   <p id="lastUpdated" class="text-center text-sm text-gray-500 mt-3"></p>
 
@@ -149,7 +155,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         lastUpdatedEl.textContent =
           'Last updated ' +
           new Date(lastReceivedAt).toLocaleTimeString() +
-          (age > 30000 ? ' (stale)' : '');
+          (age > 30000 ? ' (refresh coming)' : '');
       } catch {
         // ignore transient errors
       }

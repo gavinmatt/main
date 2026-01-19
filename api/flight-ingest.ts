@@ -1,47 +1,47 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
-import Redis from 'ioredis';
+import type { APIRoute } from "astro";
+import { Redis } from "@upstash/redis";
 
-const redis = new Redis(process.env.REDIS_URL!);
+const redis = new Redis({
+  url: import.meta.env.REDIS_URL!,
+  token: import.meta.env.REDIS_TOKEN!
+});
 
-export default async function handler(
-  req: VercelRequest,
-  res: VercelResponse
-) {
-  if (req.method !== 'POST') {
-    return res.status(405).send('Method Not Allowed');
-  }
+const TTL_SECONDS = 120;
 
+export const POST: APIRoute = async ({ request }) => {
   const secret =
-    req.headers['x-flight-secret'] ||
-    req.headers['X-Flight-Secret'];
+    request.headers.get("x-flight-secret") ??
+    request.headers.get("X-Flight-Secret");
 
-  if (!secret || secret !== process.env.FLIGHT_INGEST_SECRET) {
-    return res.status(401).send('Unauthorized');
+  if (!secret || secret !== import.meta.env.FLIGHT_INGEST_SECRET) {
+    return new Response("Unauthorized", { status: 401 });
   }
 
-  let payload: any;
-  try {
-    payload =
-      typeof req.body === 'string'
-        ? JSON.parse(req.body)
-        : req.body;
-  } catch {
-    return res.status(400).send('Invalid JSON');
+  const payload = await request.json();
+  if (!Array.isArray(payload.aircraft)) {
+    return new Response("Invalid payload", { status: 400 });
   }
 
-  if (!payload || !Array.isArray(payload.aircraft)) {
-    return res.status(400).send('Invalid payload');
+  const now = Date.now();
+
+  for (const ac of payload.aircraft) {
+    if (!ac.hex) continue;
+
+    const key = `aircraft:${ac.hex}`;
+    const existing = await redis.get<any>(key);
+
+    const merged = {
+      ...(existing || {}),
+      ...Object.fromEntries(
+        Object.entries(ac).filter(
+          ([, v]) => v !== null && v !== undefined
+        )
+      ),
+      lastSeenAt: now
+    };
+
+    await redis.set(key, merged, { ex: TTL_SECONDS });
   }
 
-  await redis.set(
-    'latest-flights',
-    JSON.stringify({
-      receivedAt: Date.now(),
-      data: payload
-    }),
-    'EX',
-    180 // ✅ TTL safely longer than push interval
-  );
-
-  return res.status(200).send('OK');
-}
+  return new Response("OK", { status: 200 });
+};

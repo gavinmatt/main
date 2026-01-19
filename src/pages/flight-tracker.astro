@@ -26,17 +26,18 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   </div>
 
   <div class="text-center">
-    <div class="text-3xl w-full font-bold mb-5 mt-10">
+    <div class="text-3xl w-full font-bold mt-8 mb-3">
       What's overhead?
     </div>
   </div>
-  
-  <p class="text-center">
-    More data about the planes currently flying in reach of my antenna! "—" and missing data are expected - not all planes send a full array of flight data.
-  </p>  
+
+  <p class="text-center mb-4">
+    More data about the planes currently flying in reach of my antenna!
+    “—” and missing data are expected — not all planes send a full array of flight data.
+  </p>
 
   <!-- STATUS -->
-  <p id="lastUpdated" class="text-center text-sm text-gray-500 mt-3"></p>
+  <p id="lastUpdated" class="text-center text-sm text-gray-500 mt-2 mb-2"></p>
 
   <!-- TABLE -->
   <table class="w-full mt-6 text-sm border-collapse">
@@ -58,13 +59,13 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
   <!-- SCRIPT -->
   <script type="module">
-    const tbody = document.getElementById('flightBody');
-    const lastUpdatedEl = document.getElementById('lastUpdated');
+    const tbody = document.getElementById("flightBody");
+    const lastUpdatedEl = document.getElementById("lastUpdated");
 
-    let lastGoodFlights = [];
     let lastReceivedAt = 0;
 
-    // Airline/operator → full name
+    /* ---------- AIRLINE LOOKUP ---------- */
+
     const AIRLINE_NAMES = {
       AAL: "American Airlines",
       DAL: "Delta Air Lines",
@@ -92,7 +93,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       JAL: "Japan Airlines"
     };
 
-    // Airlines that should NEVER be flagged as "uncommon" here
     const COMMON_AIRLINES = new Set([
       "United Airlines",
       "Delta Air Lines",
@@ -118,12 +118,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
 
     function aircraftClass(f) {
-  if (f.category) return f.category;
-  if (f.hex?.startsWith("AE")) return "MIL";
-  return "—";
-}
+      if (f.category) return f.category;
+      if (f.hex?.startsWith("AE")) return "MIL";
+      return "—";
+    }
 
-    /* -------- NOTABILITY LOGIC -------- */
+    /* ---------- NOTABILITY ---------- */
 
     function isMilitary(f) {
       return (
@@ -134,9 +134,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
 
     function isRareType(f) {
-  return /^(B52|B1|B2|U2|E3|E6|E4B|KC|C17|C5|GLF|GLEX)/i.test(f.t || f.type || "");
-}
-
+      return /^(B52|B1|B2|U2|E3|E6|E4B|KC|C17|C5|GLF|GLEX)/i.test(f.t || "");
+    }
 
     function isHighPerformance(f) {
       return (f.alt_baro ?? 0) > 45000 || (f.gs ?? 0) > 550;
@@ -160,12 +159,28 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       return null;
     }
 
+    /* ---------- FADE-OUT ---------- */
+
+    function ageOpacity(f) {
+      const ageMs = Date.now() - (f.lastSeenAt || 0);
+      if (ageMs < 15000) return 1;
+      if (ageMs > 90000) return 0.25;
+      return 1 - (ageMs - 15000) / 75000;
+    }
+
+    function secondsSinceSeen(f) {
+      return f.lastSeenAt
+        ? Math.round((Date.now() - f.lastSeenAt) / 1000)
+        : "—";
+    }
+
     function render(flights) {
       tbody.innerHTML = flights.map(f => {
         const note = classifyNotability(f);
 
         return `
-          <tr class="border-b">
+          <tr class="border-b transition-opacity duration-700"
+              style="opacity:${ageOpacity(f)}">
             <td>
               ${
                 note
@@ -182,7 +197,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
             <td class="text-right">${f.alt_baro ?? f.alt_geom ?? "—"}</td>
             <td class="text-right">${f.gs ?? "—"}</td>
             <td class="text-right">${f.track ?? "—"}</td>
-            <td class="text-right">${f.seen ?? "—"}</td>
+            <td class="text-right">${secondsSinceSeen(f)}</td>
           </tr>
         `;
       }).join("");
@@ -194,21 +209,13 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         if (res.status === 204) return;
 
         const data = await res.json();
-        const flights = data.aircraft ?? [];
+        render(data.aircraft ?? []);
 
-        if (flights.length) {
-          lastGoodFlights = flights;
-          lastReceivedAt = data.receivedAt;
-          render(lastGoodFlights);
-        }
-
-        const age = Date.now() - lastReceivedAt;
+        lastReceivedAt = data.receivedAt;
         lastUpdatedEl.textContent =
-          "Last updated " +
-          new Date(lastReceivedAt).toLocaleTimeString() +
-          (age > 30000 ? " (refresh incoming)" : "");
+          "Last updated " + new Date(lastReceivedAt).toLocaleTimeString();
       } catch {
-        // ignore transient errors
+        // silent retry
       }
     }
 

@@ -1,5 +1,9 @@
 import type { APIRoute } from 'astro';
 
+export const GET: APIRoute = async () => {
+  return new Response('OK', { status: 200 });
+};
+
 export const POST: APIRoute = async ({ request }) => {
   const secret =
     request.headers.get('x-flight-secret') ??
@@ -24,7 +28,6 @@ export const POST: APIRoute = async ({ request }) => {
     return new Response('Invalid payload', { status: 400 });
   }
 
-  // Store latest snapshot in memory
   globalThis.__LATEST_FLIGHTS__ = {
     receivedAt: Date.now(),
     data: payload

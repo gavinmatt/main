@@ -41,7 +41,7 @@ export default async function handler(
       data: payload
     }),
     'EX',
-    60
+    180
   );
 
   return res.status(200).send('OK');

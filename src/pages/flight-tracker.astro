@@ -3,15 +3,19 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout sideBarActiveItemID="flight-tracker" customTitle="What's Overhead?">
-  <div class="text-5xl font-bold text-center">
+
+  <!-- HEADER -->
+  <div class="text-5xl font-bold text-center mt-6">
     Live air traffic near Whitefish, MT
   </div>
 
-  <p class="text-center py-4">
-    All data is captured from my home ADS-B antenna setup.
-    <a href="/blog/flight-tracking">Learn more</a>.
+  <p class="text-center py-4 max-w-3xl mx-auto">
+    All data is captured from my home ADS-B antenna setup and reflects only aircraft
+    my local receiver can hear (not aggregated radar data).
+    <a href="/blog/flight-tracking" class="underline">Learn more</a>.
   </p>
 
+  <!-- RADAR -->
   <div class="flex justify-center">
     <iframe
       src="https://globe.adsbexchange.com/?feed=dzxvAzrTfUSY&hideSidebar&zoom=7&lat=48.415&lon=-114.459"
@@ -21,14 +25,16 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     ></iframe>
   </div>
 
+  <!-- STATUS -->
   <p id="lastUpdated" class="text-center text-sm text-gray-500 mt-3"></p>
 
-  <table class="w-full mt-4 text-sm">
+  <!-- TABLE -->
+  <table class="w-full mt-6 text-sm border-collapse">
     <thead>
       <tr class="border-b">
-        <th>Airline</th>
-        <th>Callsign</th>
-        <th>ICAO</th>
+        <th class="text-left">Airline</th>
+        <th class="text-left">Callsign</th>
+        <th class="text-left">ICAO</th>
         <th class="text-right">Altitude (ft)</th>
         <th class="text-right">Speed (kt)</th>
         <th class="text-right">Track</th>
@@ -38,6 +44,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     <tbody id="flightBody"></tbody>
   </table>
 
+  <!-- SCRIPT -->
   <script type="module">
     const tbody = document.getElementById('flightBody');
     const lastUpdatedEl = document.getElementById('lastUpdated');
@@ -45,15 +52,72 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     let lastGoodFlights = [];
     let lastReceivedAt = 0;
 
-    function airlineFromFlight(f) {
-      if (f.op) return f.op;
+    // ICAO airline/operator → full name (US + common intl)
+    const AIRLINE_NAMES = {
+      AAL: American Airlines,
+      DAL: Delta Air Lines,
+      UAL: United Airlines,
+      ASA: Alaska Airlines,
+      SWA: Southwest Airlines,
+      NKS: Spirit Airlines,
+      FFT: Frontier Airlines,
+      JBU: JetBlue Airways,
+      AWE: Widerøe Airline (US flights rare),
+      ACA: Air Canada,
+      AFR: Air France,
+      BAW: British Airways,
+      DLH: Lufthansa,
+      KLM: KLM Royal Dutch Airlines,
+      QFA: Qantas,
+      UAE: Emirates,
+      ETD: Etihad Airways,
+      THY: Turkish Airlines,
+      ANA: All Nippon Airways,
+      JAL: Japan Airlines,
+      KAL: Korean Air,
+      CPA: Cathay Pacific,
+      SIA: Singapore Airlines,
+      AIC: Air India,
+      ACW: Air Canada Rouge,
+      WJA: WestJet,
+      IBK: Iberia,
+      VIR: Virgin Atlantic,
+      VRD: Virgin America (defunct, flights may remain in data),
+      UAL: United Airlines,
+      UPS: UPS Airlines,
+      FDX: FedEx Express,
+      GTI: Air Italy,
+      TOM: TOM Airline,
+      QTR: Qatar Airways,
+      AZA: Alitalia (Air Italy successor),
+      CSA: Czech Airlines,
+      LOT: LOT Polish Airlines,
+      SAS: Scandinavian Airlines,
+      FIN: Finnair,
+      TAP: TAP Portugal,
+      AUA: Austrian Airlines,
+      S7S: S7 Airlines,
+      AFL: AirBridgeCargo,
+      FXE: Federal Express Europe,
+      DLH: Lufthansa,
+      UAL: United Airlines,
+      UAL: United Airlines
 
-      if (f.flight) {
-        const prefix = f.flight.trim().match(/^[A-Z]{2,3}/);
-        if (prefix) return prefix[0];
+    };
+
+    function airlineFromFlight(f) {
+      // Prefer full operator name if present
+      if (f.op && f.op.trim()) {
+        return f.op.trim();
       }
 
-      return '—';
+      // Fallback: callsign ICAO prefix
+      const prefix = f.flight?.trim().match(/^[A-Z]{2,3}/)?.[0];
+      if (prefix && AIRLINE_NAMES[prefix]) {
+        return AIRLINE_NAMES[prefix];
+      }
+
+      return "—";
     }
 
     function render(flights) {
@@ -97,4 +161,5 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     updateFlights();
     setInterval(updateFlights, 10000);
   </script>
+
 </BaseLayout>

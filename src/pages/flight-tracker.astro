@@ -3,54 +3,114 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout sideBarActiveItemID="flight-tracker" customTitle="What's Overhead?">
-   <div class="text-5xl font-bold" style="text-align: center;">
-        Live air traffic near Whitefish, MT
-    </div>
-    <p style="text-align: center; padding-top: 20px; padding-bottom: 20px;">
-       All data is captured from my home ADS-B antenna setup, feeding to providers including Flightradar24, ADS-B Exchange, and Flightaware! Want to try this yourself? <a href="https://www.gavmatt.com/blog/flight-tracking">Learn more</a>.
+
+  <div class="text-5xl font-bold" style="text-align: center;">
+    Live air traffic near Whitefish, MT
+  </div>
+
+  <p style="text-align: center; padding-top: 20px; padding-bottom: 20px;">
+    All data is captured from my home ADS-B antenna setup, feeding to providers
+    including Flightradar24, ADS-B Exchange, and FlightAware.
+    Want to try this yourself?
+    <a href="https://www.gavmatt.com/blog/flight-tracking">Learn more</a>.
+  </p>
+
+  <div style="display: flex; justify-content: center;">
+    <iframe
+      src="https://globe.adsbexchange.com/?feed=dzxvAzrTfUSY&hideSidebar&rangeRings=1&hideButtons&zoom=7&lat=48.415&lon=-114.459"
+      width="800"
+      height="600"
+      frameborder="0"
+      style="border: 0;"
+    ></iframe>
+  </div>
+
+  <!-- BEGIN local ADS-B flight table -->
+  <div style="max-width: 1000px; margin: 50px auto 0 auto;">
+    <h2 class="text-3xl font-bold" style="text-align:center; margin-bottom: 10px;">
+      Aircraft currently received by my antenna
+    </h2>
+
+    <p style="text-align:center; color:#666; margin-bottom: 20px;">
+      Live data from my local ADS-B receiver (updates every 10 seconds)
     </p>
-    <div style="display: flex; justify-content: center;">
-        <iframe src="https://globe.adsbexchange.com/?feed=dzxvAzrTfUSY&hideSidebar&?rangeRings=1&hideButtons&zoom=7&lat=48.415&lon=-114.459" width="800" height="600" frameborder="0" style="border: 0;"></iframe>
-    </div>
-  
+
+    <table style="width:100%; border-collapse:collapse; font-size:0.9rem;">
+      <thead>
+        <tr style="background:#f5f5f5;">
+          <th style="padding:.4rem; text-align:left;">Callsign</th>
+          <th style="padding:.4rem; text-align:left;">ICAO</th>
+          <th style="padding:.4rem; text-align:right;">Altitude (ft)</th>
+          <th style="padding:.4rem; text-align:right;">Speed (kt)</th>
+          <th style="padding:.4rem; text-align:right;">Track</th>
+          <th style="padding:.4rem; text-align:right;">Last Seen (s)</th>
+        </tr>
+      </thead>
+      <tbody id="flightBody">
+        <tr>
+          <td colspan="6" style="padding:.4rem;">Loading…</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
   <script type="module">
     const tbody = document.getElementById('flightBody');
+
     async function updateFlights() {
       try {
-        const res = await fetch('/api/flights');
-        const data = await res.json();
-        const flights = data?.acList ?? [];
-        if (!flights.length) {
-          tbody.innerHTML = '<tr><td colspan="5" style="padding:.4rem;">No flights detected.</td></tr>';
+        const res = await fetch('/api/flights', { cache: 'no-store' });
+
+        if (res.status === 204) {
+          tbody.innerHTML =
+            '<tr><td colspan="6" style="padding:.4rem;">No flights detected.</td></tr>';
           return;
         }
-        tbody.innerHTML = flights.map(ac => {
-          const airline = ac.Op || '—';
-          const call = ac.Call || '—';
-          const from = ac.From || '—';
-          const to = ac.To || '—';
-          const alt = ac.Alt ? Math.round(ac.Alt) : '—';
-          const prefix = call.match(/^[A-Z]{2,3}/)?.[0];
-          const logo = prefix
-            ? `<img src="https://content.airhex.com/content/logos/airlines_${prefix}_50_50_s.png" width="22" height="22" style="vertical-align:middle;margin-right:6px;">`
-            : '';
-          return `
-            <tr>
-              <td style="border-bottom:1px solid #eee;padding:.4rem;">${logo}${airline}</td>
-              <td style="border-bottom:1px solid #eee;padding:.4rem;">${call}</td>
-              <td style="border-bottom:1px solid #eee;padding:.4rem;">${from}</td>
-              <td style="border-bottom:1px solid #eee;padding:.4rem;">${to}</td>
-              <td style="border-bottom:1px solid #eee;padding:.4rem;">${alt}</td>
-            </tr>
-          `;
-        }).join('');
-      } catch (e) {
-        tbody.innerHTML = '<tr><td colspan="5" style="padding:.4rem;">Error loading feed.</td></tr>';
+
+        if (!res.ok) {
+          throw new Error('Bad response');
+        }
+
+        const data = await res.json();
+        const flights = data.aircraft || [];
+
+        if (!flights.length) {
+          tbody.innerHTML =
+            '<tr><td colspan="6" style="padding:.4rem;">No flights detected.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = flights.map(f => `
+          <tr>
+            <td style="border-bottom:1px solid #eee;padding:.4rem;">
+              ${f.flight || '—'}
+            </td>
+            <td style="border-bottom:1px solid #eee;padding:.4rem;">
+              ${f.hex || '—'}
+            </td>
+            <td style="border-bottom:1px solid #eee;padding:.4rem; text-align:right;">
+              ${f.altitude ?? '—'}
+            </td>
+            <td style="border-bottom:1px solid #eee;padding:.4rem; text-align:right;">
+              ${f.speed ?? '—'}
+            </td>
+            <td style="border-bottom:1px solid #eee;padding:.4rem; text-align:right;">
+              ${f.track ?? '—'}
+            </td>
+            <td style="border-bottom:1px solid #eee;padding:.4rem; text-align:right;">
+              ${f.seen ?? '—'}
+            </td>
+          </tr>
+        `).join('');
+      } catch {
+        tbody.innerHTML =
+          '<tr><td colspan="6" style="padding:.4rem;">Error loading local feed.</td></tr>';
       }
     }
+
     updateFlights();
-    setInterval(updateFlights, 10000); // refresh data only
+    setInterval(updateFlights, 10000);
   </script>
-  <!-- END live flight table -->
-  
+  <!-- END local ADS-B flight table -->
+
 </BaseLayout>

@@ -19,30 +19,30 @@ export default async function handler(
     return res.status(401).send('Unauthorized');
   }
 
-  if (!req.headers['content-type']?.includes('application/json')) {
-    return res.status(400).send('Invalid content type');
-  }
+  let payload: any;
 
-  const payload = req.body;
+  try {
+    payload =
+      typeof req.body === 'string'
+        ? JSON.parse(req.body)
+        : req.body;
+  } catch {
+    return res.status(400).send('Invalid JSON');
+  }
 
   if (!payload || !Array.isArray(payload.aircraft)) {
     return res.status(400).send('Invalid payload');
   }
 
-  try {
-    await redis.set(
-      'latest-flights',
-      JSON.stringify({
-        receivedAt: Date.now(),
-        data: payload
-      }),
-      'EX',
-      60
-    );
+  await redis.set(
+    'latest-flights',
+    JSON.stringify({
+      receivedAt: Date.now(),
+      data: payload
+    }),
+    'EX',
+    60
+  );
 
-    return res.status(200).send('OK');
-  } catch (err) {
-    console.error('Redis write failed', err);
-    return res.status(500).send('Redis write failed');
-  }
+  return res.status(200).send('OK');
 }

@@ -1,26 +1,27 @@
 import type { APIRoute } from "astro";
 import Redis from "ioredis";
 
-const redis = new Redis(import.meta.env.REDIS_URL!);
 const TTL_SECONDS = 120;
 
 export const POST: APIRoute = async ({ request }) => {
-  const secret =
-    request.headers.get("x-flight-secret") ??
-    request.headers.get("X-Flight-Secret");
-
-  if (!secret || secret !== import.meta.env.FLIGHT_INGEST_SECRET) {
-    return new Response("Unauthorized", { status: 401 });
-  }
-
-  const payload = await request.json();
-  if (!Array.isArray(payload.aircraft)) {
-    return new Response("Invalid payload", { status: 400 });
-  }
-
-  const now = Date.now();
-
   try {
+    const redis = new Redis(process.env.REDIS_URL!);
+
+    const secret =
+      request.headers.get("x-flight-secret") ??
+      request.headers.get("X-Flight-Secret");
+
+    if (!secret || secret !== process.env.FLIGHT_INGEST_SECRET) {
+      return new Response("Unauthorized", { status: 401 });
+    }
+
+    const payload = await request.json();
+    if (!Array.isArray(payload.aircraft)) {
+      return new Response("Invalid payload", { status: 400 });
+    }
+
+    const now = Date.now();
+
     for (const ac of payload.aircraft) {
       if (!ac.hex) continue;
 

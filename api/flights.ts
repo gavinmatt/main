@@ -1,10 +1,10 @@
 import type { APIRoute } from "astro";
 import Redis from "ioredis";
 
-const redis = new Redis(import.meta.env.REDIS_URL!);
-
 export const GET: APIRoute = async () => {
   try {
+    const redis = new Redis(process.env.REDIS_URL!);
+
     const keys = await redis.keys("aircraft:*");
     if (!keys.length) {
       return new Response(null, { status: 204 });
@@ -17,10 +17,7 @@ export const GET: APIRoute = async () => {
       .sort((a, b) => (b.lastSeenAt ?? 0) - (a.lastSeenAt ?? 0));
 
     return new Response(
-      JSON.stringify({
-        receivedAt: Date.now(),
-        aircraft
-      }),
+      JSON.stringify({ receivedAt: Date.now(), aircraft }),
       { headers: { "Content-Type": "application/json" } }
     );
   } catch {

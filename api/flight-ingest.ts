@@ -1,11 +1,7 @@
 import type { APIRoute } from "astro";
-import { Redis } from "@upstash/redis";
+import Redis from "ioredis";
 
-const redis = new Redis({
-  url: import.meta.env.REDIS_URL!,
-  token: import.meta.env.REDIS_TOKEN!
-});
-
+const redis = new Redis(import.meta.env.REDIS_URL!);
 const TTL_SECONDS = 120;
 
 export const POST: APIRoute = async ({ request }) => {
@@ -24,24 +20,29 @@ export const POST: APIRoute = async ({ request }) => {
 
   const now = Date.now();
 
-  for (const ac of payload.aircraft) {
-    if (!ac.hex) continue;
+  try {
+    for (const ac of payload.aircraft) {
+      if (!ac.hex) continue;
 
-    const key = `aircraft:${ac.hex}`;
-    const existing = await redis.get<any>(key);
+      const key = `aircraft:${ac.hex}`;
+      const existingRaw = await redis.get(key);
+      const existing = existingRaw ? JSON.parse(existingRaw) : {};
 
-    const merged = {
-      ...(existing || {}),
-      ...Object.fromEntries(
-        Object.entries(ac).filter(
-          ([, v]) => v !== null && v !== undefined
-        )
-      ),
-      lastSeenAt: now
-    };
+      const merged = {
+        ...existing,
+        ...Object.fromEntries(
+          Object.entries(ac).filter(
+            ([, v]) => v !== null && v !== undefined
+          )
+        ),
+        lastSeenAt: now
+      };
 
-    await redis.set(key, merged, { ex: TTL_SECONDS });
+      await redis.set(key, JSON.stringify(merged), "EX", TTL_SECONDS);
+    }
+
+    return new Response("OK", { status: 200 });
+  } catch {
+    return new Response("Internal Server Error", { status: 500 });
   }
-
-  return new Response("OK", { status: 200 });
 };

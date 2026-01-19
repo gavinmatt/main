@@ -25,11 +25,18 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     ></iframe>
   </div>
 
-  <div>
-    <div class="text-3xl w-full font-bold mb-5 mt-10">What's overhead?</div>
+  <div class="text-center">
+    <div class="text-3xl w-full font-bold mb-5 mt-10">
+      What's overhead?
+    </div>
   </div>
-  <p>More data about the planes currently flying in reach of my antenna! — and missing data are expected - not all planes send the full array of flight data.</p>
+  
+  <p class="text-center">
+    More data about the planes currently flying in reach of my antenna! — and missing data are expected - not all planes send the full array of flight data.
+  </p>
+  
   <div class="pb-12 mt-5"></div>
+  
 
   <!-- STATUS -->
   <p id="lastUpdated" class="text-center text-sm text-gray-500 mt-3"></p>
@@ -38,6 +45,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   <table class="w-full mt-6 text-sm border-collapse">
     <thead>
       <tr class="border-b">
+        <th class="text-left">Flag</th>
         <th class="text-left">Airline</th>
         <th class="text-left">Callsign</th>
         <th class="text-left">ICAO</th>
@@ -58,7 +66,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     let lastGoodFlights = [];
     let lastReceivedAt = 0;
 
-    // ICAO airline/operator → full name (US + common intl)
+    // Airline/operator → full name
     const AIRLINE_NAMES = {
       AAL: "American Airlines",
       DAL: "Delta Air Lines",
@@ -68,78 +76,105 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       NKS: "Spirit Airlines",
       FFT: "Frontier Airlines",
       JBU: "JetBlue Airways",
-      AWE: "Widerøe Airline",
       ACA: "Air Canada",
-      AFR: "Air France",
       BAW: "British Airways",
+      AFR: "Air France",
       DLH: "Lufthansa",
       KLM: "KLM Royal Dutch Airlines",
-      QFA: "Qantas",
+      QTR: "Qatar Airways",
       UAE: "Emirates",
-      ETD: "Etihad Airways",
       THY: "Turkish Airlines",
       ANA: "All Nippon Airways",
       JAL: "Japan Airlines",
       KAL: "Korean Air",
       CPA: "Cathay Pacific",
       SIA: "Singapore Airlines",
-      AIC: "Air India",
-      ACW: "Air Canada Rouge",
-      WJA: "WestJet",
-      IBK: "Iberia",
-      VIR: "Virgin Atlantic",
-      VRD: "Virgin America",
-      UAL: "United Airlines",
       UPS: "UPS Airlines",
-      FDX: "FedEx Express",
-      GTI: "Air Italy",
-      TOM: "TOM Airline",
-      QTR: "Qatar Airways",
-      AZA: "Alitalia",
-      CSA: "Czech Airlines",
-      LOT: "LOT Polish Airlines",
-      SAS: "Scandinavian Airlines",
-      FIN: "Finnair",
-      TAP: "TAP Portugal",
-      AUA: "Austrian Airlines",
-      S7S: "S7 Airlines",
-      AFL: "AirBridgeCargo",
-      FXE: "Federal Express Europe",
-      DLH: "Lufthansa",
-      UAL: "United Airlines"    };
+      FDX: "FedEx Express"
+    };
+
+    const COMMON_AIRLINES = new Set([
+      "United Airlines",
+      "Delta Air Lines",
+      "American Airlines",
+      "Alaska Airlines",
+      "Southwest Airlines",
+      "FedEx Express",
+      "UPS Airlines"
+    ]);
 
     function airlineFromFlight(f) {
-      // Prefer full operator name if present
-      if (f.op && f.op.trim()) {
-        return f.op.trim();
-      }
-
-      // Fallback: callsign ICAO prefix
+      if (f.op && f.op.trim()) return f.op.trim();
       const prefix = f.flight?.trim().match(/^[A-Z]{2,3}/)?.[0];
-      if (prefix && AIRLINE_NAMES[prefix]) {
-        return AIRLINE_NAMES[prefix];
-      }
+      return AIRLINE_NAMES[prefix] || "—";
+    }
 
-      return "—";
+    /* -------- NOTABILITY LOGIC -------- */
+
+    function isMilitary(f) {
+      return (
+        f.hex?.startsWith("AE") ||
+        /^(RCH|QID|PAT|VM|NAVY)/.test(f.flight || "") ||
+        /air force|navy|usaf|army/i.test(f.op || "")
+      );
+    }
+
+    function isRareType(f) {
+      return /^(B52|B1|B2|U2|E3|E6|E4B|KC|C17|GLF|GLEX)/i.test(f.t || "");
+    }
+
+    function isHighPerformance(f) {
+      return (f.alt_baro ?? 0) > 45000 || (f.gs ?? 0) > 550;
+    }
+
+    function classifyNotability(f) {
+      const airline = airlineFromFlight(f);
+
+      if (isMilitary(f))
+        return { label: "MIL", cls: "bg-red-100 text-red-800" };
+
+      if (isRareType(f))
+        return { label: "RARE", cls: "bg-purple-100 text-purple-800" };
+
+      if (airline !== "—" && !COMMON_AIRLINES.has(airline))
+        return { label: "UNCOMMON", cls: "bg-blue-100 text-blue-800" };
+
+      if (isHighPerformance(f))
+        return { label: "FAST/HIGH", cls: "bg-yellow-100 text-yellow-800" };
+
+      return null;
     }
 
     function render(flights) {
-      tbody.innerHTML = flights.map(f => `
-        <tr class="border-b">
-          <td>${airlineFromFlight(f)}</td>
-          <td>${f.flight?.trim() || '—'}</td>
-          <td>${f.hex || '—'}</td>
-          <td class="text-right">${f.alt_baro ?? f.alt_geom ?? '—'}</td>
-          <td class="text-right">${f.gs ?? '—'}</td>
-          <td class="text-right">${f.track ?? '—'}</td>
-          <td class="text-right">${f.seen ?? '—'}</td>
-        </tr>
-      `).join('');
+      tbody.innerHTML = flights.map(f => {
+        const note = classifyNotability(f);
+
+        return `
+          <tr class="border-b">
+            <td>
+              ${
+                note
+                  ? `<span class="px-2 py-0.5 rounded text-xs font-medium ${note.cls}">
+                       ${note.label}
+                     </span>`
+                  : ""
+              }
+            </td>
+            <td>${airlineFromFlight(f)}</td>
+            <td>${f.flight?.trim() || "—"}</td>
+            <td>${f.hex || "—"}</td>
+            <td class="text-right">${f.alt_baro ?? f.alt_geom ?? "—"}</td>
+            <td class="text-right">${f.gs ?? "—"}</td>
+            <td class="text-right">${f.track ?? "—"}</td>
+            <td class="text-right">${f.seen ?? "—"}</td>
+          </tr>
+        `;
+      }).join("");
     }
 
     async function updateFlights() {
       try {
-        const res = await fetch('/api/flights');
+        const res = await fetch("/api/flights");
         if (res.status === 204) return;
 
         const data = await res.json();
@@ -153,9 +188,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
         const age = Date.now() - lastReceivedAt;
         lastUpdatedEl.textContent =
-          'Last updated ' +
+          "Last updated " +
           new Date(lastReceivedAt).toLocaleTimeString() +
-          (age > 30000 ? ' (refresh coming)' : '');
+          (age > 30000 ? " (refresh coming)" : "");
       } catch {
         // ignore transient errors
       }

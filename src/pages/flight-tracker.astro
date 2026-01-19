@@ -45,7 +45,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         <th class="text-left">Flag</th>
         <th class="text-left">Airline</th>
         <th class="text-left">Callsign</th>
-        <th class="text-left">Type</th>
+        <th class="text-left">Class</th>
         <th class="text-left">ICAO</th>
         <th class="text-right">Altitude (ft)</th>
         <th class="text-right">Speed (kt)</th>
@@ -117,9 +117,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       return AIRLINE_NAMES[prefix] || "—";
     }
 
-    function aircraftType(f) {
-      return f.t || f.type || "—";
-    }
+    function aircraftClass(f) {
+  if (f.category) return f.category;
+  if (f.hex?.startsWith("AE")) return "MIL";
+  return "—";
+}
 
     /* -------- NOTABILITY LOGIC -------- */
 
@@ -174,7 +176,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
             </td>
             <td>${airlineFromFlight(f)}</td>
             <td>${f.flight?.trim() || "—"}</td>
-            <td>${aircraftType(f)}</td>
+            <td>${aircraftClass(f)}</td>
             <td>${f.hex || "—"}</td>
             <td class="text-right">${f.alt_baro ?? f.alt_geom ?? "—"}</td>
             <td class="text-right">${f.gs ?? "—"}</td>

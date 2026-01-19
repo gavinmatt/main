@@ -1,27 +1,23 @@
-import type { APIRoute } from "astro";
-import { Redis } from "@upstash/redis";
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+import Redis from 'ioredis';
 
-const redis = new Redis({
-  url: import.meta.env.REDIS_URL!,
-  token: import.meta.env.REDIS_TOKEN!
-});
+const redis = new Redis(process.env.REDIS_URL!);
 
-export const GET: APIRoute = async () => {
-  const keys = await redis.keys("aircraft:*");
+export default async function handler(
+  _req: VercelRequest,
+  res: VercelResponse
+) {
+  const raw = await redis.get('latest-flights');
 
-  if (!keys.length) {
-    return new Response(null, { status: 204 });
+  if (!raw) {
+    return res.status(204).end();
   }
 
-  const aircraft = (await redis.mget<any>(keys))
-    .filter(Boolean)
-    .sort((a, b) => b.lastSeenAt - a.lastSeenAt);
+  const parsed = JSON.parse(raw);
 
-  return new Response(
-    JSON.stringify({
-      receivedAt: Date.now(),
-      aircraft
-    }),
-    { headers: { "Content-Type": "application/json" } }
-  );
-};
+  return res.status(200).json({
+    receivedAt: parsed.receivedAt,
+    count: parsed.data.count,
+    aircraft: parsed.data.aircraft
+  });
+}

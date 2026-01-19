@@ -134,8 +134,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
 
     function isRareType(f) {
-      return /^(B52|B1|B2|U2|E3|E6|E4B|KC|C17|C5|GLF|GLEX)/i.test(aircraftType(f));
-    }
+  return /^(B52|B1|B2|U2|E3|E6|E4B|KC|C17|C5|GLF|GLEX)/i.test(f.t || f.type || "");
+}
+
 
     function isHighPerformance(f) {
       return (f.alt_baro ?? 0) > 45000 || (f.gs ?? 0) > 550;

@@ -85,16 +85,14 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     function distanceNm(lat1, lon1, lat2, lon2) {
       const R = 3440.065;
-      const toRad = d => (d * Math.PI) / 180;
+      const toRad = (d) => (d * Math.PI) / 180;
 
       const dLat = toRad(lat2 - lat1);
       const dLon = toRad(lon2 - lon1);
 
       const a =
         Math.sin(dLat / 2) ** 2 +
-        Math.cos(toRad(lat1)) *
-          Math.cos(toRad(lat2)) *
-          Math.sin(dLon / 2) ** 2;
+        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
 
       return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     }
@@ -105,9 +103,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
 
     function distanceFlag(d) {
-      if (d > 250) return { label: "EXTREME", cls: "bg-purple-100 text-purple-800" };
-      if (d > 200) return { label: "LONG-RANGE", cls: "bg-indigo-100 text-indigo-800" };
-      if (d > 150) return { label: "DISTANT", cls: "bg-blue-100 text-blue-800" };
+      if (d > 250)
+        return { label: "EXTREME", cls: "bg-purple-100 text-purple-800" };
+      if (d > 200)
+        return { label: "LONG-RANGE", cls: "bg-indigo-100 text-indigo-800" };
+      if (d > 150)
+        return { label: "DISTANT", cls: "bg-blue-100 text-blue-800" };
       return null;
     }
 
@@ -169,7 +170,13 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
 
     function render(flights) {
-      const activeFlights = flights.filter(f => !isStale(f));
+      const activeFlights = flights
+        .filter((f) => !isStale(f))
+        .sort((a, b) => {
+          const da = aircraftDistance(a);
+          const db = aircraftDistance(b);
+          return (db ?? 0) - (da ?? 0);
+        });
 
       if (!activeFlights.length) {
         tbody.innerHTML = "";
@@ -179,12 +186,13 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
       emptyStateEl.classList.add("hidden");
 
-      tbody.innerHTML = activeFlights.map(f => {
-        const note = classifyNotability(f);
-        const d = aircraftDistance(f);
-        const dFlag = d != null ? distanceFlag(d) : null;
+      tbody.innerHTML = activeFlights
+        .map((f) => {
+          const note = classifyNotability(f);
+          const d = aircraftDistance(f);
+          const dFlag = d != null ? distanceFlag(d) : null;
 
-        return `
+          return `
           <tr class="border-b text-gray-900">
             <td class="py-2 px-3 space-x-1">
               ${note ? `<span class="px-2 py-0.5 rounded text-xs font-medium ${note.cls}">${note.label}</span>` : ""}
@@ -201,7 +209,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
             <td class="text-right py-2 px-3">${secondsSinceSeen(f)}</td>
           </tr>
         `;
-      }).join("");
+        })
+        .join("");
     }
 
     async function updateFlights() {

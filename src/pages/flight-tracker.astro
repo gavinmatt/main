@@ -3,15 +3,14 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout sideBarActiveItemID="flight-tracker" customTitle="What's Overhead?">
-
   <!-- HEADER -->
   <div class="text-5xl font-bold text-center mt-6">
     Live air traffic near Whitefish, MT
   </div>
 
   <p class="text-center py-4 max-w-3xl mx-auto">
-    All data is captured from my home ADS-B antenna setup and reflects only aircraft
-    my local receiver can hear (not aggregated radar data).
+    All data is captured from my home ADS-B antenna setup and reflects only
+    aircraft my local receiver can hear (not aggregated radar data).
     <a href="/blog/flight-tracking" class="underline">Learn more</a>.
   </p>
 
@@ -21,24 +20,37 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       src="https://globe.adsbexchange.com/?feed=dzxvAzrTfUSY&hideSidebar&hideButtons&hideStats&zoom=7&lat=48.415&lon=-114.459&rings"
       width="800"
       height="600"
-      frameborder="0"
-    ></iframe>
+      frameborder="0"></iframe>
   </div>
 
   <!-- TABLE HEADER -->
   <div class="text-center">
-    <div class="text-3xl w-full font-bold mt-10 mb-3">
-      What’s overhead?
-    </div>
+    <div class="text-3xl w-full font-bold mt-10 mb-3">What’s overhead?</div>
   </div>
 
   <p class="text-center mb-4">
-    More data about the planes currently flying in reach of my antenna.
-    “—” and missing values are expected as not all planes send comprehensive data and data is lost as range increases. The table fades in color the older the data, and will flag interesting or uncommon flights.
+    More data about the planes currently flying in reach of my antenna. “—” and
+    missing values are expected as not all planes send comprehensive data and
+    data is lost as range increases. The table fades in color the older the
+    data, and will flag interesting or uncommon flights.
   </p>
 
   <!-- STATUS -->
   <p id="lastUpdated" class="text-center text-sm text-gray-500 mt-2 mb-4"></p>
+
+  <!-- EMPTY STATE -->
+  <div
+    id="emptyState"
+    class="hidden max-w-3xl mx-auto mt-8 mb-4 text-center border border-dashed rounded-lg py-10 px-6 text-gray-500"
+  >
+    <div class="text-xl font-semibold mb-2">No aircraft currently in range</div>
+    <p class="text-sm">
+      My receiver is online and listening, but there are no aircraft
+      transmitting decodable ADS-B data within range right now.
+      <br />
+      This is normal in mountainous terrain and during quiet traffic periods.
+    </p>
+  </div>
 
   <!-- TABLE -->
   <div class="max-w-6xl mx-auto px-4">
@@ -63,6 +75,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   <!-- SCRIPT -->
   <script type="module">
     const tbody = document.getElementById("flightBody");
+    const emptyStateEl = document.getElementById("emptyState");
     const lastUpdatedEl = document.getElementById("lastUpdated");
 
     let lastReceivedAt = 0;
@@ -85,7 +98,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       FDX: "FedEx Express",
       GTI: "Atlas Air",
       CKS: "Kalitta Air",
-      ABX: "ABX Air"
+      ABX: "ABX Air",
     };
 
     const COMMON_AIRLINES = new Set(Object.values(AIRLINE_NAMES));
@@ -135,31 +148,42 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
 
     function render(flights) {
-      tbody.innerHTML = flights.map(f => {
-        const note = classifyNotability(f);
+      if (!flights.length) {
+        tbody.innerHTML = "";
+        emptyStateEl.classList.remove("hidden");
+        hasRenderedOnce = true;
+        return;
+      }
 
-        return `
-          <tr class="border-b transition-colors duration-500 ${rowClass(f)}">
-            <td class="py-2 px-3">
-              ${
-                note
-                  ? `<span class="px-2 py-0.5 rounded text-xs font-medium ${note.cls}">
-                       ${note.label}
-                     </span>`
-                  : ""
-              }
-            </td>
-            <td class="py-2 px-3">${airlineFromFlight(f)}</td>
-            <td class="py-2 px-3">${f.flight?.trim() || "—"}</td>
-            <td class="py-2 px-3">${aircraftClass(f)}</td>
-            <td class="py-2 px-3">${f.hex || "—"}</td>
-            <td class="text-right py-2 px-3">${f.alt_baro ?? f.alt_geom ?? "—"}</td>
-            <td class="text-right py-2 px-3">${f.gs ?? "—"}</td>
-            <td class="text-right py-2 px-3">${f.track ?? "—"}</td>
-            <td class="text-right py-2 px-3">${secondsSinceSeen(f)}</td>
-          </tr>
-        `;
-      }).join("");
+      emptyStateEl.classList.add("hidden");
+
+      tbody.innerHTML = flights
+        .map((f) => {
+          const note = classifyNotability(f);
+
+          return `
+      <tr class="border-b transition-colors duration-500 ${rowClass(f)}">
+        <td class="py-2 px-3">
+          ${
+            note
+              ? `<span class="px-2 py-0.5 rounded text-xs font-medium ${note.cls}">
+                   ${note.label}
+                 </span>`
+              : ""
+          }
+        </td>
+        <td class="py-2 px-3">${airlineFromFlight(f)}</td>
+        <td class="py-2 px-3">${f.flight?.trim() || "—"}</td>
+        <td class="py-2 px-3">${aircraftClass(f)}</td>
+        <td class="py-2 px-3">${f.hex || "—"}</td>
+        <td class="text-right py-2 px-3">${f.alt_baro ?? f.alt_geom ?? "—"}</td>
+        <td class="text-right py-2 px-3">${f.gs ?? "—"}</td>
+        <td class="text-right py-2 px-3">${f.track ?? "—"}</td>
+        <td class="text-right py-2 px-3">${secondsSinceSeen(f)}</td>
+      </tr>
+    `;
+        })
+        .join("");
 
       hasRenderedOnce = true;
     }
@@ -183,5 +207,4 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     updateFlights();
     setInterval(updateFlights, 10000);
   </script>
-
 </BaseLayout>

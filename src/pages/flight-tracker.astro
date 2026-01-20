@@ -111,9 +111,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
 
     function isStale(f) {
-  if (!f.lastSeenAt) return false;
-  return Date.now() - f.lastSeenAt > STALE_AFTER_MS;
-
+      if (!f.lastSeenAt) return false;
+      return Date.now() - f.lastSeenAt > STALE_AFTER_MS;
+    }
     function aircraftClass(f) {
       if (f.category) return f.category;
       if (f.hex?.startsWith("AE")) return "MIL";

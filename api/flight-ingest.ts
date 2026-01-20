@@ -1,48 +1,47 @@
-import type { APIRoute } from "astro";
-import Redis from "ioredis";
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+import Redis from 'ioredis';
 
-const redis = new Redis(import.meta.env.REDIS_URL!);
-const TTL_SECONDS = 120;
+const redis = new Redis(process.env.REDIS_URL!);
 
-export const POST: APIRoute = async ({ request }) => {
+export default async function handler(
+  req: VercelRequest,
+  res: VercelResponse
+) {
+  if (req.method !== 'POST') {
+    return res.status(405).send('Method Not Allowed');
+  }
+
   const secret =
-    request.headers.get("x-flight-secret") ??
-    request.headers.get("X-Flight-Secret");
+    req.headers['x-flight-secret'] ||
+    req.headers['X-Flight-Secret'];
 
-  if (!secret || secret !== import.meta.env.FLIGHT_INGEST_SECRET) {
-    return new Response("Unauthorized", { status: 401 });
+  if (!secret || secret !== process.env.FLIGHT_INGEST_SECRET) {
+    return res.status(401).send('Unauthorized');
   }
 
-  const payload = await request.json();
-  if (!Array.isArray(payload.aircraft)) {
-    return new Response("Invalid payload", { status: 400 });
-  }
-
-  const now = Date.now();
-
+  let payload: any;
   try {
-    for (const ac of payload.aircraft) {
-      if (!ac.hex) continue;
-
-      const key = `aircraft:${ac.hex}`;
-      const existingRaw = await redis.get(key);
-      const existing = existingRaw ? JSON.parse(existingRaw) : {};
-
-      const merged = {
-        ...existing,
-        ...Object.fromEntries(
-          Object.entries(ac).filter(
-            ([, v]) => v !== null && v !== undefined
-          )
-        ),
-        lastSeenAt: now
-      };
-
-      await redis.set(key, JSON.stringify(merged), "EX", TTL_SECONDS);
-    }
-
-    return new Response("OK", { status: 200 });
+    payload =
+      typeof req.body === 'string'
+        ? JSON.parse(req.body)
+        : req.body;
   } catch {
-    return new Response("Internal Server Error", { status: 500 });
+    return res.status(400).send('Invalid JSON');
   }
-};
+
+  if (!payload || !Array.isArray(payload.aircraft)) {
+    return res.status(400).send('Invalid payload');
+  }
+
+  await redis.set(
+    'latest-flights',
+    JSON.stringify({
+      receivedAt: Date.now(),
+      data: payload
+    }),
+    'EX',
+    180 // ✅ TTL safely longer than push interval
+  );
+
+  return res.status(200).send('OK');
+}

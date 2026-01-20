@@ -25,37 +25,40 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     ></iframe>
   </div>
 
+  <!-- TABLE HEADER -->
   <div class="text-center">
-    <div class="text-3xl w-full font-bold mt-8 mb-3">
-      What's overhead?
+    <div class="text-3xl w-full font-bold mt-10 mb-3">
+      What’s overhead?
     </div>
   </div>
 
   <p class="text-center mb-4">
-    More data about the planes currently flying in reach of my antenna!
-    “—” and missing data are expected — not all planes send a full array of flight data.
+    More data about the planes currently flying in reach of my antenna.
+    “—” and missing values are expected as not all planes send comprehensive data and data is lost as range increases.
   </p>
 
   <!-- STATUS -->
-  <p id="lastUpdated" class="text-center text-sm text-gray-500 mt-2 mb-2"></p>
+  <p id="lastUpdated" class="text-center text-sm text-gray-500 mt-2 mb-4"></p>
 
   <!-- TABLE -->
-  <table class="w-full mt-6 text-sm border-collapse">
-    <thead>
-      <tr class="border-b">
-        <th class="text-left">Flag</th>
-        <th class="text-left">Airline</th>
-        <th class="text-left">Callsign</th>
-        <th class="text-left">Class</th>
-        <th class="text-left">ICAO</th>
-        <th class="text-right">Altitude (ft)</th>
-        <th class="text-right">Speed (kt)</th>
-        <th class="text-right">Track</th>
-        <th class="text-right">Last Seen (s)</th>
-      </tr>
-    </thead>
-    <tbody id="flightBody"></tbody>
-  </table>
+  <div class="max-w-6xl mx-auto px-4">
+    <table class="w-full border-collapse text-base">
+      <thead>
+        <tr class="border-b text-gray-700">
+          <th class="text-left py-2 px-3">Flag</th>
+          <th class="text-left py-2 px-3">Airline</th>
+          <th class="text-left py-2 px-3">Callsign</th>
+          <th class="text-left py-2 px-3">Class</th>
+          <th class="text-left py-2 px-3">ICAO</th>
+          <th class="text-right py-2 px-3">Altitude (ft)</th>
+          <th class="text-right py-2 px-3">Speed (kt)</th>
+          <th class="text-right py-2 px-3">Track</th>
+          <th class="text-right py-2 px-3">Last Seen (s)</th>
+        </tr>
+      </thead>
+      <tbody id="flightBody"></tbody>
+    </table>
+  </div>
 
   <!-- SCRIPT -->
   <script type="module">
@@ -63,6 +66,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     const lastUpdatedEl = document.getElementById("lastUpdated");
 
     let lastReceivedAt = 0;
+    let hasRenderedOnce = false;
 
     /* ---------- AIRLINE LOOKUP ---------- */
 
@@ -81,38 +85,13 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       FDX: "FedEx Express",
       GTI: "Atlas Air",
       CKS: "Kalitta Air",
-      ABX: "ABX Air",
-      AFR: "Air France",
-      BAW: "British Airways",
-      DLH: "Lufthansa",
-      KLM: "KLM Royal Dutch Airlines",
-      QTR: "Qatar Airways",
-      UAE: "Emirates",
-      THY: "Turkish Airlines",
-      ANA: "All Nippon Airways",
-      JAL: "Japan Airlines"
+      ABX: "ABX Air"
     };
 
-    const COMMON_AIRLINES = new Set([
-      "United Airlines",
-      "Delta Air Lines",
-      "American Airlines",
-      "Alaska Airlines",
-      "Southwest Airlines",
-      "JetBlue Airways",
-      "Spirit Airlines",
-      "Frontier Airlines",
-      "Air Canada",
-      "WestJet",
-      "FedEx Express",
-      "UPS Airlines",
-      "Atlas Air",
-      "Kalitta Air",
-      "ABX Air"
-    ]);
+    const COMMON_AIRLINES = new Set(Object.values(AIRLINE_NAMES));
 
     function airlineFromFlight(f) {
-      if (f.op && f.op.trim()) return f.op.trim();
+      if (f.op?.trim()) return f.op.trim();
       const prefix = f.flight?.trim().match(/^[A-Z]{2,3}/)?.[0];
       return AIRLINE_NAMES[prefix] || "—";
     }
@@ -125,47 +104,28 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     /* ---------- NOTABILITY ---------- */
 
-    function isMilitary(f) {
-      return (
-        f.hex?.startsWith("AE") ||
-        /^(RCH|QID|PAT|VM|NAVY)/.test(f.flight || "") ||
-        /air force|navy|usaf|army/i.test(f.op || "")
-      );
-    }
-
-    function isRareType(f) {
-      return /^(B52|B1|B2|U2|E3|E6|E4B|KC|C17|C5|GLF|GLEX)/i.test(f.t || "");
-    }
-
-    function isHighPerformance(f) {
-      return (f.alt_baro ?? 0) > 45000 || (f.gs ?? 0) > 550;
-    }
-
     function classifyNotability(f) {
-      const airline = airlineFromFlight(f);
-
-      if (isMilitary(f))
+      if (f.hex?.startsWith("AE"))
         return { label: "MIL", cls: "bg-red-100 text-red-800" };
 
-      if (isRareType(f))
-        return { label: "RARE", cls: "bg-purple-100 text-purple-800" };
-
+      const airline = airlineFromFlight(f);
       if (airline !== "—" && !COMMON_AIRLINES.has(airline))
         return { label: "UNCOMMON", cls: "bg-blue-100 text-blue-800" };
 
-      if (isHighPerformance(f))
+      if ((f.alt_baro ?? 0) > 45000 || (f.gs ?? 0) > 550)
         return { label: "FAST/HIGH", cls: "bg-yellow-100 text-yellow-800" };
 
       return null;
     }
 
-    /* ---------- FADE-OUT ---------- */
+    /* ---------- ROW AGING (COLOR-BASED, NOT OPACITY) ---------- */
 
-    function ageOpacity(f) {
+    function rowClass(f) {
+      if (!hasRenderedOnce) return "text-gray-900";
       const ageMs = Date.now() - (f.lastSeenAt || 0);
-      if (ageMs < 15000) return 1;
-      if (ageMs > 90000) return 0.25;
-      return 1 - (ageMs - 15000) / 75000;
+      if (ageMs > 90000) return "text-gray-400";
+      if (ageMs > 45000) return "text-gray-600";
+      return "text-gray-900";
     }
 
     function secondsSinceSeen(f) {
@@ -179,9 +139,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         const note = classifyNotability(f);
 
         return `
-          <tr class="border-b transition-opacity duration-700"
-              style="opacity:${ageOpacity(f)}">
-            <td>
+          <tr class="border-b transition-colors duration-500 ${rowClass(f)}">
+            <td class="py-2 px-3">
               ${
                 note
                   ? `<span class="px-2 py-0.5 rounded text-xs font-medium ${note.cls}">
@@ -190,17 +149,19 @@ import BaseLayout from "../layouts/BaseLayout.astro";
                   : ""
               }
             </td>
-            <td>${airlineFromFlight(f)}</td>
-            <td>${f.flight?.trim() || "—"}</td>
-            <td>${aircraftClass(f)}</td>
-            <td>${f.hex || "—"}</td>
-            <td class="text-right">${f.alt_baro ?? f.alt_geom ?? "—"}</td>
-            <td class="text-right">${f.gs ?? "—"}</td>
-            <td class="text-right">${f.track ?? "—"}</td>
-            <td class="text-right">${secondsSinceSeen(f)}</td>
+            <td class="py-2 px-3">${airlineFromFlight(f)}</td>
+            <td class="py-2 px-3">${f.flight?.trim() || "—"}</td>
+            <td class="py-2 px-3">${aircraftClass(f)}</td>
+            <td class="py-2 px-3">${f.hex || "—"}</td>
+            <td class="text-right py-2 px-3">${f.alt_baro ?? f.alt_geom ?? "—"}</td>
+            <td class="text-right py-2 px-3">${f.gs ?? "—"}</td>
+            <td class="text-right py-2 px-3">${f.track ?? "—"}</td>
+            <td class="text-right py-2 px-3">${secondsSinceSeen(f)}</td>
           </tr>
         `;
       }).join("");
+
+      hasRenderedOnce = true;
     }
 
     async function updateFlights() {

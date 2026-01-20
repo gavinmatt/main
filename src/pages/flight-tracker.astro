@@ -3,15 +3,14 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout sideBarActiveItemID="flight-tracker" customTitle="What's Overhead?">
-
   <!-- HEADER -->
   <div class="text-5xl font-bold text-center mt-6">
     Live air traffic near Whitefish, MT
   </div>
 
   <p class="text-center py-4 max-w-3xl mx-auto">
-    All data is captured from my home ADS-B antenna setup and reflects only aircraft
-    my local receiver can hear (not aggregated radar data).
+    All data is captured from my home ADS-B antenna setup and reflects only
+    aircraft my local receiver can hear (not aggregated radar data).
     <a href="/blog/flight-tracking" class="underline">Learn more</a>.
   </p>
 
@@ -21,48 +20,67 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       src="https://globe.adsbexchange.com/?feed=dzxvAzrTfUSY&hideSidebar&hideButtons&hideStats&zoom=7&lat=48.415&lon=-114.459&rings"
       width="800"
       height="600"
-      frameborder="0"
-    ></iframe>
+      frameborder="0"></iframe>
   </div>
 
+  <!-- TABLE HEADER -->
   <div class="text-center">
-    <div class="text-3xl w-full font-bold mt-8 mb-3">
-      What's overhead?
-    </div>
+    <div class="text-3xl w-full font-bold mt-10 mb-3">What’s overhead?</div>
   </div>
 
   <p class="text-center mb-4">
-    More data about the planes currently flying in reach of my antenna!
-    “—” and missing data are expected — not all planes send a full array of flight data.
+    More data about the planes currently flying in reach of my antenna. “—” and
+    missing values are expected as not all planes send comprehensive data and
+    data is lost as range increases. The table fades in color the older the
+    data, and will flag interesting or uncommon flights.
   </p>
 
   <!-- STATUS -->
-  <p id="lastUpdated" class="text-center text-sm text-gray-500 mt-2 mb-2"></p>
+  <p id="lastUpdated" class="text-center text-sm text-gray-500 mt-2 mb-4"></p>
+
+  <!-- EMPTY STATE -->
+  <div
+    id="emptyState"
+    class="hidden max-w-3xl mx-auto mt-8 mb-4 text-center border border-dashed rounded-lg py-10 px-6 text-gray-500"
+  >
+    <div class="text-xl font-semibold mb-2">No aircraft currently in range</div>
+    <p class="text-sm">
+      My receiver is online and listening, but there are no aircraft
+      transmitting decodable ADS-B data within range right now.
+      <br />
+      This is normal in mountainous terrain and during quiet traffic periods.
+    </p>
+  </div>
 
   <!-- TABLE -->
-  <table class="w-full mt-6 text-sm border-collapse">
-    <thead>
-      <tr class="border-b">
-        <th class="text-left">Flag</th>
-        <th class="text-left">Airline</th>
-        <th class="text-left">Callsign</th>
-        <th class="text-left">Class</th>
-        <th class="text-left">ICAO</th>
-        <th class="text-right">Altitude (ft)</th>
-        <th class="text-right">Speed (kt)</th>
-        <th class="text-right">Track</th>
-        <th class="text-right">Last Seen (s)</th>
-      </tr>
-    </thead>
-    <tbody id="flightBody"></tbody>
-  </table>
+  <div class="max-w-6xl mx-auto px-4 text-gray-900">
+    <table class="w-full border-collapse text-base text-gray-900">
+      <thead>
+        <tr class="border-b text-gray-700">
+          <th class="text-left py-2 px-3">Flag</th>
+          <th class="text-left py-2 px-3">Airline</th>
+          <th class="text-left py-2 px-3">Callsign</th>
+          <th class="text-left py-2 px-3">Class</th>
+          <th class="text-left py-2 px-3">ICAO</th>
+          <th class="text-right py-2 px-3">Altitude (ft)</th>
+          <th class="text-right py-2 px-3">Speed (kt)</th>
+          <th class="text-right py-2 px-3">Track</th>
+          <th class="text-right py-2 px-3">Last Seen (s)</th>
+        </tr>
+      </thead>
+      <tbody id="flightBody" class="text-gray-900"></tbody>
+    </table>
+  </div>
 
   <!-- SCRIPT -->
   <script type="module">
     const tbody = document.getElementById("flightBody");
+    const emptyStateEl = document.getElementById("emptyState");
     const lastUpdatedEl = document.getElementById("lastUpdated");
+    const STALE_AFTER_MS = 90_000;
 
     let lastReceivedAt = 0;
+    let hasRenderedOnce = false;
 
     /* ---------- AIRLINE LOOKUP ---------- */
 
@@ -82,41 +100,19 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       GTI: "Atlas Air",
       CKS: "Kalitta Air",
       ABX: "ABX Air",
-      AFR: "Air France",
-      BAW: "British Airways",
-      DLH: "Lufthansa",
-      KLM: "KLM Royal Dutch Airlines",
-      QTR: "Qatar Airways",
-      UAE: "Emirates",
-      THY: "Turkish Airlines",
-      ANA: "All Nippon Airways",
-      JAL: "Japan Airlines"
     };
 
-    const COMMON_AIRLINES = new Set([
-      "United Airlines",
-      "Delta Air Lines",
-      "American Airlines",
-      "Alaska Airlines",
-      "Southwest Airlines",
-      "JetBlue Airways",
-      "Spirit Airlines",
-      "Frontier Airlines",
-      "Air Canada",
-      "WestJet",
-      "FedEx Express",
-      "UPS Airlines",
-      "Atlas Air",
-      "Kalitta Air",
-      "ABX Air"
-    ]);
+    const COMMON_AIRLINES = new Set(Object.values(AIRLINE_NAMES));
 
     function airlineFromFlight(f) {
-      if (f.op && f.op.trim()) return f.op.trim();
+      if (f.op?.trim()) return f.op.trim();
       const prefix = f.flight?.trim().match(/^[A-Z]{2,3}/)?.[0];
       return AIRLINE_NAMES[prefix] || "—";
     }
 
+    function isStale(f) {
+      return typeof f.seen === "number" && f.seen > STALE_AFTER_MS / 1000;
+    }
     function aircraftClass(f) {
       if (f.category) return f.category;
       if (f.hex?.startsWith("AE")) return "MIL";
@@ -125,82 +121,66 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     /* ---------- NOTABILITY ---------- */
 
-    function isMilitary(f) {
-      return (
-        f.hex?.startsWith("AE") ||
-        /^(RCH|QID|PAT|VM|NAVY)/.test(f.flight || "") ||
-        /air force|navy|usaf|army/i.test(f.op || "")
-      );
-    }
-
-    function isRareType(f) {
-      return /^(B52|B1|B2|U2|E3|E6|E4B|KC|C17|C5|GLF|GLEX)/i.test(f.t || "");
-    }
-
-    function isHighPerformance(f) {
-      return (f.alt_baro ?? 0) > 45000 || (f.gs ?? 0) > 550;
-    }
-
     function classifyNotability(f) {
-      const airline = airlineFromFlight(f);
-
-      if (isMilitary(f))
+      if (f.hex?.startsWith("AE"))
         return { label: "MIL", cls: "bg-red-100 text-red-800" };
 
-      if (isRareType(f))
-        return { label: "RARE", cls: "bg-purple-100 text-purple-800" };
-
+      const airline = airlineFromFlight(f);
       if (airline !== "—" && !COMMON_AIRLINES.has(airline))
         return { label: "UNCOMMON", cls: "bg-blue-100 text-blue-800" };
 
-      if (isHighPerformance(f))
+      if ((f.alt_baro ?? 0) > 45000 || (f.gs ?? 0) > 550)
         return { label: "FAST/HIGH", cls: "bg-yellow-100 text-yellow-800" };
 
       return null;
     }
 
-    /* ---------- FADE-OUT ---------- */
-
-    function ageOpacity(f) {
-      const ageMs = Date.now() - (f.lastSeenAt || 0);
-      if (ageMs < 15000) return 1;
-      if (ageMs > 90000) return 0.25;
-      return 1 - (ageMs - 15000) / 75000;
-    }
-
     function secondsSinceSeen(f) {
-      return f.lastSeenAt
-        ? Math.round((Date.now() - f.lastSeenAt) / 1000)
-        : "—";
+      if (typeof f.seen === "number") return Math.round(f.seen);
+      return "—";
     }
 
     function render(flights) {
-      tbody.innerHTML = flights.map(f => {
-        const note = classifyNotability(f);
+      const activeFlights = flights.filter((f) => !isStale(f));
 
-        return `
-          <tr class="border-b transition-opacity duration-700"
-              style="opacity:${ageOpacity(f)}">
-            <td>
-              ${
-                note
-                  ? `<span class="px-2 py-0.5 rounded text-xs font-medium ${note.cls}">
-                       ${note.label}
-                     </span>`
-                  : ""
-              }
-            </td>
-            <td>${airlineFromFlight(f)}</td>
-            <td>${f.flight?.trim() || "—"}</td>
-            <td>${aircraftClass(f)}</td>
-            <td>${f.hex || "—"}</td>
-            <td class="text-right">${f.alt_baro ?? f.alt_geom ?? "—"}</td>
-            <td class="text-right">${f.gs ?? "—"}</td>
-            <td class="text-right">${f.track ?? "—"}</td>
-            <td class="text-right">${secondsSinceSeen(f)}</td>
-          </tr>
-        `;
-      }).join("");
+      if (!activeFlights.length) {
+        tbody.innerHTML = "";
+        emptyStateEl.classList.remove("hidden");
+        hasRenderedOnce = true;
+        return;
+      }
+
+      emptyStateEl.classList.add("hidden");
+
+      tbody.innerHTML = activeFlights
+        .map((f) => {
+          const note = classifyNotability(f);
+
+          return `
+      <tr class="border-b text-gray-900">
+        <td class="py-2 px-3">
+          ${
+            note
+              ? `<span class="px-2 py-0.5 rounded text-xs font-medium ${note.cls}">
+                   ${note.label}
+                 </span>`
+              : ""
+          }
+        </td>
+        <td class="py-2 px-3">${airlineFromFlight(f)}</td>
+        <td class="py-2 px-3">${f.flight?.trim() || "—"}</td>
+        <td class="py-2 px-3">${aircraftClass(f)}</td>
+        <td class="py-2 px-3">${f.hex || "—"}</td>
+        <td class="text-right py-2 px-3">${f.alt_baro ?? f.alt_geom ?? "—"}</td>
+        <td class="text-right py-2 px-3">${f.gs ?? "—"}</td>
+        <td class="text-right py-2 px-3">${f.track ?? "—"}</td>
+        <td class="text-right py-2 px-3">${secondsSinceSeen(f)}</td>
+      </tr>
+    `;
+        })
+        .join("");
+
+      hasRenderedOnce = true;
     }
 
     async function updateFlights() {
@@ -222,5 +202,4 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     updateFlights();
     setInterval(updateFlights, 10000);
   </script>
-
 </BaseLayout>

@@ -31,7 +31,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   <p class="text-center mb-4">
     More data about the planes currently flying in reach of my antenna. “—” and
     missing values are expected as not all planes send comprehensive data and
-    data is lost as range increases.
+    data is lost as range increases. The table will flag interesting or uncommon
+    flights.
   </p>
 
   <!-- STATUS -->
@@ -77,11 +78,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     const lastUpdatedEl = document.getElementById("lastUpdated");
     const STALE_AFTER_MS = 90_000;
 
-    // Receiver location (Whitefish, MT)
     const RX_LAT = 48.415;
     const RX_LON = -114.459;
-
-    /* ---------- DISTANCE ---------- */
 
     function distanceNm(lat1, lon1, lat2, lon2) {
       const R = 3440.065;
@@ -92,7 +90,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
       const a =
         Math.sin(dLat / 2) ** 2 +
-        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+        Math.cos(toRad(lat1)) *
+          Math.cos(toRad(lat2)) *
+          Math.sin(dLon / 2) ** 2;
 
       return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     }
@@ -123,21 +123,83 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       JBU: "JetBlue Airways",
       NKS: "Spirit Airlines",
       FFT: "Frontier Airlines",
+
       ACA: "Air Canada",
       WJA: "WestJet",
+      TSC: "Air Transat",
+      SWG: "Sunwing",
+
       UPS: "UPS Airlines",
       FDX: "FedEx Express",
       GTI: "Atlas Air",
       CKS: "Kalitta Air",
       ABX: "ABX Air",
+      POE: "Polar Air Cargo",
+      CLX: "Cargolux",
+      MNB: "ASL Airlines Belgium",
+      EGG: "Western Global Airlines",
+
+      BAW: "British Airways",
+      DLH: "Lufthansa",
+      KLM: "KLM Royal Dutch Airlines",
+      AFR: "Air France",
+      SAS: "Scandinavian Airlines",
+      FIN: "Finnair",
+      IBE: "Iberia",
+      TAP: "TAP Air Portugal",
+      LOT: "LOT Polish Airlines",
+      AUA: "Austrian Airlines",
+      SWR: "SWISS",
+      EIN: "Aer Lingus",
+      CFG: "Condor",
+      ICE: "Icelandair",
+
+      ANA: "All Nippon Airways",
+      JAL: "Japan Airlines",
+      KAL: "Korean Air",
+      CPA: "Cathay Pacific",
+      EVA: "EVA Air",
+      CAL: "China Airlines",
+
+      UAE: "Emirates",
+      QTR: "Qatar Airways",
+      ETD: "Etihad Airways",
+      SVA: "Saudia",
+      THY: "Turkish Airlines",
+
+      ETH: "Ethiopian Airlines",
+      RAM: "Royal Air Maroc",
+
+      JAS: "Janus Airways",
+      AEL: "AirExplore",
+      BCS: "DHL Air",
+      EWG: "Eurowings",
+      TUI: "TUI Airways",
     };
 
-    const COMMON_AIRLINES = new Set(Object.values(AIRLINE_NAMES));
+    const COMMON_AIRLINES = new Set([
+      "American Airlines",
+      "Delta Air Lines",
+      "United Airlines",
+      "Alaska Airlines",
+      "Southwest Airlines",
+      "JetBlue Airways",
+      "Spirit Airlines",
+      "Frontier Airlines",
+      "Air Canada",
+      "WestJet",
+      "FedEx Express",
+      "UPS Airlines",
+    ]);
 
     function airlineFromFlight(f) {
       if (f.op?.trim()) return f.op.trim();
       const prefix = f.flight?.trim().match(/^[A-Z]{2,3}/)?.[0];
       return AIRLINE_NAMES[prefix] || "—";
+    }
+
+    function isAirlineFlight(f) {
+      return /^[A-Z]{2,3}\d/.test(f.flight || "");
     }
 
     function isStale(f) {
@@ -155,7 +217,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         return { label: "MIL", cls: "bg-red-100 text-red-800" };
 
       const airline = airlineFromFlight(f);
-      if (airline !== "—" && !COMMON_AIRLINES.has(airline))
+      const airlinePattern = isAirlineFlight(f);
+
+      if (airlinePattern && !COMMON_AIRLINES.has(airline))
         return { label: "UNCOMMON", cls: "bg-blue-100 text-blue-800" };
 
       if ((f.alt_baro ?? 0) > 45000 || (f.gs ?? 0) > 550)

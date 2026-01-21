@@ -402,18 +402,17 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       return cs || "NO CALLSIGN";
     }
 
-    if (isUnknownAirline(f)) {
-      console.log("[UNKNOWN_AIRLINE]", {
-        callsign: callsignRaw(f),
-        hex: f.hex,
-        alt: f.alt_baro ?? f.alt_geom,
-        gs: f.gs,
-        distance_nm: aircraftDistance(f),
-        seen_s: f.seen,
-      });
-    }
-
     function render(flights) {
+      if (isUnknownAirline(f)) {
+        console.log("[UNKNOWN_AIRLINE]", {
+          callsign: callsignRaw(f),
+          hex: f.hex,
+          alt: f.alt_baro ?? f.alt_geom,
+          gs: f.gs,
+          distance_nm: aircraftDistance(f),
+          seen_s: f.seen,
+        });
+      }
       const activeFlights = flights
         .filter((f) => !isStale(f))
         .sort((a, b) => {

@@ -7,27 +7,27 @@ import SideBar from "../components/SideBar.astro";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../config";
 
 const {
-  title = SITE_TITLE,
+  title,
+  customTitle,
   description = SITE_DESCRIPTION,
   includeSidebar = true,
   sideBarActiveItemID,
   canonical,
   ogImage,
-  image // legacy support
+  image
 } = Astro.props;
 
-// Prefer ogImage, fall back to legacy image
+const resolvedTitle = customTitle ?? title ?? SITE_TITLE;
 const metaImage = ogImage ?? image;
----
 
 <!DOCTYPE html>
 <html lang="en" data-theme="lofi">
   <head>
     <BaseHead
-      title={title}
-      description={description}
-      image={metaImage}
-      canonical={canonical}
+    title={resolvedTitle}
+  description={description}
+  image={metaImage}
+  canonical={canonical}
     />
 
     <!-- Google tag (gtag.js) -->

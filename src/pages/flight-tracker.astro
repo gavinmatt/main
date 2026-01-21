@@ -88,9 +88,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       const dLon = toRad(lon2 - lon1);
       const a =
         Math.sin(dLat / 2) ** 2 +
-        Math.cos(toRad(lat1)) *
-          Math.cos(toRad(lat2)) *
-          Math.sin(dLon / 2) ** 2;
+        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
       return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     }
 
@@ -143,7 +141,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       CPA: "Cathay Pacific",
       EVA: "EVA Air",
       CAL: "China Airlines",
-      JAS: "Janus Airways"
+      JAS: "Janus Airways",
     };
 
     const COMMON_AIRLINES = new Set([
@@ -158,7 +156,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       "Air Canada",
       "WestJet",
       "FedEx Express",
-      "UPS Airlines"
+      "UPS Airlines",
     ]);
 
     function callsignRaw(f) {
@@ -212,11 +210,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     function classifyNotability(f) {
       const branch = militaryBranch(f);
-      if (branch)
-        return { label: branch, cls: "bg-red-100 text-red-800" };
-
-      if (isPrivateFlight(f))
-        return { label: "PRIVATE", cls: "bg-gray-100 text-gray-800" };
+      if (branch) return { label: branch, cls: "bg-red-100 text-red-800" };
 
       const airline = airlineFromFlight(f);
       const airlinePattern = isAirlineFlight(f);

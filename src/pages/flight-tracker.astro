@@ -146,16 +146,17 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           return `
       <tr class="border-b">
         <td class="text-center py-2 px-3 text-xl">${rank}</td>
-        <td class="py-2 px-3 flex items-center gap-2">
+        <td class="text-center py-2 px-3">
   ${
     label
-      ? `
-    <span class="px-2 py-0.5 rounded text-xs font-medium ${label.cls}">
-      ${label.label}
-    </span>
-  `
-      : ""
+      ? `<span class="px-2 py-0.5 rounded text-xs font-medium ${label.cls}">
+          ${label.label}
+        </span>`
+      : "—"
   }
+</td>
+
+<td class="py-2 px-3">
   ${airlineFromFlight(fakeFlight)}
 </td>
         <td class="py-2 px-3">${r.callsign}</td>
@@ -412,8 +413,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     <div class="text-3xl font-bold mb-4 text-center">Notable pings</div>
 
     <p class="text-center mb-6 text-gray-600">
-      Furthest away aircraft I've tracked. 1 NM = ~1.15 miles for a crow. Good =
-      120-180NM, great = 180-250NM, and amazing = 250+NM for my setup.
+      Furthest away aircraft I've tracked. 1 NM = ~1.15 miles for a crow.
+    </p>
+    <p>
+      Good = 120-180NM, great = 180-250NM, and amazing = 250+NM for my setup.
     </p>
 
     <table class="w-full border-collapse text-base text-gray-900">

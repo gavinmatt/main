@@ -266,6 +266,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       TUI: "TUI Airways",
 
       ASP: "AirSprint",
+      AIP: "Alpine Aviation",
     };
 
     const COMMON_AIRLINES = new Set([
@@ -290,6 +291,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       "SkyWest Airlines",
       "Sunwest Aviation",
       "Empire Airlines",
+      "Alpine Aviation",
     ]);
 
     function callsignRaw(f) {
@@ -477,7 +479,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           <th class="text-right py-2 px-3">Last Seen</th>
         </tr>
       </thead>
-      <tbody id="notableBody"></tbody>
     </table>
     <tbody id="notableBody"></tbody>
   </div>

@@ -314,6 +314,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       );
     }
 
+    function isAirlineFlight(f) {
+      const cs = callsignRaw(f);
+      return /^[A-Z]{2,3}\d/.test(cs);
+    }
+
     function airlineFromFlight(f) {
       const cs = callsignRaw(f);
 

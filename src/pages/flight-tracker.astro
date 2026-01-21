@@ -355,8 +355,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     function aircraftClass(f) {
       if (f.category) return f.category;
-      if (f.hex?.startsWith("AE")) return "MIL";
+      if (hexUpper(f).startsWith("AE")) return "MIL";
       return "—";
+    }
+
+    function hexUpper(f) {
+      return f.hex?.toUpperCase() ?? "";
     }
 
     /* ---------- MILITARY BRANCH ---------- */
@@ -365,7 +369,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       const cs = callsignRaw(f);
 
       // ICAO allocation: US military (authoritative)
-      if (f.hex?.startsWith("AE")) {
+      if (hexUpper(f).startsWith("AE")) {
         // Optional refinement
         if ((f.alt_baro ?? 0) > 30000 && (f.gs ?? 0) < 450) {
           return "USAF (TANKER)";

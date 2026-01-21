@@ -298,18 +298,18 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     function isPrivateFlight(f) {
       const cs = callsignRaw(f);
-      if (!cs) return true;
+      if (!cs) return false; // ← critical change
 
       return (
-        // US: N123AB
+        // US
         /^N\d{1,5}[A-Z]{0,2}$/.test(cs) ||
-        // Canada: C-GABC / CGABC / C-FABC / CFABC
+        // Canada
         /^C-?[FG][A-Z]{3}$/.test(cs) ||
-        // UK: G-ABCD / GABCD
+        // UK
         /^G-?[A-Z]{4}$/.test(cs) ||
-        // Germany: D-ABCD / DABCD
+        // Germany
         /^D-?[A-Z]{4}$/.test(cs) ||
-        // Switzerland: HB-ABC / HBABC
+        // Switzerland
         /^HB-?[A-Z]{3}$/.test(cs)
       );
     }

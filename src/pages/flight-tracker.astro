@@ -77,7 +77,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     const emptyStateEl = document.getElementById("emptyState");
     const lastUpdatedEl = document.getElementById("lastUpdated");
     const STALE_AFTER_MS = 90_000;
-    const notableBody = document.getElementById("notableBody");
 
     const RX_LAT = 48.415;
     const RX_LON = -114.459;
@@ -138,15 +137,15 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
 
     async function loadNotables() {
+      const notableBody = document.getElementById("notableBody");
+      if (!notableBody) return;
+
       try {
         const res = await fetch("/api/notable-pings");
         const data = await res.json();
         renderNotables(data.rows ?? []);
-      } catch {
-        // fail silently
-      }
+      } catch {}
     }
-
 
     /* ---------- AIRLINE LOOKUP ---------- */
 
@@ -369,29 +368,27 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     setInterval(updateFlights, 10000);
 
     loadNotables();
-
   </script>
 
-    <!-- NOTABLE PINGS -->
-    <div class="max-w-6xl mx-auto px-4 mt-20">
-      <div class="text-3xl font-bold mb-4 text-center">Notable Pings</div>
-  
-      <p class="text-center mb-6 text-gray-600">
-        Longest-distance aircraft ever received by my local ADS-B antenna.
-      </p>
-  
-      <table class="w-full border-collapse text-base text-gray-900">
-        <thead>
-          <tr class="border-b text-gray-700">
-            <th class="text-left py-2 px-3">Airline</th>
-            <th class="text-left py-2 px-3">Callsign</th>
-            <th class="text-left py-2 px-3">ICAO</th>
-            <th class="text-right py-2 px-3">Max Distance (NM)</th>
-            <th class="text-right py-2 px-3">Last Seen</th>
-          </tr>
-        </thead>
-        <tbody id="notableBody"></tbody>
-      </table>
-    </div>
-  
+  <!-- NOTABLE PINGS -->
+  <div class="max-w-6xl mx-auto px-4 mt-20">
+    <div class="text-3xl font-bold mb-4 text-center">Notable Pings</div>
+
+    <p class="text-center mb-6 text-gray-600">
+      Longest-distance aircraft ever received by my local ADS-B antenna.
+    </p>
+
+    <table class="w-full border-collapse text-base text-gray-900">
+      <thead>
+        <tr class="border-b text-gray-700">
+          <th class="text-left py-2 px-3">Airline</th>
+          <th class="text-left py-2 px-3">Callsign</th>
+          <th class="text-left py-2 px-3">ICAO</th>
+          <th class="text-right py-2 px-3">Max Distance (NM)</th>
+          <th class="text-right py-2 px-3">Last Seen</th>
+        </tr>
+      </thead>
+      <tbody id="notableBody"></tbody>
+    </table>
+  </div>
 </BaseLayout>

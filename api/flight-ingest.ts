@@ -1,10 +1,10 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
-import Redis from 'ioredis';
+import type { VercelRequest, VercelResponse } from "@vercel/node";
+import Redis from "ioredis";
 
 const redis = new Redis(process.env.REDIS_URL!);
 
 /* ===================== ADDED ===================== */
-const NOTABLE_KEY = 'notable-pings:v1';
+const NOTABLE_KEY = "notable-pings:v1";
 const MAX_NOTABLES = 10;
 
 const RX_LAT = 48.415;
@@ -17,45 +17,36 @@ function distanceNm(lat1: number, lon1: number, lat2: number, lon2: number) {
   const dLon = toRad(lon2 - lon1);
   const a =
     Math.sin(dLat / 2) ** 2 +
-    Math.cos(toRad(lat1)) *
-      Math.cos(toRad(lat2)) *
-      Math.sin(dLon / 2) ** 2;
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 /* =================== END ADDED =================== */
 
-export default async function handler(
-  req: VercelRequest,
-  res: VercelResponse
-) {
-  if (req.method !== 'POST') {
-    return res.status(405).send('Method Not Allowed');
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (req.method !== "POST") {
+    return res.status(405).send("Method Not Allowed");
   }
 
   const secret =
-    req.headers['x-flight-secret'] ||
-    req.headers['X-Flight-Secret'];
+    req.headers["x-flight-secret"] || req.headers["X-Flight-Secret"];
 
   if (!secret || secret !== process.env.FLIGHT_INGEST_SECRET) {
-    return res.status(401).send('Unauthorized');
+    return res.status(401).send("Unauthorized");
   }
 
   let payload: any;
   try {
-    payload =
-      typeof req.body === 'string'
-        ? JSON.parse(req.body)
-        : req.body;
+    payload = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
   } catch {
-    return res.status(400).send('Invalid JSON');
+    return res.status(400).send("Invalid JSON");
   }
 
   if (!payload || !Array.isArray(payload.aircraft)) {
-    return res.status(400).send('Invalid payload');
+    return res.status(400).send("Invalid payload");
   }
 
   /* ===================== ADDED ===================== */
-  const raw = (await redis.get(NOTABLE_KEY)) ?? '[]';
+  const raw = (await redis.get(NOTABLE_KEY)) ?? "[]";
   let notables: any[];
 
   try {
@@ -64,29 +55,25 @@ export default async function handler(
     notables = [];
   }
 
-  const byHex = new Map<string, any>(
-    notables.map((n) => [n.hex, n])
-  );
+  const byHex = new Map<string, any>(notables.map((n) => [n.hex, n]));
 
   for (const f of payload.aircraft) {
     const lat = f.lat ?? f.lat_baro;
     const lon = f.lon ?? f.lon_baro;
-    
+
     if (!f.hex || lat == null || lon == null) continue;
 
-    const d = Math.round(
-      distanceNm(RX_LAT, RX_LON, f.lat, f.lon)
-    );
+    const d = Math.round(distanceNm(RX_LAT, RX_LON, lat, lon));
 
     const prev = byHex.get(f.hex);
 
     if (!prev || d > prev.maxDistance) {
       byHex.set(f.hex, {
         hex: f.hex,
-        airline: f.op || '—',
-        callsign: (f.flight || '').trim() || 'NO CALLSIGN',
+        airline: f.op || "—",
+        callsign: (f.flight || "").trim() || "NO CALLSIGN",
         maxDistance: d,
-        lastSeen: Date.now()
+        lastSeen: Date.now(),
       });
     }
   }
@@ -99,14 +86,14 @@ export default async function handler(
   /* =================== END ADDED =================== */
 
   await redis.set(
-    'latest-flights',
+    "latest-flights",
     JSON.stringify({
       receivedAt: Date.now(),
-      data: payload
+      data: payload,
     }),
-    'EX',
+    "EX",
     180
   );
 
-  return res.status(200).send('OK');
+  return res.status(200).send("OK");
 }

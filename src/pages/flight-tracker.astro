@@ -140,23 +140,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     .join("");
 }
 
-      notableBody.innerHTML = rows
-        .map(
-          (r) => `
-          <tr class="border-b">
-            <td class="py-2 px-3">${r.airline}</td>
-            <td class="py-2 px-3">${r.callsign}</td>
-            <td class="py-2 px-3">${r.hex}</td>
-            <td class="text-right py-2 px-3 font-semibold">${r.maxDistance}</td>
-            <td class="text-right py-2 px-3">
-              ${new Date(r.lastSeen).toLocaleDateString()}
-            </td>
-          </tr>
-        `
-        )
-        .join("");
-    }
-
     async function loadNotables() {
       const notableBody = document.getElementById("notableBody");
       if (!notableBody) return;

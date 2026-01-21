@@ -108,16 +108,37 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
 
     function renderNotables(rows) {
-      if (!rows || !rows.length) {
-        notableBody.innerHTML = `
-          <tr>
-            <td colspan="5" class="text-center py-6 text-gray-500">
-              No notable pings recorded yet.
-            </td>
-          </tr>
-        `;
-        return;
-      }
+  const notableBody = document.getElementById("notableBody");
+  if (!notableBody) return;
+
+  if (!rows || !rows.length) {
+    notableBody.innerHTML = `
+      <tr>
+        <td colspan="5" class="text-center py-6 text-gray-500">
+          No notable pings recorded yet.
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  notableBody.innerHTML = rows
+    .map((r) => {
+      const fakeFlight = { flight: r.callsign };
+      return `
+        <tr class="border-b">
+          <td class="py-2 px-3">${airlineFromFlight(fakeFlight)}</td>
+          <td class="py-2 px-3">${r.callsign}</td>
+          <td class="py-2 px-3">${r.hex}</td>
+          <td class="text-right py-2 px-3 font-semibold">${r.maxDistance}</td>
+          <td class="text-right py-2 px-3">
+            ${new Date(r.lastSeen).toLocaleDateString()}
+          </td>
+        </tr>
+      `;
+    })
+    .join("");
+}
 
       notableBody.innerHTML = rows
         .map(

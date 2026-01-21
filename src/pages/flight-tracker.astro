@@ -298,6 +298,18 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       return (f.flight || f.callsign || "").trim().toUpperCase();
     }
 
+    function isUnknownAirline(f) {
+      const cs = callsignRaw(f);
+      if (!cs) return false;
+
+      // Airline-style callsign (2–3 letters + digits)
+      const looksLikeAirline = /^[A-Z]{2,3}\d/.test(cs);
+      if (!looksLikeAirline) return false;
+
+      const prefix = cs.match(/^[A-Z]{2,3}/)?.[0];
+      return !AIRLINE_NAMES[prefix];
+    }
+
     function isPrivateFlight(f) {
       const cs = callsignRaw(f);
       if (!cs) return false; // ← critical change
@@ -388,6 +400,17 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     function callsignDisplay(f) {
       const cs = callsignRaw(f);
       return cs || "NO CALLSIGN";
+    }
+
+    if (isUnknownAirline(f)) {
+      console.log("[UNKNOWN_AIRLINE]", {
+        callsign: callsignRaw(f),
+        hex: f.hex,
+        alt: f.alt_baro ?? f.alt_geom,
+        gs: f.gs,
+        distance_nm: aircraftDistance(f),
+        seen_s: f.seen,
+      });
     }
 
     function render(flights) {

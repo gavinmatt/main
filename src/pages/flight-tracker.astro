@@ -147,17 +147,17 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       <tr class="border-b">
         <td class="text-center py-2 px-3 text-xl">${rank}</td>
         <td class="py-2 px-3 flex items-center gap-2">
-          ${
-            label
-              ? `
-            <span class="px-2 py-0.5 rounded text-xs font-medium ${label.cls}">
-              ${label.label}
-            </span>
-          `
-              : ""
-          }
-          ${airlineFromFlight(fakeFlight)}
-        </td>
+  ${
+    label
+      ? `
+    <span class="px-2 py-0.5 rounded text-xs font-medium ${label.cls}">
+      ${label.label}
+    </span>
+  `
+      : ""
+  }
+  ${airlineFromFlight(fakeFlight)}
+</td>
         <td class="py-2 px-3">${r.callsign}</td>
         <td class="py-2 px-3">${r.hex}</td>
         <td class="text-right py-2 px-3 font-semibold">${r.maxDistance}</td>
@@ -418,16 +418,15 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     <table class="w-full border-collapse text-base text-gray-900">
       <thead>
-        <tr class="border-b text-gray-700">
-          <th class="text-center py-2 px-3">#</th>
-          <th class="text-left py-2 px-3">Airline</th>
-          <th class="text-left py-2 px-3">Callsign</th>
-          <th class="text-left py-2 px-3">ICAO</th>
-          <th class="text-right py-2 px-3">Max Distance (NM)</th>
-          <th class="text-right py-2 px-3">Last Seen</th>
-        </tr>
+        <th class="text-center py-2 px-3">#</th>
+        <th class="text-center py-2 px-3">Rating</th>
+        <th class="text-left py-2 px-3">Airline</th>
+        <th class="text-left py-2 px-3">Callsign</th>
+        <th class="text-left py-2 px-3">ICAO</th>
+        <th class="text-right py-2 px-3">Max Distance (NM)</th>
+        <th class="text-right py-2 px-3">Last Seen</th>
       </thead>
-      <tbody id="notableBody"></tbody>
     </table>
+    <tbody id="notableBody"></tbody>
   </div>
 </BaseLayout>

@@ -55,7 +55,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     <table class="w-full border-collapse text-base text-gray-900">
       <thead>
         <tr class="border-b text-gray-700">
-          <th class="text-left py-2 px-3">Flag</th>
+          <th class="text-left py-2 px-3">Notable?</th>
           <th class="text-left py-2 px-3">Airline</th>
           <th class="text-left py-2 px-3">Callsign</th>
           <th class="text-left py-2 px-3">Class</th>
@@ -107,6 +107,80 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       return null;
     }
 
+    function notableDistanceLabel(d) {
+      if (d >= 250) {
+        return { label: "AMAZING", cls: "bg-purple-100 text-purple-800" };
+      }
+      if (d >= 180) {
+        return { label: "GREAT", cls: "bg-indigo-100 text-indigo-800" };
+      }
+      if (d >= 120) {
+        return { label: "GOOD", cls: "bg-blue-100 text-blue-800" };
+      }
+      return null;
+    }
+
+    function renderNotables(rows) {
+      const notableBody = document.getElementById("notableBody");
+      if (!notableBody) return;
+
+      if (!rows || !rows.length) {
+        notableBody.innerHTML = `
+      <tr>
+        <td colspan="6" class="text-center py-6 text-gray-500">
+          No notable pings recorded yet.
+        </td>
+      </tr>
+    `;
+        return;
+      }
+
+      const medals = ["🥇", "🥈", "🥉"];
+
+      notableBody.innerHTML = rows
+        .map((r, i) => {
+          const fakeFlight = { flight: r.callsign };
+          const rank = medals[i] ?? "";
+          const label = notableDistanceLabel(r.maxDistance);
+
+          return `
+      <tr class="border-b">
+        <td class="text-center py-2 px-3 text-xl">${rank}</td>
+        <td class="text-center py-2 px-3">
+  ${
+    label
+      ? `<span class="px-2 py-0.5 rounded text-xs font-medium ${label.cls}">
+          ${label.label}
+        </span>`
+      : "—"
+  }
+</td>
+
+<td class="py-2 px-3">
+  ${airlineFromFlight(fakeFlight)}
+</td>
+        <td class="py-2 px-3">${r.callsign}</td>        
+        <td class="text-right py-2 px-3 font-semibold">${r.maxDistance}</td>
+        <td class="text-right py-2 px-3">
+          ${new Date(r.lastSeen).toLocaleDateString()}
+        </td>
+      </tr>
+    `;
+        })
+        .join("");
+    }
+
+    async function loadNotables() {
+      const notableBody = document.getElementById("notableBody");
+      if (!notableBody) return;
+
+      try {
+        const res = await fetch("/api/notable-pings");
+        const data = await res.json();
+        renderNotables(data.rows ?? []);
+      } catch {}
+    }
+
     /* ---------- AIRLINE LOOKUP ---------- */
 
     const AIRLINE_NAMES = {
@@ -118,30 +192,65 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       JBU: "JetBlue Airways",
       NKS: "Spirit Airlines",
       FFT: "Frontier Airlines",
+
       ACA: "Air Canada",
       WJA: "WestJet",
+      WEN: "WestJet Encore",
+      TSC: "Air Transat",
+      SWG: "Sunwing",
+      FLE: "Flair Airlines",
+      QXE: "Horizon Air",
+
       UPS: "UPS Airlines",
       FDX: "FedEx Express",
       GTI: "Atlas Air",
       CKS: "Kalitta Air",
       ABX: "ABX Air",
+      POE: "Polar Air Cargo",
+      CLX: "Cargolux",
+      MNB: "ASL Airlines Belgium",
+      EGG: "Western Global Airlines",
+      MAL: "Morningstar Air",
+      CJT: "Cargojet",
+      ATN: "Air Transport International",
+
       BAW: "British Airways",
       DLH: "Lufthansa",
       KLM: "KLM Royal Dutch Airlines",
       AFR: "Air France",
-      UAE: "Emirates",
-      QTR: "Qatar Airways",
-      QQE: "Qatar Executive",
-      THY: "Turkish Airlines",
-      ETD: "Etihad Airways",
-      SVA: "Saudia",
+      SAS: "Scandinavian Airlines",
+      FIN: "Finnair",
+      IBE: "Iberia",
+      TAP: "TAP Air Portugal",
+      LOT: "LOT Polish Airlines",
+      AUA: "Austrian Airlines",
+      SWR: "SWISS",
+      EIN: "Aer Lingus",
+      CFG: "Condor",
+      ICE: "Icelandair",
+
       ANA: "All Nippon Airways",
       JAL: "Japan Airlines",
       KAL: "Korean Air",
       CPA: "Cathay Pacific",
       EVA: "EVA Air",
       CAL: "China Airlines",
+
+      UAE: "Emirates",
+      QQE: "Qatar Executive",
+      QTR: "Qatar Airways",
+      ETD: "Etihad Airways",
+      SVA: "Saudia",
+      THY: "Turkish Airlines",
+
+      ETH: "Ethiopian Airlines",
+      RAM: "Royal Air Maroc",
+
       JAS: "Janus Airways",
+      AEL: "AirExplore",
+      BCS: "DHL Air",
+      EWG: "Eurowings",
+      TUI: "TUI Airways",
     };
 
     const COMMON_AIRLINES = new Set([
@@ -155,8 +264,13 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       "Frontier Airlines",
       "Air Canada",
       "WestJet",
+      "WestJet Encore",
       "FedEx Express",
       "UPS Airlines",
+      "Flair Airlines",
+      "Horizon Air",
+      "Cargojet",
+      "Air Transport International",
     ]);
 
     function callsignRaw(f) {
@@ -198,13 +312,15 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     function militaryBranch(f) {
       const cs = callsignRaw(f);
 
-      if (f.hex?.startsWith("AE")) {
-        if (/^(RCH|REACH|MC|AMC)/.test(cs)) return "USAF";
-        if (/^(NAVY|CNV|VV)/.test(cs)) return "USN";
-        if (/^(PAT|ARMY)/.test(cs)) return "USA";
-        if (/^(VM|MAR)/.test(cs)) return "USMC";
-        return "MIL";
-      }
+      // Explicit military callsigns (strong signal)
+      if (/^(RCH|REACH|MC|AMC)/.test(cs)) return "USAF";
+      if (/^(NAVY|CNV|VV)/.test(cs)) return "USN";
+      if (/^(PAT|ARMY)/.test(cs)) return "USA";
+      if (/^(VM|MAR)/.test(cs)) return "USMC";
+
+      // Fallback: ICAO military allocation
+      if (f.hex?.startsWith("AE")) return "MIL";
+
       return null;
     }
 
@@ -291,5 +407,34 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     updateFlights();
     setInterval(updateFlights, 10000);
+
+    loadNotables();
   </script>
+
+  <!-- NOTABLE PINGS -->
+  <div class="max-w-6xl mx-auto px-4 mt-20">
+    <div class="text-3xl font-bold mb-4 text-center">Notable pings</div>
+
+    <p class="text-center mb-6 text-gray-600">
+      Furthest away aircraft I've tracked. 1 NM = ~1.15 miles for a crow.
+    </p>
+    <p class="text-center mb-6 text-gray-600">
+      Good = 120-180NM, great = 180-250NM, and amazing = 250+NM for my setup.
+    </p>
+
+    <table class="w-full border-collapse text-base text-gray-900">
+      <thead>
+        <tr class="border-b text-gray-700">
+          <th class="text-center py-2 px-3">Ranking</th>
+          <th class="text-center py-2 px-3">Distance Rating</th>
+          <th class="text-left py-2 px-3">Airline</th>
+          <th class="text-left py-2 px-3">Callsign</th>
+          <th class="text-right py-2 px-3">Max Distance (NM)</th>
+          <th class="text-right py-2 px-3">Last Seen</th>
+        </tr>
+      </thead>
+      <tbody id="notableBody"></tbody>
+    </table>
+    <tbody id="notableBody"></tbody>
+  </div>
 </BaseLayout>

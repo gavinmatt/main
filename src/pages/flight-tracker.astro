@@ -195,7 +195,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     function airlineFromFlight(f) {
       if (f.op?.trim()) return f.op.trim();
-      const prefix = f.flight?.trim().match(/^[A-Z]{2,3}/)?.[0];
+      const prefix = f.flight?.trim().match(/^[A-Z]{2,3}/i)?.[0]?.toUpperCase();
       return AIRLINE_NAMES[prefix] || "—";
     }
 

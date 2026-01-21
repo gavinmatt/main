@@ -403,16 +403,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
 
     function render(flights) {
-      if (isUnknownAirline(f)) {
-        console.log("[UNKNOWN_AIRLINE]", {
-          callsign: callsignRaw(f),
-          hex: f.hex,
-          alt: f.alt_baro ?? f.alt_geom,
-          gs: f.gs,
-          distance_nm: aircraftDistance(f),
-          seen_s: f.seen,
-        });
-      }
       const activeFlights = flights
         .filter((f) => !isStale(f))
         .sort((a, b) => {
@@ -431,33 +421,44 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
       tbody.innerHTML = activeFlights
         .map((f) => {
+          if (isUnknownAirline(f)) {
+            console.log("[UNKNOWN_AIRLINE]", {
+              callsign: callsignRaw(f),
+              hex: f.hex,
+              alt: f.alt_baro ?? f.alt_geom,
+              gs: f.gs,
+              distance_nm: aircraftDistance(f),
+              seen_s: f.seen,
+            });
+          }
+
           const note = classifyNotability(f);
           const d = aircraftDistance(f);
           const dFlag = d != null ? distanceFlag(d) : null;
 
           return `
-          <tr class="border-b text-gray-900">
-            <td class="py-2 px-3 space-x-1 text-gray-400">
-  ${
-    note || dFlag
-      ? `
-        ${note ? `<span class="px-2 py-0.5 rounded text-xs font-medium ${note.cls}">${note.label}</span>` : ""}
-        ${dFlag ? `<span class="px-2 py-0.5 rounded text-xs font-medium ${dFlag.cls}">${dFlag.label}</span>` : ""}
-      `
-      : "—"
-  }
-</td>
-            <td class="py-2 px-3">${airlineFromFlight(f)}</td>
-            <td class="py-2 px-3">${callsignDisplay(f)}</td>
-            <td class="py-2 px-3">${aircraftClass(f)}</td>
-            <td class="py-2 px-3">${f.hex || "—"}</td>
-            <td class="text-right py-2 px-3">${f.alt_baro ?? f.alt_geom ?? "—"}</td>
-            <td class="text-right py-2 px-3">${f.gs ?? "—"}</td>
-            <td class="text-right py-2 px-3">${f.track ?? "—"}</td>
-            <td class="text-right py-2 px-3">${d != null ? Math.round(d) : "—"}</td>
-            <td class="text-right py-2 px-3">${secondsSinceSeen(f)}</td>
-          </tr>
-        `;
+        <tr class="border-b text-gray-900">
+          <td class="py-2 px-3 space-x-1 text-gray-400">
+            ${
+              note || dFlag
+                ? `
+                  ${note ? `<span class="px-2 py-0.5 rounded text-xs font-medium ${note.cls}">${note.label}</span>` : ""}
+                  ${dFlag ? `<span class="px-2 py-0.5 rounded text-xs font-medium ${dFlag.cls}">${dFlag.label}</span>` : ""}
+                `
+                : "—"
+            }
+          </td>
+          <td class="py-2 px-3">${airlineFromFlight(f)}</td>
+          <td class="py-2 px-3">${callsignDisplay(f)}</td>
+          <td class="py-2 px-3">${aircraftClass(f)}</td>
+          <td class="py-2 px-3">${f.hex || "—"}</td>
+          <td class="text-right py-2 px-3">${f.alt_baro ?? f.alt_geom ?? "—"}</td>
+          <td class="text-right py-2 px-3">${f.gs ?? "—"}</td>
+          <td class="text-right py-2 px-3">${f.track ?? "—"}</td>
+          <td class="text-right py-2 px-3">${d != null ? Math.round(d) : "—"}</td>
+          <td class="text-right py-2 px-3">${secondsSinceSeen(f)}</td>
+        </tr>
+      `;
         })
         .join("");
     }

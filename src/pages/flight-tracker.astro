@@ -312,13 +312,15 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     function militaryBranch(f) {
       const cs = callsignRaw(f);
 
-      if (f.hex?.startsWith("AE")) {
-        if (/^(RCH|REACH|MC|AMC)/.test(cs)) return "USAF";
-        if (/^(NAVY|CNV|VV)/.test(cs)) return "USN";
-        if (/^(PAT|ARMY)/.test(cs)) return "USA";
-        if (/^(VM|MAR)/.test(cs)) return "USMC";
-        return "MIL";
-      }
+      // Explicit military callsigns (strong signal)
+      if (/^(RCH|REACH|MC|AMC)/.test(cs)) return "USAF";
+      if (/^(NAVY|CNV|VV)/.test(cs)) return "USN";
+      if (/^(PAT|ARMY)/.test(cs)) return "USA";
+      if (/^(VM|MAR)/.test(cs)) return "USMC";
+
+      // Fallback: ICAO military allocation
+      if (f.hex?.startsWith("AE")) return "MIL";
+
       return null;
     }
 

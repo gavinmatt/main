@@ -415,20 +415,23 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     <p class="text-center mb-6 text-gray-600">
       Furthest away aircraft I've tracked. 1 NM = ~1.15 miles for a crow.
     </p>
-    <p>
+    <p class="text-center mb-6 text-gray-600">
       Good = 120-180NM, great = 180-250NM, and amazing = 250+NM for my setup.
     </p>
 
     <table class="w-full border-collapse text-base text-gray-900">
       <thead>
-        <th class="text-center py-2 px-3">#</th>
-        <th class="text-center py-2 px-3">Rating</th>
-        <th class="text-left py-2 px-3">Airline</th>
-        <th class="text-left py-2 px-3">Callsign</th>
-        <th class="text-left py-2 px-3">ICAO</th>
-        <th class="text-right py-2 px-3">Max Distance (NM)</th>
-        <th class="text-right py-2 px-3">Last Seen</th>
+        <tr class="border-b text-gray-700">
+          <th class="text-center py-2 px-3">#</th>
+          <th class="text-center py-2 px-3">Rating</th>
+          <th class="text-left py-2 px-3">Airline</th>
+          <th class="text-left py-2 px-3">Callsign</th>
+          <th class="text-left py-2 px-3">ICAO</th>
+          <th class="text-right py-2 px-3">Max Distance (NM)</th>
+          <th class="text-right py-2 px-3">Last Seen</th>
+        </tr>
       </thead>
+      <tbody id="notableBody"></tbody>
     </table>
     <tbody id="notableBody"></tbody>
   </div>

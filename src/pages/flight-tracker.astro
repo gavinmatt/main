@@ -77,6 +77,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     const emptyStateEl = document.getElementById("emptyState");
     const lastUpdatedEl = document.getElementById("lastUpdated");
     const STALE_AFTER_MS = 90_000;
+    const notableBody = document.getElementById("notableBody");
 
     const RX_LAT = 48.415;
     const RX_LON = -114.459;
@@ -107,6 +108,46 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       return null;
     }
 
+    function renderNotables(rows) {
+      if (!rows || !rows.length) {
+        notableBody.innerHTML = `
+          <tr>
+            <td colspan="5" class="text-center py-6 text-gray-500">
+              No notable pings recorded yet.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      notableBody.innerHTML = rows
+        .map(
+          (r) => `
+          <tr class="border-b">
+            <td class="py-2 px-3">${r.airline}</td>
+            <td class="py-2 px-3">${r.callsign}</td>
+            <td class="py-2 px-3">${r.hex}</td>
+            <td class="text-right py-2 px-3 font-semibold">${r.maxDistance}</td>
+            <td class="text-right py-2 px-3">
+              ${new Date(r.lastSeen).toLocaleDateString()}
+            </td>
+          </tr>
+        `
+        )
+        .join("");
+    }
+
+    async function loadNotables() {
+      try {
+        const res = await fetch("/api/notable-pings");
+        const data = await res.json();
+        renderNotables(data.rows ?? []);
+      } catch {
+        // fail silently
+      }
+    }
+
+
     /* ---------- AIRLINE LOOKUP ---------- */
 
     const AIRLINE_NAMES = {
@@ -118,30 +159,62 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       JBU: "JetBlue Airways",
       NKS: "Spirit Airlines",
       FFT: "Frontier Airlines",
+
       ACA: "Air Canada",
       WJA: "WestJet",
+      TSC: "Air Transat",
+      SWG: "Sunwing",
+      FLE: "Flair Airlines",
+
       UPS: "UPS Airlines",
       FDX: "FedEx Express",
       GTI: "Atlas Air",
       CKS: "Kalitta Air",
       ABX: "ABX Air",
+      POE: "Polar Air Cargo",
+      CLX: "Cargolux",
+      MNB: "ASL Airlines Belgium",
+      EGG: "Western Global Airlines",
+      MAL: "Morningstar Air",
+      CJT: "Cargojet",
+
       BAW: "British Airways",
       DLH: "Lufthansa",
       KLM: "KLM Royal Dutch Airlines",
       AFR: "Air France",
-      UAE: "Emirates",
-      QTR: "Qatar Airways",
-      QQE: "Qatar Executive",
-      THY: "Turkish Airlines",
-      ETD: "Etihad Airways",
-      SVA: "Saudia",
+      SAS: "Scandinavian Airlines",
+      FIN: "Finnair",
+      IBE: "Iberia",
+      TAP: "TAP Air Portugal",
+      LOT: "LOT Polish Airlines",
+      AUA: "Austrian Airlines",
+      SWR: "SWISS",
+      EIN: "Aer Lingus",
+      CFG: "Condor",
+      ICE: "Icelandair",
+
       ANA: "All Nippon Airways",
       JAL: "Japan Airlines",
       KAL: "Korean Air",
       CPA: "Cathay Pacific",
       EVA: "EVA Air",
       CAL: "China Airlines",
+
+      UAE: "Emirates",
+      QQE: "Qatar Executive",
+      QTR: "Qatar Airways",
+      ETD: "Etihad Airways",
+      SVA: "Saudia",
+      THY: "Turkish Airlines",
+
+      ETH: "Ethiopian Airlines",
+      RAM: "Royal Air Maroc",
+
       JAS: "Janus Airways",
+      AEL: "AirExplore",
+      BCS: "DHL Air",
+      EWG: "Eurowings",
+      TUI: "TUI Airways",
     };
 
     const COMMON_AIRLINES = new Set([
@@ -157,6 +230,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       "WestJet",
       "FedEx Express",
       "UPS Airlines",
+      "Flair Airlines"
     ]);
 
     function callsignRaw(f) {
@@ -291,5 +365,31 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     updateFlights();
     setInterval(updateFlights, 10000);
+
+    loadNotables();
+
   </script>
+
+    <!-- NOTABLE PINGS -->
+    <div class="max-w-6xl mx-auto px-4 mt-20">
+      <div class="text-3xl font-bold mb-4 text-center">Notable Pings</div>
+  
+      <p class="text-center mb-6 text-gray-600">
+        Longest-distance aircraft ever received by my local ADS-B antenna.
+      </p>
+  
+      <table class="w-full border-collapse text-base text-gray-900">
+        <thead>
+          <tr class="border-b text-gray-700">
+            <th class="text-left py-2 px-3">Airline</th>
+            <th class="text-left py-2 px-3">Callsign</th>
+            <th class="text-left py-2 px-3">ICAO</th>
+            <th class="text-right py-2 px-3">Max Distance (NM)</th>
+            <th class="text-right py-2 px-3">Last Seen</th>
+          </tr>
+        </thead>
+        <tbody id="notableBody"></tbody>
+      </table>
+    </div>
+  
 </BaseLayout>

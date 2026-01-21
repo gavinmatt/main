@@ -84,14 +84,13 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     function distanceNm(lat1, lon1, lat2, lon2) {
       const R = 3440.065;
       const toRad = (d) => (d * Math.PI) / 180;
-
       const dLat = toRad(lat2 - lat1);
       const dLon = toRad(lon2 - lon1);
-
       const a =
         Math.sin(dLat / 2) ** 2 +
-        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
-
+        Math.cos(toRad(lat1)) *
+          Math.cos(toRad(lat2)) *
+          Math.sin(dLon / 2) ** 2;
       return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     }
 
@@ -121,61 +120,30 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       JBU: "JetBlue Airways",
       NKS: "Spirit Airlines",
       FFT: "Frontier Airlines",
-
       ACA: "Air Canada",
       WJA: "WestJet",
-      TSC: "Air Transat",
-      SWG: "Sunwing",
-
       UPS: "UPS Airlines",
       FDX: "FedEx Express",
       GTI: "Atlas Air",
       CKS: "Kalitta Air",
       ABX: "ABX Air",
-      POE: "Polar Air Cargo",
-      CLX: "Cargolux",
-      MNB: "ASL Airlines Belgium",
-      EGG: "Western Global Airlines",
-      MAL: "Morningstar Air",
-      CJT: "Cargojet",
-
       BAW: "British Airways",
       DLH: "Lufthansa",
       KLM: "KLM Royal Dutch Airlines",
       AFR: "Air France",
-      SAS: "Scandinavian Airlines",
-      FIN: "Finnair",
-      IBE: "Iberia",
-      TAP: "TAP Air Portugal",
-      LOT: "LOT Polish Airlines",
-      AUA: "Austrian Airlines",
-      SWR: "SWISS",
-      EIN: "Aer Lingus",
-      CFG: "Condor",
-      ICE: "Icelandair",
-
+      UAE: "Emirates",
+      QTR: "Qatar Airways",
+      QQE: "Qatar Executive",
+      THY: "Turkish Airlines",
+      ETD: "Etihad Airways",
+      SVA: "Saudia",
       ANA: "All Nippon Airways",
       JAL: "Japan Airlines",
       KAL: "Korean Air",
       CPA: "Cathay Pacific",
       EVA: "EVA Air",
       CAL: "China Airlines",
-
-      UAE: "Emirates",
-      QQE: "Qatar Executive",
-      QTR: "Qatar Airways",
-      ETD: "Etihad Airways",
-      SVA: "Saudia",
-      THY: "Turkish Airlines",
-
-      ETH: "Ethiopian Airlines",
-      RAM: "Royal Air Maroc",
-
-      JAS: "Janus Airways",
-      AEL: "AirExplore",
-      BCS: "DHL Air",
-      EWG: "Eurowings",
-      TUI: "TUI Airways",
+      JAS: "Janus Airways"
     };
 
     const COMMON_AIRLINES = new Set([
@@ -190,27 +158,31 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       "Air Canada",
       "WestJet",
       "FedEx Express",
-      "UPS Airlines",
-      "Morningstar Air",
-      "Cargojet",
+      "UPS Airlines"
     ]);
 
+    function callsignRaw(f) {
+      return (f.flight || f.callsign || "").trim().toUpperCase();
+    }
+
+    function isPrivateFlight(f) {
+      const cs = callsignRaw(f);
+      if (!cs) return true;
+      return /^(N\d|C-[A-Z]|G-[A-Z]|D-[A-Z]|HB-)/.test(cs);
+    }
+
     function airlineFromFlight(f) {
+      if (isPrivateFlight(f)) return "Private";
       if (f.op?.trim()) return f.op.trim();
-      const cs = (f.flight || f.callsign || "").trim();
-      const prefix = cs.match(/^[A-Z]{2,3}/i)?.[0]?.toUpperCase();
+
+      const cs = callsignRaw(f);
+      const prefix = cs.match(/^[A-Z]{2,3}/)?.[0];
       return AIRLINE_NAMES[prefix] || "—";
     }
 
     function isAirlineFlight(f) {
-      const cs = (f.flight || f.callsign || "").trim().toUpperCase();
+      const cs = callsignRaw(f);
       return /^[A-Z]{2,3}\d/.test(cs);
-    }
-
-    function isPrivateFlight(f) {
-      const cs = (f.flight || f.callsign || "").trim().toUpperCase();
-      if (!cs) return true;
-      return /^(N\d|C-[A-Z]|G-[A-Z]|D-[A-Z]|HB-)/.test(cs);
     }
 
     function isStale(f) {
@@ -223,9 +195,25 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       return "—";
     }
 
+    /* ---------- MILITARY BRANCH ---------- */
+
+    function militaryBranch(f) {
+      const cs = callsignRaw(f);
+
+      if (f.hex?.startsWith("AE")) {
+        if (/^(RCH|REACH|MC|AMC)/.test(cs)) return "USAF";
+        if (/^(NAVY|CNV|VV)/.test(cs)) return "USN";
+        if (/^(PAT|ARMY)/.test(cs)) return "USA";
+        if (/^(VM|MAR)/.test(cs)) return "USMC";
+        return "MIL";
+      }
+      return null;
+    }
+
     function classifyNotability(f) {
-      if (f.hex?.startsWith("AE"))
-        return { label: "MIL", cls: "bg-red-100 text-red-800" };
+      const branch = militaryBranch(f);
+      if (branch)
+        return { label: branch, cls: "bg-red-100 text-red-800" };
 
       if (isPrivateFlight(f))
         return { label: "PRIVATE", cls: "bg-gray-100 text-gray-800" };
@@ -233,7 +221,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       const airline = airlineFromFlight(f);
       const airlinePattern = isAirlineFlight(f);
 
-      if (airlinePattern && !COMMON_AIRLINES.has(airline))
+      if (airlinePattern && airline !== "—" && !COMMON_AIRLINES.has(airline))
         return { label: "UNCOMMON", cls: "bg-blue-100 text-blue-800" };
 
       if ((f.alt_baro ?? 0) > 45000 || (f.gs ?? 0) > 550)
@@ -248,10 +236,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
 
     function callsignDisplay(f) {
-      const cs = f.flight?.trim();
-      if (!cs) return "NO CALLSIGN";
-      if (isPrivateFlight(f)) return cs;
-      return cs;
+      const cs = callsignRaw(f);
+      return cs || "NO CALLSIGN";
     }
 
     function render(flights) {
@@ -302,10 +288,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       try {
         const res = await fetch("/api/flights");
         if (res.status === 204) return;
-
         const data = await res.json();
         render(data.aircraft ?? []);
-
         lastUpdatedEl.textContent =
           "Last updated " + new Date(data.receivedAt).toLocaleTimeString();
       } catch {}

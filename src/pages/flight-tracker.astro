@@ -139,7 +139,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       MNB: "ASL Airlines Belgium",
       EGG: "Western Global Airlines",
       MAL: "Morningstar Air",
-      CJT: "Cargojet"
+      CJT: "Cargojet",
 
       BAW: "British Airways",
       DLH: "Lufthansa",
@@ -198,17 +198,16 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     ]);
 
     function airlineFromFlight(f) {
-  if (f.op?.trim()) return f.op.trim();
-
-  const cs = (f.flight || f.callsign || "").trim();
-  const prefix = cs.match(/^[A-Z]{2,3}/i)?.[0]?.toUpperCase();
-  return AIRLINE_NAMES[prefix] || "—";
-}
+      if (f.op?.trim()) return f.op.trim();
+      const cs = (f.flight || f.callsign || "").trim();
+      const prefix = cs.match(/^[A-Z]{2,3}/i)?.[0]?.toUpperCase();
+      return AIRLINE_NAMES[prefix] || "—";
+    }
 
     function isAirlineFlight(f) {
-  const cs = (f.flight || f.callsign || "").trim().toUpperCase();
-  return /^[A-Z]{2,3}\d/.test(cs);
-}
+      const cs = (f.flight || f.callsign || "").trim().toUpperCase();
+      return /^[A-Z]{2,3}\d/.test(cs);
+    }
 
     function isStale(f) {
       return typeof f.seen === "number" && f.seen > STALE_AFTER_MS / 1000;
@@ -242,16 +241,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
 
     function callsignDisplay(f) {
-  const cs = f.flight?.trim();
-
-  if (!cs) return "NO CALLSIGN";
-
-  // Common private / GA registration patterns
-  if (/^(N\d|C-[A-Z]|G-[A-Z]|D-[A-Z]|HB-)/i.test(cs))
-    return "PRIVATE";
-
-  return cs;
-}
+      const cs = f.flight?.trim();
+      if (!cs) return "NO CALLSIGN";
+      if (/^(N\d|C-[A-Z]|G-[A-Z]|D-[A-Z]|HB-)/i.test(cs)) return "PRIVATE";
+      return cs;
+    }
 
     function render(flights) {
       const activeFlights = flights

@@ -364,14 +364,20 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     function militaryBranch(f) {
       const cs = callsignRaw(f);
 
-      // Explicit military callsigns (strong signal)
+      // Callsign-based (highest confidence)
       if (/^(RCH|REACH|MC|AMC)/.test(cs)) return "USAF";
       if (/^(NAVY|CNV|VV)/.test(cs)) return "USN";
       if (/^(PAT|ARMY)/.test(cs)) return "USA";
       if (/^(VM|MAR)/.test(cs)) return "USMC";
 
-      // Fallback: ICAO military allocation
-      if (f.hex?.startsWith("AE")) return "MIL";
+      // ICAO allocation: US military
+      if (f.hex?.startsWith("AE")) {
+        // Try to infer role
+        if ((f.alt_baro ?? 0) > 30000 && (f.gs ?? 0) < 450) {
+          return "USAF (TANKER)";
+        }
+        return "USAF";
+      }
 
       return null;
     }
@@ -388,7 +394,14 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
       if ((f.alt_baro ?? 0) > 45000 || (f.gs ?? 0) > 550)
         return { label: "FAST/HIGH", cls: "bg-yellow-100 text-yellow-800" };
-
+      if (branch) {
+        return {
+          label: branch,
+          cls: branch.includes("TANKER")
+            ? "bg-red-200 text-red-900"
+            : "bg-red-100 text-red-800",
+        };
+      }
       return null;
     }
 

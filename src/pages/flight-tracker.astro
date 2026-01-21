@@ -108,25 +108,30 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
 
     function renderNotables(rows) {
-  const notableBody = document.getElementById("notableBody");
-  if (!notableBody) return;
+      const notableBody = document.getElementById("notableBody");
+      if (!notableBody) return;
 
-  if (!rows || !rows.length) {
-    notableBody.innerHTML = `
+      if (!rows || !rows.length) {
+        notableBody.innerHTML = `
       <tr>
-        <td colspan="5" class="text-center py-6 text-gray-500">
+        <td colspan="6" class="text-center py-6 text-gray-500">
           No notable pings recorded yet.
         </td>
       </tr>
     `;
-    return;
-  }
+        return;
+      }
 
-  notableBody.innerHTML = rows
-    .map((r) => {
-      const fakeFlight = { flight: r.callsign };
-      return `
+      const medals = ["🥇", "🥈", "🥉"];
+
+      notableBody.innerHTML = rows
+        .map((r, i) => {
+          const fakeFlight = { flight: r.callsign };
+          const rank = medals[i] ?? "";
+
+          return `
         <tr class="border-b">
+          <td class="text-center py-2 px-3 text-xl">${rank}</td>
           <td class="py-2 px-3">${airlineFromFlight(fakeFlight)}</td>
           <td class="py-2 px-3">${r.callsign}</td>
           <td class="py-2 px-3">${r.hex}</td>
@@ -136,9 +141,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           </td>
         </tr>
       `;
-    })
-    .join("");
-}
+        })
+        .join("");
+    }
 
     async function loadNotables() {
       const notableBody = document.getElementById("notableBody");
@@ -386,6 +391,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     <table class="w-full border-collapse text-base text-gray-900">
       <thead>
         <tr class="border-b text-gray-700">
+          <th class="text-center py-2 px-3">#</th>
           <th class="text-left py-2 px-3">Airline</th>
           <th class="text-left py-2 px-3">Callsign</th>
           <th class="text-left py-2 px-3">ICAO</th>

@@ -64,7 +64,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     if (!f.hex || lat == null || lon == null) continue;
 
-    const d = Math.round(distanceNm(RX_LAT, RX_LON, lat, lon));
+    const d = Math.round(
+        distanceNm(RX_LAT, RX_LON, lat, lon)
+      );
 
     const prev = byHex.get(f.hex);
 

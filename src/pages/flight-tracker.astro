@@ -315,17 +315,19 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
 
     function airlineFromFlight(f) {
+      const cs = callsignRaw(f);
+
+      // Explicit private registration
       if (isPrivateFlight(f)) return "Private";
+
+      // Known operator (even if callsign missing)
       if (f.op?.trim()) return f.op.trim();
 
-      const cs = callsignRaw(f);
+      // Airline-style callsign but not yet resolved
+      if (!cs) return "Undetermined";
+
       const prefix = cs.match(/^[A-Z]{2,3}/)?.[0];
       return AIRLINE_NAMES[prefix] || "—";
-    }
-
-    function isAirlineFlight(f) {
-      const cs = callsignRaw(f);
-      return /^[A-Z]{2,3}\d/.test(cs);
     }
 
     function isStale(f) {

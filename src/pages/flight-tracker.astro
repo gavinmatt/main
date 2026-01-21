@@ -31,7 +31,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   <p class="text-center mb-4">
     More data about the planes currently flying in reach of my antenna. “—” and
     missing values are expected as not all planes send comprehensive data and
-    data is lost as range increases.
+    data is lost as range increases. The table will flag interesting or uncommon
+    flights.
   </p>
 
   <!-- STATUS -->
@@ -77,23 +78,17 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     const lastUpdatedEl = document.getElementById("lastUpdated");
     const STALE_AFTER_MS = 90_000;
 
-    // Receiver location (Whitefish, MT)
     const RX_LAT = 48.415;
     const RX_LON = -114.459;
-
-    /* ---------- DISTANCE ---------- */
 
     function distanceNm(lat1, lon1, lat2, lon2) {
       const R = 3440.065;
       const toRad = (d) => (d * Math.PI) / 180;
-
       const dLat = toRad(lat2 - lat1);
       const dLon = toRad(lon2 - lon1);
-
       const a =
         Math.sin(dLat / 2) ** 2 +
         Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
-
       return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     }
 
@@ -130,14 +125,62 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       GTI: "Atlas Air",
       CKS: "Kalitta Air",
       ABX: "ABX Air",
+      BAW: "British Airways",
+      DLH: "Lufthansa",
+      KLM: "KLM Royal Dutch Airlines",
+      AFR: "Air France",
+      UAE: "Emirates",
+      QTR: "Qatar Airways",
+      QQE: "Qatar Executive",
+      THY: "Turkish Airlines",
+      ETD: "Etihad Airways",
+      SVA: "Saudia",
+      ANA: "All Nippon Airways",
+      JAL: "Japan Airlines",
+      KAL: "Korean Air",
+      CPA: "Cathay Pacific",
+      EVA: "EVA Air",
+      CAL: "China Airlines",
+      JAS: "Janus Airways",
     };
 
-    const COMMON_AIRLINES = new Set(Object.values(AIRLINE_NAMES));
+    const COMMON_AIRLINES = new Set([
+      "American Airlines",
+      "Delta Air Lines",
+      "United Airlines",
+      "Alaska Airlines",
+      "Southwest Airlines",
+      "JetBlue Airways",
+      "Spirit Airlines",
+      "Frontier Airlines",
+      "Air Canada",
+      "WestJet",
+      "FedEx Express",
+      "UPS Airlines",
+    ]);
+
+    function callsignRaw(f) {
+      return (f.flight || f.callsign || "").trim().toUpperCase();
+    }
+
+    function isPrivateFlight(f) {
+      const cs = callsignRaw(f);
+      if (!cs) return true;
+      return /^(N\d|C-[A-Z]|G-[A-Z]|D-[A-Z]|HB-)/.test(cs);
+    }
 
     function airlineFromFlight(f) {
+      if (isPrivateFlight(f)) return "Private";
       if (f.op?.trim()) return f.op.trim();
-      const prefix = f.flight?.trim().match(/^[A-Z]{2,3}/)?.[0];
+
+      const cs = callsignRaw(f);
+      const prefix = cs.match(/^[A-Z]{2,3}/)?.[0];
       return AIRLINE_NAMES[prefix] || "—";
+    }
+
+    function isAirlineFlight(f) {
+      const cs = callsignRaw(f);
+      return /^[A-Z]{2,3}\d/.test(cs);
     }
 
     function isStale(f) {
@@ -150,12 +193,29 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       return "—";
     }
 
+    /* ---------- MILITARY BRANCH ---------- */
+
+    function militaryBranch(f) {
+      const cs = callsignRaw(f);
+
+      if (f.hex?.startsWith("AE")) {
+        if (/^(RCH|REACH|MC|AMC)/.test(cs)) return "USAF";
+        if (/^(NAVY|CNV|VV)/.test(cs)) return "USN";
+        if (/^(PAT|ARMY)/.test(cs)) return "USA";
+        if (/^(VM|MAR)/.test(cs)) return "USMC";
+        return "MIL";
+      }
+      return null;
+    }
+
     function classifyNotability(f) {
-      if (f.hex?.startsWith("AE"))
-        return { label: "MIL", cls: "bg-red-100 text-red-800" };
+      const branch = militaryBranch(f);
+      if (branch) return { label: branch, cls: "bg-red-100 text-red-800" };
 
       const airline = airlineFromFlight(f);
-      if (airline !== "—" && !COMMON_AIRLINES.has(airline))
+      const airlinePattern = isAirlineFlight(f);
+
+      if (airlinePattern && airline !== "—" && !COMMON_AIRLINES.has(airline))
         return { label: "UNCOMMON", cls: "bg-blue-100 text-blue-800" };
 
       if ((f.alt_baro ?? 0) > 45000 || (f.gs ?? 0) > 550)
@@ -167,6 +227,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     function secondsSinceSeen(f) {
       if (typeof f.seen === "number") return Math.round(f.seen);
       return "—";
+    }
+
+    function callsignDisplay(f) {
+      const cs = callsignRaw(f);
+      return cs || "NO CALLSIGN";
     }
 
     function render(flights) {
@@ -199,7 +264,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
               ${dFlag ? `<span class="px-2 py-0.5 rounded text-xs font-medium ${dFlag.cls}">${dFlag.label}</span>` : ""}
             </td>
             <td class="py-2 px-3">${airlineFromFlight(f)}</td>
-            <td class="py-2 px-3">${f.flight?.trim() || "—"}</td>
+            <td class="py-2 px-3">${callsignDisplay(f)}</td>
             <td class="py-2 px-3">${aircraftClass(f)}</td>
             <td class="py-2 px-3">${f.hex || "—"}</td>
             <td class="text-right py-2 px-3">${f.alt_baro ?? f.alt_geom ?? "—"}</td>
@@ -217,10 +282,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       try {
         const res = await fetch("/api/flights");
         if (res.status === 204) return;
-
         const data = await res.json();
         render(data.aircraft ?? []);
-
         lastUpdatedEl.textContent =
           "Last updated " + new Date(data.receivedAt).toLocaleTimeString();
       } catch {}

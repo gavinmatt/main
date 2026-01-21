@@ -298,34 +298,41 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     function isPrivateFlight(f) {
       const cs = callsignRaw(f);
-      if (!cs) return true;
+      if (!cs) return false; // ← critical change
 
       return (
-        // US: N123AB
+        // US
         /^N\d{1,5}[A-Z]{0,2}$/.test(cs) ||
-        // Canada: C-GABC / CGABC / C-FABC / CFABC
+        // Canada
         /^C-?[FG][A-Z]{3}$/.test(cs) ||
-        // UK: G-ABCD / GABCD
+        // UK
         /^G-?[A-Z]{4}$/.test(cs) ||
-        // Germany: D-ABCD / DABCD
+        // Germany
         /^D-?[A-Z]{4}$/.test(cs) ||
-        // Switzerland: HB-ABC / HBABC
+        // Switzerland
         /^HB-?[A-Z]{3}$/.test(cs)
       );
-    }
-
-    function airlineFromFlight(f) {
-      if (isPrivateFlight(f)) return "Private";
-      if (f.op?.trim()) return f.op.trim();
-
-      const cs = callsignRaw(f);
-      const prefix = cs.match(/^[A-Z]{2,3}/)?.[0];
-      return AIRLINE_NAMES[prefix] || "—";
     }
 
     function isAirlineFlight(f) {
       const cs = callsignRaw(f);
       return /^[A-Z]{2,3}\d/.test(cs);
+    }
+
+    function airlineFromFlight(f) {
+      const cs = callsignRaw(f);
+
+      // Explicit private registration
+      if (isPrivateFlight(f)) return "Private";
+
+      // Known operator (even if callsign missing)
+      if (f.op?.trim()) return f.op.trim();
+
+      // Airline-style callsign but not yet resolved
+      if (!cs) return "Undetermined";
+
+      const prefix = cs.match(/^[A-Z]{2,3}/)?.[0];
+      return AIRLINE_NAMES[prefix] || "—";
     }
 
     function isStale(f) {

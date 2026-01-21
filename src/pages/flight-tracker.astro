@@ -138,6 +138,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       CLX: "Cargolux",
       MNB: "ASL Airlines Belgium",
       EGG: "Western Global Airlines",
+      MAL: "Morningstar Air",
+      CJT: "Cargojet"
 
       BAW: "British Airways",
       DLH: "Lufthansa",
@@ -191,6 +193,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       "WestJet",
       "FedEx Express",
       "UPS Airlines",
+      "Morningstar Air",
+      "Cargojet",
     ]);
 
     function airlineFromFlight(f) {
@@ -202,8 +206,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 }
 
     function isAirlineFlight(f) {
-      return /^[A-Z]{2,3}\d/.test(f.flight || "");
-    }
+  const cs = (f.flight || f.callsign || "").trim().toUpperCase();
+  return /^[A-Z]{2,3}\d/.test(cs);
+}
 
     function isStale(f) {
       return typeof f.seen === "number" && f.seen > STALE_AFTER_MS / 1000;

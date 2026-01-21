@@ -33,6 +33,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (!secret || secret !== process.env.FLIGHT_INGEST_SECRET) {
     return res.status(401).send("Unauthorized");
   }
+  console.log('FLIGHTS-INGEST HIT', Date.now());
 
   let payload: any;
   try {

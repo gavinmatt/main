@@ -69,7 +69,10 @@ export default async function handler(
   );
 
   for (const f of payload.aircraft) {
-    if (!f.hex || f.lat == null || f.lon == null) continue;
+    const lat = f.lat ?? f.lat_baro;
+    const lon = f.lon ?? f.lon_baro;
+    
+    if (!f.hex || lat == null || lon == null) continue;
 
     const d = Math.round(
       distanceNm(RX_LAT, RX_LON, f.lat, f.lon)

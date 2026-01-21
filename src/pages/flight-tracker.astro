@@ -233,6 +233,18 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       return "—";
     }
 
+    function callsignDisplay(f) {
+  const cs = f.flight?.trim();
+
+  if (!cs) return "NO CALLSIGN";
+
+  // Common private / GA registration patterns
+  if (/^(N\d|C-[A-Z]|G-[A-Z]|D-[A-Z]|HB-)/i.test(cs))
+    return "PRIVATE";
+
+  return cs;
+}
+
     function render(flights) {
       const activeFlights = flights
         .filter((f) => !isStale(f))
@@ -263,7 +275,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
               ${dFlag ? `<span class="px-2 py-0.5 rounded text-xs font-medium ${dFlag.cls}">${dFlag.label}</span>` : ""}
             </td>
             <td class="py-2 px-3">${airlineFromFlight(f)}</td>
-            <td class="py-2 px-3">${f.flight?.trim() || "—"}</td>
+            <td class="py-2 px-3">${callsignDisplay(f)}</td>
             <td class="py-2 px-3">${aircraftClass(f)}</td>
             <td class="py-2 px-3">${f.hex || "—"}</td>
             <td class="text-right py-2 px-3">${f.alt_baro ?? f.alt_geom ?? "—"}</td>

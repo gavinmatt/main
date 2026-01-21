@@ -375,10 +375,16 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
           return `
           <tr class="border-b text-gray-900">
-            <td class="py-2 px-3 space-x-1">
-              ${note ? `<span class="px-2 py-0.5 rounded text-xs font-medium ${note.cls}">${note.label}</span>` : ""}
-              ${dFlag ? `<span class="px-2 py-0.5 rounded text-xs font-medium ${dFlag.cls}">${dFlag.label}</span>` : ""}
-            </td>
+            <td class="py-2 px-3 space-x-1 text-gray-400">
+  ${
+    note || dFlag
+      ? `
+        ${note ? `<span class="px-2 py-0.5 rounded text-xs font-medium ${note.cls}">${note.label}</span>` : ""}
+        ${dFlag ? `<span class="px-2 py-0.5 rounded text-xs font-medium ${dFlag.cls}">${dFlag.label}</span>` : ""}
+      `
+      : "—"
+  }
+</td>
             <td class="py-2 px-3">${airlineFromFlight(f)}</td>
             <td class="py-2 px-3">${callsignDisplay(f)}</td>
             <td class="py-2 px-3">${aircraftClass(f)}</td>

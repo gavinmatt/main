@@ -210,6 +210,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       QXE: "Horizon Air",
       JZA: "Jazz",
       CNK: "Sunwest Aviation",
+      LXJ: "Flexjet",
 
       UPS: "UPS Airlines",
       FDX: "FedEx Express",
@@ -297,7 +298,19 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     function isPrivateFlight(f) {
       const cs = callsignRaw(f);
       if (!cs) return true;
-      return /^(N\d|C-[A-Z]|G-[A-Z]|D-[A-Z]|HB-)/.test(cs);
+
+      return (
+        // US: N123AB
+        /^N\d{1,5}[A-Z]{0,2}$/.test(cs) ||
+        // Canada: C-GABC / CGABC / C-FABC / CFABC
+        /^C-?[FG][A-Z]{3}$/.test(cs) ||
+        // UK: G-ABCD / GABCD
+        /^G-?[A-Z]{4}$/.test(cs) ||
+        // Germany: D-ABCD / DABCD
+        /^D-?[A-Z]{4}$/.test(cs) ||
+        // Switzerland: HB-ABC / HBABC
+        /^HB-?[A-Z]{3}$/.test(cs)
+      );
     }
 
     function airlineFromFlight(f) {

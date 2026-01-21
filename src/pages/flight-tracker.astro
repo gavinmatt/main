@@ -90,9 +90,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
       const a =
         Math.sin(dLat / 2) ** 2 +
-        Math.cos(toRad(lat1)) *
-          Math.cos(toRad(lat2)) *
-          Math.sin(dLon / 2) ** 2;
+        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
 
       return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     }
@@ -209,6 +207,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       return /^[A-Z]{2,3}\d/.test(cs);
     }
 
+    function isPrivateFlight(f) {
+      const cs = (f.flight || f.callsign || "").trim().toUpperCase();
+      if (!cs) return true;
+      return /^(N\d|C-[A-Z]|G-[A-Z]|D-[A-Z]|HB-)/.test(cs);
+    }
+
     function isStale(f) {
       return typeof f.seen === "number" && f.seen > STALE_AFTER_MS / 1000;
     }
@@ -222,6 +226,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     function classifyNotability(f) {
       if (f.hex?.startsWith("AE"))
         return { label: "MIL", cls: "bg-red-100 text-red-800" };
+
+      if (isPrivateFlight(f))
+        return { label: "PRIVATE", cls: "bg-gray-100 text-gray-800" };
 
       const airline = airlineFromFlight(f);
       const airlinePattern = isAirlineFlight(f);
@@ -243,7 +250,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     function callsignDisplay(f) {
       const cs = f.flight?.trim();
       if (!cs) return "NO CALLSIGN";
-      if (/^(N\d|C-[A-Z]|G-[A-Z]|D-[A-Z]|HB-)/i.test(cs)) return "PRIVATE";
+      if (isPrivateFlight(f)) return cs;
       return cs;
     }
 

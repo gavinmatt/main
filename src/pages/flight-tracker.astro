@@ -61,10 +61,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     <table class="w-full border-collapse text-base text-gray-900">
       <thead>
         <tr class="border-b text-gray-700">
-          <th class="text-left py-2 px-3">Notable?</th>
+          <th class="text-left py-2 px-3">Interesting?</th>
           <th class="text-left py-2 px-3">Airline</th>
           <th class="text-left py-2 px-3">Callsign</th>
-          <th class="text-left py-2 px-3">Class</th>
+          <th class="text-left py-2 px-3">Type</th>
           <th class="text-left py-2 px-3">ICAO</th>
           <th class="text-right py-2 px-3">Altitude (ft)</th>
           <th class="text-right py-2 px-3">Speed (kt)</th>
@@ -362,18 +362,63 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       return typeof f.seen === "number" && f.seen > STALE_AFTER_MS / 1000;
     }
 
-    function aircraftType(f) {
-      // ADS-B "type" or "t" field if present (best case)
-      if (f.type) return f.type;
+    const ICAO_TYPE_MAP = {
+      // Airbus
+      A319: "Airbus A319",
+      A320: "Airbus A320",
+      A321: "Airbus A321",
+      A332: "Airbus A330-200",
+      A333: "Airbus A330-300",
+      A359: "Airbus A350-900",
+      A35K: "Airbus A350-1000",
 
-      // Category-based fallback (ICAO aircraft categories)
+      // Boeing
+      B737: "Boeing 737",
+      B738: "Boeing 737-800",
+      B739: "Boeing 737-900",
+      B744: "Boeing 747-400",
+      B748: "Boeing 747-8",
+      B763: "Boeing 767-300",
+      B772: "Boeing 777-200",
+      B77W: "Boeing 777-300ER",
+      B788: "Boeing 787-8",
+      B789: "Boeing 787-9",
+
+      // Regional
+      CRJ2: "CRJ-200",
+      CRJ7: "CRJ-700",
+      CRJ9: "CRJ-900",
+      E170: "Embraer 170",
+      E175: "Embraer 175",
+      E190: "Embraer 190",
+      E195: "Embraer 195",
+
+      // Military / special
+      KC35: "KC-135",
+      K35R: "KC-135R",
+      C17: "C-17 Globemaster III",
+    };
+
+    function aircraftType(f) {
+      const t = f.icao_type || f.t;
+
+      // Best case: ICAO aircraft type
+      if (t && ICAO_TYPE_MAP[t]) {
+        return ICAO_TYPE_MAP[t];
+      }
+
+      // If type exists but we don’t map it yet, show raw code
+      if (t) return t;
+
+      // Helicopters
+      if (f.category === "A7") return "Helicopter";
+
+      // Category fallback
       switch (f.category) {
-        case "A7":
-          return "Helicopter";
-        case "A3":
-          return "Large Jet";
         case "A5":
           return "Heavy Jet";
+        case "A3":
+          return "Large Jet";
         case "A2":
           return "Turboprop";
         case "A1":
@@ -381,7 +426,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       }
 
       // Military fallback
-      if (f.hex?.startsWith("AE")) return "Military";
+      if (hexUpper(f).startsWith("AE")) return "Military";
 
       return "—";
     }

@@ -367,6 +367,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       A319: "Airbus A319",
       A320: "Airbus A320",
       A321: "Airbus A321",
+      A21N: "Airbus A321neo",
       A332: "Airbus A330-200",
       A333: "Airbus A330-300",
       A359: "Airbus A350-900",
@@ -399,6 +400,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       C17: "C-17 Globemaster III",
     };
 
+    function hexUpper(f) {
+      return f.hex?.toUpperCase() ?? "";
+    }
+
     function aircraftType(f) {
       const t = f.icao_type || f.t;
 
@@ -429,10 +434,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       if (hexUpper(f).startsWith("AE")) return "Military";
 
       return "—";
-    }
-
-    function hexUpper(f) {
-      return f.hex?.toUpperCase() ?? "";
     }
 
     /* ---------- MILITARY BRANCH ---------- */

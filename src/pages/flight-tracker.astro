@@ -364,33 +364,33 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       return typeof f.seen === "number" && f.seen > STALE_AFTER_MS / 1000;
     }
 
-    const ICAO_TYPE_MAP = {}
+    const ICAO_TYPE_MAP = {};
 
     function hexUpper(f) {
       return f.hex?.toUpperCase() ?? "";
     }
 
     function aircraftType(f) {
-  // Helicopters
-  if (f.category === "A7") return "Helicopter";
+      // Helicopters
+      if (f.category === "A7") return "Helicopter";
 
-  // Military ICAO allocation
-  if (hexUpper(f).startsWith("AE")) return "Military";
+      // Military ICAO allocation
+      if (hexUpper(f).startsWith("AE")) return "Military";
 
-  // Category-only classification (authoritative for dump1090-fa)
-  switch (f.category) {
-    case "A5":
-      return "Heavy Jet";
-    case "A3":
-      return "Large Jet";
-    case "A2":
-      return "Turboprop";
-    case "A1":
-      return "Light Aircraft";
-  }
+      // Category-only classification (authoritative for dump1090-fa)
+      switch (f.category) {
+        case "A5":
+          return "Heavy Jet";
+        case "A3":
+          return "Large Jet";
+        case "A2":
+          return "Turboprop";
+        case "A1":
+          return "Light Aircraft";
+      }
 
-  return "—";
-}
+      return "—";
+    }
 
     /* ---------- MILITARY BRANCH ---------- */
 
@@ -399,15 +399,21 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
       // ICAO allocation: US military (authoritative)
       if (hexUpper(f).startsWith("AE")) {
-        // Optional refinement
-        if ((f.alt_baro ?? 0) > 30000 && (f.gs ?? 0) < 450) {
+        // Tanker refinement (ENRGY, QID, TEX, etc.)
+        if (
+          /^(ENRGY|QID|TEX|GOLD|NACHO)/.test(cs) ||
+          ((f.alt_baro ?? 0) > 30000 && (f.gs ?? 0) < 500)
+        ) {
           return "USAF (TANKER)";
         }
         return "USAF";
       }
 
-      // Callsign-based (secondary signal)
-      if (/^(RCH|REACH|MC|AMC)/.test(cs)) return "USAF";
+      // Callsign-based fallback (when hex is missing or delayed)
+      if (/^(ENRGY|QID|TEX|GOLD|NACHO|RCH|REACH|MC|AMC)/.test(cs)) {
+        return "USAF (TANKER)";
+      }
+
       if (/^(NAVY|CNV|VV)/.test(cs)) return "USN";
       if (/^(PAT|ARMY)/.test(cs)) return "USA";
       if (/^(VM|MAR)/.test(cs)) return "USMC";

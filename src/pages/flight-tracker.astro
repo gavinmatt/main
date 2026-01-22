@@ -113,6 +113,22 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       return null;
     }
 
+    function notableLabelForFlight(f) {
+      // 1️⃣ Authoritative: ICAO hex block
+      if (hexUpper(f).startsWith("AE")) {
+        return "USAF";
+      }
+
+      // 2️⃣ Callsign-based military (fallback)
+      const cs = callsignRaw(f);
+      if (/^(ENRGY|QID|TEX|GOLD|NACHO|RCH|REACH|MC|AMC)/.test(cs)) {
+        return "USAF";
+      }
+
+      // 3️⃣ Otherwise fall through to airline / normal logic
+      return airlineFromFlight(f);
+    }
+
     function notableDistanceLabel(d) {
       if (d >= 250) {
         return { label: "AMAZING", cls: "bg-purple-100 text-purple-800" };
@@ -163,7 +179,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 </td>
 
 <td class="py-2 px-3">
-  ${airlineFromFlight(fakeFlight)}
+  ${notableLabelForFlight(fakeFlight)}
 </td>
         <td class="py-2 px-3">${r.callsign}</td>        
         <td class="text-right py-2 px-3 font-semibold">${r.maxDistance}</td>
@@ -270,7 +286,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       AIP: "Alpine Aviation",
       EJA: "NetJets",
       AMF: "Ameriflight",
-      VJA: "VistaAmerica"
+      VJA: "VistaAmerica",
     };
 
     const COMMON_AIRLINES = new Set([

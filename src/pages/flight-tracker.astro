@@ -362,79 +362,33 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       return typeof f.seen === "number" && f.seen > STALE_AFTER_MS / 1000;
     }
 
-    const ICAO_TYPE_MAP = {
-      // Airbus
-      A319: "Airbus A319",
-      A320: "Airbus A320",
-      A321: "Airbus A321",
-      A21N: "Airbus A321neo",
-      A332: "Airbus A330-200",
-      A333: "Airbus A330-300",
-      A359: "Airbus A350-900",
-      A35K: "Airbus A350-1000",
-
-      // Boeing
-      B737: "Boeing 737",
-      B738: "Boeing 737-800",
-      B739: "Boeing 737-900",
-      B744: "Boeing 747-400",
-      B748: "Boeing 747-8",
-      B763: "Boeing 767-300",
-      B772: "Boeing 777-200",
-      B77W: "Boeing 777-300ER",
-      B788: "Boeing 787-8",
-      B789: "Boeing 787-9",
-
-      // Regional
-      CRJ2: "CRJ-200",
-      CRJ7: "CRJ-700",
-      CRJ9: "CRJ-900",
-      E170: "Embraer 170",
-      E175: "Embraer 175",
-      E190: "Embraer 190",
-      E195: "Embraer 195",
-
-      // Military / special
-      KC35: "KC-135",
-      K35R: "KC-135R",
-      C17: "C-17 Globemaster III",
-    };
+    const ICAO_TYPE_MAP = {}
 
     function hexUpper(f) {
       return f.hex?.toUpperCase() ?? "";
     }
 
     function aircraftType(f) {
-      const t = (f.icao_type || f.t || "").trim().toUpperCase();
+  // Helicopters
+  if (f.category === "A7") return "Helicopter";
 
-      // Best case: ICAO aircraft type
-      if (t && ICAO_TYPE_MAP[t]) {
-        return ICAO_TYPE_MAP[t];
-      }
+  // Military ICAO allocation
+  if (hexUpper(f).startsWith("AE")) return "Military";
 
-      // If type exists but we don’t map it yet, show raw code
-      if (t) return t;
+  // Category-only classification (authoritative for dump1090-fa)
+  switch (f.category) {
+    case "A5":
+      return "Heavy Jet";
+    case "A3":
+      return "Large Jet";
+    case "A2":
+      return "Turboprop";
+    case "A1":
+      return "Light Aircraft";
+  }
 
-      // Helicopters
-      if (f.category === "A7") return "Helicopter";
-
-      // Category fallback
-      switch (f.category) {
-        case "A5":
-          return "Heavy Jet";
-        case "A3":
-          return "Large Jet";
-        case "A2":
-          return "Turboprop";
-        case "A1":
-          return "Light Aircraft";
-      }
-
-      // Military fallback
-      if (hexUpper(f).startsWith("AE")) return "Military";
-
-      return "—";
-    }
+  return "—";
+}
 
     /* ---------- MILITARY BRANCH ---------- */
 

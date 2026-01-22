@@ -298,7 +298,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     ]);
 
     function callsignRaw(f) {
-      return (f.flight || f.callsign || "").trim().toUpperCase();
+      const cs = (f.flight || f.callsign || "").trim().toUpperCase();
+      if (!cs || cs === "00000000") return "";
+      return cs;
     }
 
     function isUnknownAirline(f) {

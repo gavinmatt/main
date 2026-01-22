@@ -338,6 +338,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       return /^[A-Z]{2,3}\d/.test(cs);
     }
 
+    function isHelicopter(f) {
+      return f.category === "A7";
+    }
+
     function airlineFromFlight(f) {
       const cs = callsignRaw(f);
 
@@ -358,9 +362,27 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       return typeof f.seen === "number" && f.seen > STALE_AFTER_MS / 1000;
     }
 
-    function aircraftClass(f) {
-      if (f.category) return f.category;
-      if (hexUpper(f).startsWith("AE")) return "MIL";
+    function aircraftType(f) {
+      // ADS-B "type" or "t" field if present (best case)
+      if (f.type) return f.type;
+
+      // Category-based fallback (ICAO aircraft categories)
+      switch (f.category) {
+        case "A7":
+          return "Helicopter";
+        case "A3":
+          return "Large Jet";
+        case "A5":
+          return "Heavy Jet";
+        case "A2":
+          return "Turboprop";
+        case "A1":
+          return "Light Aircraft";
+      }
+
+      // Military fallback
+      if (f.hex?.startsWith("AE")) return "Military";
+
       return "—";
     }
 
@@ -392,6 +414,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
 
     function classifyNotability(f) {
+      // 1️⃣ Helicopters — always special
+      if (f.category === "A7") {
+        return { label: "HELI", cls: "bg-emerald-100 text-emerald-800" };
+      }
+
+      // 2️⃣ Military (callsign or AE hex)
       const branch = militaryBranch(f);
       if (branch) {
         return {
@@ -402,7 +430,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         };
       }
 
-      // Everything below is non-military
+      // 3️⃣ Uncommon airline
       const airline = airlineFromFlight(f);
       const airlinePattern = isAirlineFlight(f);
 
@@ -410,6 +438,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         return { label: "UNCOMMON", cls: "bg-blue-100 text-blue-800" };
       }
 
+      // 4️⃣ Performance-based oddities
       if ((f.alt_baro ?? 0) > 45000 || (f.gs ?? 0) > 550) {
         return { label: "FAST/HIGH", cls: "bg-yellow-100 text-yellow-800" };
       }
@@ -475,7 +504,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           </td>
           <td class="py-2 px-3">${airlineFromFlight(f)}</td>
           <td class="py-2 px-3">${callsignDisplay(f)}</td>
-          <td class="py-2 px-3">${aircraftClass(f)}</td>
+          <td class="py-2 px-3">${aircraftType(f)}</td>
           <td class="py-2 px-3">${f.hex || "—"}</td>
           <td class="text-right py-2 px-3">${f.alt_baro ?? f.alt_geom ?? "—"}</td>
           <td class="text-right py-2 px-3">${f.gs ?? "—"}</td>

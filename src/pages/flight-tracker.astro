@@ -179,7 +179,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 </td>
 
 <td class="py-2 px-3">
-  ${notableLabelForFlight(fakeFlight)}
+  ${r.airline || notableLabelForFlight(fakeFlight)}
 </td>
         <td class="py-2 px-3">${r.callsign}</td>        
         <td class="text-right py-2 px-3 font-semibold">${r.maxDistance}</td>
@@ -291,6 +291,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       AMF: "Ameriflight",
       VJA: "VistaAmerica",
       AJI: "Ameristar Jet Charter",
+      TWY: "Sunset Aviation",
     };
 
     const COMMON_AIRLINES = new Set([
@@ -322,6 +323,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       "Allegiant",
       "Ameristar Jet Charter",
       "Chartright Air",
+      "Sunset Aviation",
     ]);
 
     function callsignRaw(f) {

@@ -365,6 +365,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     function airlineFromFlight(f) {
       const cs = callsignRaw(f);
 
+      // ✅ Boeing test / delivery flights
+      if (/^BOE\d+/.test(cs)) return "Boeing Test Flight";
+
       // Explicit private registration
       if (isPrivateFlight(f)) return "Private";
 
@@ -443,6 +446,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       // 1️⃣ Helicopters — always special
       if (f.category === "A7") {
         return { label: "HELI", cls: "bg-emerald-100 text-emerald-800" };
+      }
+
+      // ✅ Boeing test flights
+      if (/^BOE\d+/.test(cs)) {
+        return { label: "Test Flight", cls: "bg-amber-100 text-amber-800" };
       }
 
       // 2️⃣ Military (callsign or AE hex)

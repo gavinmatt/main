@@ -179,8 +179,13 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 </td>
 
 <td class="py-2 px-3">
-  ${notableLabelForFlight(fakeFlight)}
+  ${
+    r.airline && r.airline !== "—"
+      ? r.airline
+      : notableLabelForFlight(fakeFlight)
+  }
 </td>
+
         <td class="py-2 px-3">${r.callsign}</td>        
         <td class="text-right py-2 px-3 font-semibold">${r.maxDistance}</td>
         <td class="text-right py-2 px-3">
@@ -242,6 +247,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       CJT: "Cargojet",
       ATN: "Air Transport International",
       CFS: "Empire Airlines",
+      AAY: "Allegiant",
 
       BAW: "British Airways",
       DLH: "Lufthansa",
@@ -272,6 +278,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       ETD: "Etihad Airways",
       SVA: "Saudia",
       THY: "Turkish Airlines",
+      IFA: "Fai Airservice",
+      HRT: "Chartright Air",
 
       ETH: "Ethiopian Airlines",
       RAM: "Royal Air Maroc",
@@ -287,6 +295,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       EJA: "NetJets",
       AMF: "Ameriflight",
       VJA: "VistaAmerica",
+      AJI: "Ameristar Jet Charter",
+      TWY: "Sunset Aviation",
+      SPA: "Sierra Pacific",
+      KOW: "Baker Aviation",
+      RAX: "Royal Air Freight",
+      CBC: "SkyShare",
     };
 
     const COMMON_AIRLINES = new Set([
@@ -315,6 +329,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       "NetJets",
       "Ameriflight",
       "VistaAmerica",
+      "Allegiant",
+      "Ameristar Jet Charter",
+      "Chartright Air",
+      "Sunset Aviation",
+      "Sierra Pacific",
+      "Baker Aviation",
     ]);
 
     function callsignRaw(f) {
@@ -338,7 +358,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     function isPrivateFlight(f) {
       const cs = callsignRaw(f);
       if (!cs) return false; // ← critical change
-
+      if (/^NCJ\d+/.test(cs)) return "Private";
       return (
         // US
         /^N\d{1,5}[A-Z]{0,2}$/.test(cs) ||
@@ -364,6 +384,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     function airlineFromFlight(f) {
       const cs = callsignRaw(f);
+
+      // ✅ Boeing test / delivery flights
+      if (/^BOE\d+/.test(cs)) return "Boeing Test Flight";
 
       // Explicit private registration
       if (isPrivateFlight(f)) return "Private";
@@ -440,9 +463,16 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
 
     function classifyNotability(f) {
+      const cs = callsignRaw(f);
+
       // 1️⃣ Helicopters — always special
       if (f.category === "A7") {
         return { label: "HELI", cls: "bg-emerald-100 text-emerald-800" };
+      }
+
+      // ✅ Boeing test flights
+      if (/^BOE\d+/.test(cs)) {
+        return { label: "Test Flight", cls: "bg-amber-100 text-amber-800" };
       }
 
       // 2️⃣ Military (callsign or AE hex)
@@ -456,11 +486,16 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         };
       }
 
-      // 3️⃣ Uncommon airline
+      // 3️⃣ Uncommon airline (exclude Private)
       const airline = airlineFromFlight(f);
       const airlinePattern = isAirlineFlight(f);
 
-      if (airlinePattern && airline !== "—" && !COMMON_AIRLINES.has(airline)) {
+      if (
+        airlinePattern &&
+        airline !== "—" &&
+        airline !== "Private" &&
+        !COMMON_AIRLINES.has(airline)
+      ) {
         return { label: "UNCOMMON", cls: "bg-blue-100 text-blue-800" };
       }
 
@@ -479,7 +514,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     function callsignDisplay(f) {
       const cs = callsignRaw(f);
-      return cs || "NO CALLSIGN";
+      return cs || "No callsign";
     }
 
     function render(flights) {

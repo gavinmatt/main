@@ -443,6 +443,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
 
     function classifyNotability(f) {
+      const cs = callsignRaw(f);
+
       // 1️⃣ Helicopters — always special
       if (f.category === "A7") {
         return { label: "HELI", cls: "bg-emerald-100 text-emerald-800" };

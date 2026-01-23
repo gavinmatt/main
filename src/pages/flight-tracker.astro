@@ -364,7 +364,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         /^D-?[A-Z]{4}$/.test(cs) ||
         // Switzerland
         /^HB-?[A-Z]{3}$/.test(cs)
-        
       );
     }
 
@@ -481,11 +480,16 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         };
       }
 
-      // 3️⃣ Uncommon airline
+      // 3️⃣ Uncommon airline (exclude Private)
       const airline = airlineFromFlight(f);
       const airlinePattern = isAirlineFlight(f);
 
-      if (airlinePattern && airline !== "—" && !COMMON_AIRLINES.has(airline)) {
+      if (
+        airlinePattern &&
+        airline !== "—" &&
+        airline !== "Private" &&
+        !COMMON_AIRLINES.has(airline)
+      ) {
         return { label: "UNCOMMON", cls: "bg-blue-100 text-blue-800" };
       }
 

@@ -179,8 +179,13 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 </td>
 
 <td class="py-2 px-3">
-  ${r.airline || notableLabelForFlight(fakeFlight)}
+  ${
+    r.airline && r.airline !== "—"
+      ? r.airline
+      : notableLabelForFlight(fakeFlight)
+  }
 </td>
+
         <td class="py-2 px-3">${r.callsign}</td>        
         <td class="text-right py-2 px-3 font-semibold">${r.maxDistance}</td>
         <td class="text-right py-2 px-3">

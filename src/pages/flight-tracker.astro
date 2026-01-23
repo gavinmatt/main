@@ -352,7 +352,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     function isPrivateFlight(f) {
       const cs = callsignRaw(f);
       if (!cs) return false; // ← critical change
-
+      if (/^NCJ\d+/.test(cs)) return "Private";
       return (
         // US
         /^N\d{1,5}[A-Z]{0,2}$/.test(cs) ||
@@ -364,6 +364,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         /^D-?[A-Z]{4}$/.test(cs) ||
         // Switzerland
         /^HB-?[A-Z]{3}$/.test(cs)
+        
       );
     }
 

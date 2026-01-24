@@ -388,6 +388,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       // ✅ Boeing test / delivery flights
       if (/^BOE\d+/.test(cs)) return "Boeing Test Flight";
 
+      // ✅ Special Operations flights
+      if (/^RDN\d+/.test(cs)) return "Special Operations";
+
       // Explicit private registration
       if (isPrivateFlight(f)) return "Private";
 

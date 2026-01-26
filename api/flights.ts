@@ -61,7 +61,7 @@ export default async function handler(
       byHex.set(f.hex, {
         hex: f.hex,
         airline: f.op || '—',
-        callsign: (f.flight || '').trim() || 'NO CALLSIGN',
+        callsign: (f.flight || '').trim() || 'No callsign',
         maxDistance: d,
         lastSeen: Date.now()
       });

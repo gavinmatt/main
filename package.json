@@ -12,6 +12,7 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@arcjet/astro": "^1.0.0",
     "@astrojs/mdx": "^4.3.9",
     "@astrojs/react": "^3.0.9",
     "@astrojs/renderer-react": "^0.5.0",

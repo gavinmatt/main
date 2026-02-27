@@ -201,6 +201,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     function airlineFromCallsign(cs) {
       if (!cs) return "—";
+      if (/^N\d{1,5}[A-Z]{0,2}$/.test(cs)) return "Private";
+      if (/^C-?[FG][A-Z]{3}$/.test(cs)) return "Private";
+      if (/^G-?[A-Z]{4}$/.test(cs)) return "Private";
+      if (/^D-?[A-Z]{4}$/.test(cs)) return "Private";
+      if (/^HB-?[A-Z]{3}$/.test(cs)) return "Private";
+      if (/^NCJ\d+/.test(cs)) return "Private";
       const prefix = cs.match(/^[A-Z]{2,3}/)?.[0];
       return AIRLINE_NAMES[prefix] || "—";
     }
@@ -451,10 +457,14 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       if (f.category === "A7") return "Helicopter";
       if (hexUpper(f).startsWith("AE")) return "Military";
       switch (f.category) {
-        case "A5": return "Heavy Jet";
-        case "A3": return "Large Jet";
-        case "A2": return "Turboprop";
-        case "A1": return "Light Aircraft";
+        case "A5":
+          return "Heavy Jet";
+        case "A3":
+          return "Large Jet";
+        case "A2":
+          return "Turboprop";
+        case "A1":
+          return "Light Aircraft";
       }
       return "—";
     }

@@ -6,6 +6,10 @@ const redis = new Redis(process.env.REDIS_URL!);
 const NOTABLE_KEY = 'notable-pings:v1';
 const MAX_NOTABLES = 10;
 
+const FREQUENT_FLIERS_KEY = 'frequent-fliers:v1';
+const MAX_FREQUENT_FLIERS = 10;
+const DEBOUNCE_MS = 60 * 60 * 1000;
+
 const RX_LAT = 48.415;
 const RX_LON = -114.459;
 
@@ -51,10 +55,7 @@ export default async function handler(
   for (const f of aircraft) {
     if (!f.hex || f.lat == null || f.lon == null) continue;
 
-    const d = Math.round(
-      distanceNm(RX_LAT, RX_LON, f.lat, f.lon)
-    );
-
+    const d = Math.round(distanceNm(RX_LAT, RX_LON, f.lat, f.lon));
     const prev = byHex.get(f.hex);
 
     if (!prev || d > prev.maxDistance) {
@@ -74,6 +75,55 @@ export default async function handler(
 
   if (next.length) {
     await redis.set(NOTABLE_KEY, JSON.stringify(next));
+  }
+
+  /* ---------- UPDATE FREQUENT FLIERS ---------- */
+
+  const ffRaw = (await redis.get(FREQUENT_FLIERS_KEY)) ?? '[]';
+  let frequentFliers: any[];
+
+  try {
+    frequentFliers = JSON.parse(ffRaw);
+  } catch {
+    frequentFliers = [];
+  }
+
+  const byCallsign = new Map<string, any>(
+    frequentFliers.map((f) => [f.callsign, f])
+  );
+
+  const now = Date.now();
+
+  for (const f of aircraft) {
+    const cs = (f.flight || '').trim();
+    if (!cs || cs === '00000000') continue;
+
+    const prev = byCallsign.get(cs);
+
+    if (prev) {
+      if (now - prev.lastCountedAt > DEBOUNCE_MS) {
+        prev.count += 1;
+        prev.lastCountedAt = now;
+        prev.airline = f.op || prev.airline || '—';
+        prev.lastSeen = now;
+      }
+    } else {
+      byCallsign.set(cs, {
+        callsign: cs,
+        airline: f.op || '—',
+        count: 1,
+        lastCountedAt: now,
+        lastSeen: now,
+      });
+    }
+  }
+
+  const nextFF = [...byCallsign.values()]
+    .sort((a, b) => b.count - a.count)
+    .slice(0, MAX_FREQUENT_FLIERS);
+
+  if (nextFF.length) {
+    await redis.set(FREQUENT_FLIERS_KEY, JSON.stringify(nextFF));
   }
 
   /* ---------- RETURN LIVE DATA ---------- */

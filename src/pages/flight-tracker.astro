@@ -199,6 +199,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       } catch {}
     }
 
+    function airlineFromCallsign(cs) {
+      if (!cs) return "—";
+      const prefix = cs.match(/^[A-Z]{2,3}/)?.[0];
+      return AIRLINE_NAMES[prefix] || "—";
+    }
+
     function renderFrequentFliers(rows) {
       const ffBody = document.getElementById("frequentFliersBody");
       if (!ffBody) return;
@@ -218,11 +224,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
       ffBody.innerHTML = rows
         .map((r, i) => {
-          const rank = medals[i] ?? `#${i + 1}`;
+          const rank = medals[i] ?? "";
           return `
             <tr class="border-b">
               <td class="text-center py-2 px-3 text-xl">${rank}</td>
-              <td class="py-2 px-3">${r.airline && r.airline !== "—" ? r.airline : "—"}</td>
+              <td class="py-2 px-3">${airlineFromCallsign(r.callsign)}</td>
               <td class="py-2 px-3 font-mono">${r.callsign}</td>
               <td class="text-right py-2 px-3 font-semibold">${r.count}</td>
               <td class="text-right py-2 px-3">${new Date(r.lastSeen).toLocaleDateString()}</td>

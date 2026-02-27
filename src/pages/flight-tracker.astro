@@ -31,11 +31,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
   <!-- TABLE HEADER -->
   <div class="text-center">
-    <div class="text-3xl w-full font-bold mt-10 mb-3">What’s overhead?</div>
+    <div class="text-3xl w-full font-bold mt-10 mb-3">What's overhead?</div>
   </div>
 
   <p class="text-center mb-4">
-    More data about the planes currently flying in reach of my antenna. “—” and
+    More data about the planes currently flying in reach of my antenna. "—" and
     missing values are expected as not all planes send comprehensive data and
     data is lost as range increases. The table will flag interesting or uncommon
     flights.
@@ -114,18 +114,13 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
 
     function notableLabelForFlight(f) {
-      // 1️⃣ Authoritative: ICAO hex block
       if (hexUpper(f).startsWith("AE")) {
         return "USAF";
       }
-
-      // 2️⃣ Callsign-based military (fallback)
       const cs = callsignRaw(f);
       if (/^(ENRGY|QID|TEX|GOLD|NACHO|RCH|REACH|MC|AMC)/.test(cs)) {
         return "USAF";
       }
-
-      // 3️⃣ Otherwise fall through to airline / normal logic
       return airlineFromFlight(f);
     }
 
@@ -148,12 +143,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
       if (!rows || !rows.length) {
         notableBody.innerHTML = `
-      <tr>
-        <td colspan="6" class="text-center py-6 text-gray-500">
-          No notable pings recorded yet.
-        </td>
-      </tr>
-    `;
+          <tr>
+            <td colspan="6" class="text-center py-6 text-gray-500">
+              No notable pings recorded yet.
+            </td>
+          </tr>
+        `;
         return;
       }
 
@@ -166,33 +161,29 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           const label = notableDistanceLabel(r.maxDistance);
 
           return `
-      <tr class="border-b">
-        <td class="text-center py-2 px-3 text-xl">${rank}</td>
-        <td class="text-center py-2 px-3">
-  ${
-    label
-      ? `<span class="px-2 py-0.5 rounded text-xs font-medium ${label.cls}">
-          ${label.label}
-        </span>`
-      : "—"
-  }
-</td>
-
-<td class="py-2 px-3">
-  ${
-    r.airline && r.airline !== "—"
-      ? r.airline
-      : notableLabelForFlight(fakeFlight)
-  }
-</td>
-
-        <td class="py-2 px-3">${r.callsign}</td>        
-        <td class="text-right py-2 px-3 font-semibold">${r.maxDistance}</td>
-        <td class="text-right py-2 px-3">
-          ${new Date(r.lastSeen).toLocaleDateString()}
-        </td>
-      </tr>
-    `;
+            <tr class="border-b">
+              <td class="text-center py-2 px-3 text-xl">${rank}</td>
+              <td class="text-center py-2 px-3">
+                ${
+                  label
+                    ? `<span class="px-2 py-0.5 rounded text-xs font-medium ${label.cls}">${label.label}</span>`
+                    : "—"
+                }
+              </td>
+              <td class="py-2 px-3">
+                ${
+                  r.airline && r.airline !== "—"
+                    ? r.airline
+                    : notableLabelForFlight(fakeFlight)
+                }
+              </td>
+              <td class="py-2 px-3">${r.callsign}</td>
+              <td class="text-right py-2 px-3 font-semibold">${r.maxDistance}</td>
+              <td class="text-right py-2 px-3">
+                ${new Date(r.lastSeen).toLocaleDateString()}
+              </td>
+            </tr>
+          `;
         })
         .join("");
     }
@@ -205,6 +196,47 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         const res = await fetch("/api/notable-pings");
         const data = await res.json();
         renderNotables(data.rows ?? []);
+      } catch {}
+    }
+
+    function renderFrequentFliers(rows) {
+      const ffBody = document.getElementById("frequentFliersBody");
+      if (!ffBody) return;
+
+      if (!rows || !rows.length) {
+        ffBody.innerHTML = `
+          <tr>
+            <td colspan="5" class="text-center py-6 text-gray-500">
+              No frequent fliers recorded yet.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      const medals = ["🥇", "🥈", "🥉"];
+
+      ffBody.innerHTML = rows
+        .map((r, i) => {
+          const rank = medals[i] ?? `#${i + 1}`;
+          return `
+            <tr class="border-b">
+              <td class="text-center py-2 px-3 text-xl">${rank}</td>
+              <td class="py-2 px-3">${r.airline && r.airline !== "—" ? r.airline : "—"}</td>
+              <td class="py-2 px-3 font-mono">${r.callsign}</td>
+              <td class="text-right py-2 px-3 font-semibold">${r.count}</td>
+              <td class="text-right py-2 px-3">${new Date(r.lastSeen).toLocaleDateString()}</td>
+            </tr>
+          `;
+        })
+        .join("");
+    }
+
+    async function loadFrequentFliers() {
+      try {
+        const res = await fetch("/api/frequent-fliers");
+        const data = await res.json();
+        renderFrequentFliers(data.rows ?? []);
       } catch {}
     }
 
@@ -265,7 +297,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       CFG: "Condor",
       ICE: "Icelandair",
       FBU: "French Bee",
-      SAS: "Scandinavian Airlines",
 
       ANA: "All Nippon Airways",
       JAL: "Japan Airlines",
@@ -361,29 +392,21 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     function isUnknownAirline(f) {
       const cs = callsignRaw(f);
       if (!cs) return false;
-
-      // Airline-style callsign (2–3 letters + digits)
       const looksLikeAirline = /^[A-Z]{2,3}\d/.test(cs);
       if (!looksLikeAirline) return false;
-
       const prefix = cs.match(/^[A-Z]{2,3}/)?.[0];
       return !AIRLINE_NAMES[prefix];
     }
 
     function isPrivateFlight(f) {
       const cs = callsignRaw(f);
-      if (!cs) return false; // ← critical change
+      if (!cs) return false;
       if (/^NCJ\d+/.test(cs)) return "Private";
       return (
-        // US
         /^N\d{1,5}[A-Z]{0,2}$/.test(cs) ||
-        // Canada
         /^C-?[FG][A-Z]{3}$/.test(cs) ||
-        // UK
         /^G-?[A-Z]{4}$/.test(cs) ||
-        // Germany
         /^D-?[A-Z]{4}$/.test(cs) ||
-        // Switzerland
         /^HB-?[A-Z]{3}$/.test(cs)
       );
     }
@@ -399,22 +422,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     function airlineFromFlight(f) {
       const cs = callsignRaw(f);
-
-      // ✅ Boeing test / delivery flights
       if (/^BOE\d+/.test(cs)) return "Boeing Test Flight";
-
-      // ✅ Special Operations flights
       if (/^RDN\d+/.test(cs)) return "Special Operations";
-
-      // Explicit private registration
       if (isPrivateFlight(f)) return "Private";
-
-      // Known operator (even if callsign missing)
       if (f.op?.trim()) return f.op.trim();
-
-      // Airline-style callsign but not yet resolved
       if (!cs) return "Undetermined";
-
       const prefix = cs.match(/^[A-Z]{2,3}/)?.[0];
       return AIRLINE_NAMES[prefix] || "—";
     }
@@ -430,35 +442,20 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
 
     function aircraftType(f) {
-      // Helicopters
       if (f.category === "A7") return "Helicopter";
-
-      // Military ICAO allocation
       if (hexUpper(f).startsWith("AE")) return "Military";
-
-      // Category-only classification (authoritative for dump1090-fa)
       switch (f.category) {
-        case "A5":
-          return "Heavy Jet";
-        case "A3":
-          return "Large Jet";
-        case "A2":
-          return "Turboprop";
-        case "A1":
-          return "Light Aircraft";
+        case "A5": return "Heavy Jet";
+        case "A3": return "Large Jet";
+        case "A2": return "Turboprop";
+        case "A1": return "Light Aircraft";
       }
-
       return "—";
     }
 
-    /* ---------- MILITARY BRANCH ---------- */
-
     function militaryBranch(f) {
       const cs = callsignRaw(f);
-
-      // ICAO allocation: US military (authoritative)
       if (hexUpper(f).startsWith("AE")) {
-        // Tanker refinement (ENRGY, QID, TEX, etc.)
         if (
           /^(ENRGY|QID|TEX|GOLD|NACHO)/.test(cs) ||
           ((f.alt_baro ?? 0) > 30000 && (f.gs ?? 0) < 500)
@@ -467,33 +464,23 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         }
         return "USAF";
       }
-
-      // Callsign-based fallback (when hex is missing or delayed)
       if (/^(ENRGY|QID|TEX|GOLD|NACHO|RCH|REACH|MC|AMC)/.test(cs)) {
         return "USAF (TANKER)";
       }
-
       if (/^(NAVY|CNV|VV)/.test(cs)) return "USN";
       if (/^(PAT|ARMY)/.test(cs)) return "USA";
       if (/^(VM|MAR)/.test(cs)) return "USMC";
-
       return null;
     }
 
     function classifyNotability(f) {
       const cs = callsignRaw(f);
-
-      // 1️⃣ Helicopters — always special
       if (f.category === "A7") {
         return { label: "HELI", cls: "bg-emerald-100 text-emerald-800" };
       }
-
-      // ✅ Boeing test flights
       if (/^BOE\d+/.test(cs)) {
         return { label: "Test Flight", cls: "bg-amber-100 text-amber-800" };
       }
-
-      // 2️⃣ Military (callsign or AE hex)
       const branch = militaryBranch(f);
       if (branch) {
         return {
@@ -503,11 +490,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
             : "bg-red-100 text-red-800",
         };
       }
-
-      // 3️⃣ Uncommon airline (exclude Private)
       const airline = airlineFromFlight(f);
       const airlinePattern = isAirlineFlight(f);
-
       if (
         airlinePattern &&
         airline !== "—" &&
@@ -516,12 +500,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       ) {
         return { label: "UNCOMMON", cls: "bg-blue-100 text-blue-800" };
       }
-
-      // 4️⃣ Performance-based oddities
       if ((f.alt_baro ?? 0) > 45000 || (f.gs ?? 0) > 550) {
         return { label: "FAST/HIGH", cls: "bg-yellow-100 text-yellow-800" };
       }
-
       return null;
     }
 
@@ -570,28 +551,28 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           const dFlag = d != null ? distanceFlag(d) : null;
 
           return `
-        <tr class="border-b text-gray-900">
-          <td class="py-2 px-3 space-x-1 text-gray-400">
-            ${
-              note || dFlag
-                ? `
-                  ${note ? `<span class="px-2 py-0.5 rounded text-xs font-medium ${note.cls}">${note.label}</span>` : ""}
-                  ${dFlag ? `<span class="px-2 py-0.5 rounded text-xs font-medium ${dFlag.cls}">${dFlag.label}</span>` : ""}
-                `
-                : "—"
-            }
-          </td>
-          <td class="py-2 px-3">${airlineFromFlight(f)}</td>
-          <td class="py-2 px-3">${callsignDisplay(f)}</td>
-          <td class="py-2 px-3">${aircraftType(f)}</td>
-          <td class="py-2 px-3">${f.hex || "—"}</td>
-          <td class="text-right py-2 px-3">${f.alt_baro ?? f.alt_geom ?? "—"}</td>
-          <td class="text-right py-2 px-3">${f.gs ?? "—"}</td>
-          <td class="text-right py-2 px-3">${f.track ?? "—"}</td>
-          <td class="text-right py-2 px-3">${d != null ? Math.round(d) : "—"}</td>
-          <td class="text-right py-2 px-3">${secondsSinceSeen(f)}</td>
-        </tr>
-      `;
+            <tr class="border-b text-gray-900">
+              <td class="py-2 px-3 space-x-1 text-gray-400">
+                ${
+                  note || dFlag
+                    ? `
+                      ${note ? `<span class="px-2 py-0.5 rounded text-xs font-medium ${note.cls}">${note.label}</span>` : ""}
+                      ${dFlag ? `<span class="px-2 py-0.5 rounded text-xs font-medium ${dFlag.cls}">${dFlag.label}</span>` : ""}
+                    `
+                    : "—"
+                }
+              </td>
+              <td class="py-2 px-3">${airlineFromFlight(f)}</td>
+              <td class="py-2 px-3">${callsignDisplay(f)}</td>
+              <td class="py-2 px-3">${aircraftType(f)}</td>
+              <td class="py-2 px-3">${f.hex || "—"}</td>
+              <td class="text-right py-2 px-3">${f.alt_baro ?? f.alt_geom ?? "—"}</td>
+              <td class="text-right py-2 px-3">${f.gs ?? "—"}</td>
+              <td class="text-right py-2 px-3">${f.track ?? "—"}</td>
+              <td class="text-right py-2 px-3">${d != null ? Math.round(d) : "—"}</td>
+              <td class="text-right py-2 px-3">${secondsSinceSeen(f)}</td>
+            </tr>
+          `;
         })
         .join("");
     }
@@ -611,6 +592,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     setInterval(updateFlights, 10000);
 
     loadNotables();
+    loadFrequentFliers();
   </script>
 
   <!-- NOTABLE PINGS -->
@@ -636,6 +618,29 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         </tr>
       </thead>
       <tbody id="notableBody"></tbody>
+    </table>
+  </div>
+
+  <!-- FREQUENT FLIERS -->
+  <div class="max-w-6xl mx-auto px-4 mt-20">
+    <div class="text-3xl font-bold mb-4 text-center">Frequent fliers</div>
+
+    <p class="text-center mb-4">
+      Callsigns I've seen pass through most often. Route callsigns repeat daily,
+      so this is effectively a ranking of the busiest routes over my antenna.
+    </p>
+
+    <table class="w-full border-collapse text-base text-gray-900">
+      <thead>
+        <tr class="border-b text-gray-700">
+          <th class="text-center py-2 px-3">Ranking</th>
+          <th class="text-left py-2 px-3">Airline</th>
+          <th class="text-left py-2 px-3">Callsign</th>
+          <th class="text-right py-2 px-3">Times Seen</th>
+          <th class="text-right py-2 px-3">Last Seen</th>
+        </tr>
+      </thead>
+      <tbody id="frequentFliersBody"></tbody>
     </table>
   </div>
 </BaseLayout>

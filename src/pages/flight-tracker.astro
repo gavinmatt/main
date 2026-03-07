@@ -30,7 +30,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   </div>
 
   <!-- TAB NAVIGATION -->
-  <div class="max-w-6xl mx-auto px-4 mt-12">
+  <div class="max-w-7xl mx-auto px-4 mt-12">
     <div class="flex border-b border-gray-300 gap-1">
       <button
         id="tab-overhead"
@@ -77,19 +77,19 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       </div>
 
       <div class="overflow-x-auto">
-        <table class="w-full border-collapse text-base text-gray-900">
+        <table class="w-full border-collapse text-sm text-gray-900">
           <thead>
             <tr class="border-b text-gray-700">
-              <th class="text-left py-2 px-3">Interesting?</th>
-              <th class="text-left py-2 px-3">Airline</th>
-              <th class="text-left py-2 px-3">Callsign</th>
-              <th class="text-left py-2 px-3">Type</th>
-              <th class="text-left py-2 px-3">ICAO</th>
-              <th class="text-right py-2 px-3">Altitude (ft)</th>
-              <th class="text-right py-2 px-3">Speed (kt)</th>
-              <th class="text-right py-2 px-3">Track</th>
-              <th class="text-right py-2 px-3">Distance (NM)</th>
-              <th class="text-right py-2 px-3">Last Seen (s)</th>
+              <th class="text-left py-2 px-2">Interesting?</th>
+              <th class="text-left py-2 px-2">Airline</th>
+              <th class="text-left py-2 px-2">Callsign</th>
+              <th class="text-left py-2 px-2">Type</th>
+              <th class="text-left py-2 px-2">ICAO</th>
+              <th class="text-right py-2 px-2">Altitude (ft)</th>
+              <th class="text-right py-2 px-2">Speed (kt)</th>
+              <th class="text-right py-2 px-2">Track</th>
+              <th class="text-right py-2 px-2">Distance (NM)</th>
+              <th class="text-right py-2 px-2">Last Seen (s)</th>
             </tr>
           </thead>
           <tbody id="flightBody" class="text-gray-900"></tbody>
@@ -472,21 +472,21 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         const dFlag = d != null ? distanceFlag(d) : null;
         return `
           <tr class="border-b text-gray-900">
-            <td class="py-2 px-3 space-x-1 text-gray-400">
+            <td class="py-2 px-2 space-x-1 text-gray-400">
               ${note || dFlag ? `
                 ${note ? `<span class="px-2 py-0.5 rounded text-xs font-medium ${note.cls}">${note.label}</span>` : ""}
                 ${dFlag ? `<span class="px-2 py-0.5 rounded text-xs font-medium ${dFlag.cls}">${dFlag.label}</span>` : ""}
               ` : "—"}
             </td>
-            <td class="py-2 px-3">${airlineFromFlight(f)}</td>
-            <td class="py-2 px-3">${callsignDisplay(f)}</td>
-            <td class="py-2 px-3">${aircraftType(f)}</td>
-            <td class="py-2 px-3">${f.hex || "—"}</td>
-            <td class="text-right py-2 px-3">${f.alt_baro ?? f.alt_geom ?? "—"}</td>
-            <td class="text-right py-2 px-3">${f.gs ?? "—"}</td>
-            <td class="text-right py-2 px-3">${f.track ?? "—"}</td>
-            <td class="text-right py-2 px-3">${d != null ? Math.round(d) : "—"}</td>
-            <td class="text-right py-2 px-3">${secondsSinceSeen(f)}</td>
+            <td class="py-2 px-2">${airlineFromFlight(f)}</td>
+            <td class="py-2 px-2">${callsignDisplay(f)}</td>
+            <td class="py-2 px-2">${aircraftType(f)}</td>
+            <td class="py-2 px-2">${f.hex || "—"}</td>
+            <td class="text-right py-2 px-2">${f.alt_baro ?? f.alt_geom ?? "—"}</td>
+            <td class="text-right py-2 px-2">${f.gs ?? "—"}</td>
+            <td class="text-right py-2 px-2">${f.track ?? "—"}</td>
+            <td class="text-right py-2 px-2">${d != null ? Math.round(d) : "—"}</td>
+            <td class="text-right py-2 px-2">${secondsSinceSeen(f)}</td>
           </tr>`;
       }).join("");
     }

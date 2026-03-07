@@ -6,9 +6,12 @@ const redis = new Redis(process.env.REDIS_URL!);
 const NOTABLE_KEY = "notable-pings:v1";
 const MAX_NOTABLES = 10;
 
-const FREQUENT_FLIERS_KEY = "frequent-fliers:v2"; // bumped version to start fresh
-const MAX_FREQUENT_FLIERS_STORED = 500;           // cap storage, not ranking
-const MAX_FREQUENT_FLIERS_SERVED = 10;            // served via frequent-fliers.ts
+const FREQUENT_FLIERS_KEY = "frequent-fliers:v2";
+const MAX_FREQUENT_FLIERS_STORED = 500;
+
+const HEATMAP_KEY = "heatmap:v1";
+// 90 days in seconds — when this expires, that callsign can count again in that cell
+const HEATMAP_DEBOUNCE_TTL = 60 * 60 * 24 * 90;
 
 const RX_LAT = 48.415;
 const RX_LON = -114.459;
@@ -47,6 +50,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(400).send("Invalid payload");
   }
 
+  const now = Date.now();
+  const nowDate = new Date(now);
+  // Stored in UTC — good enough for a density heatmap near Whitefish (UTC-6/7)
+  const hour = nowDate.getUTCHours();    // 0–23
+  const weekday = nowDate.getUTCDay();   // 0 = Sunday … 6 = Saturday
+
   // --- NOTABLE PINGS ---
   const raw = (await redis.get(NOTABLE_KEY)) ?? "[]";
   let notables: any[];
@@ -61,19 +70,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   for (const f of payload.aircraft) {
     const lat = f.lat ?? f.lat_baro;
     const lon = f.lon ?? f.lon_baro;
-
     if (!f.hex || lat == null || lon == null) continue;
-
     const d = Math.round(distanceNm(RX_LAT, RX_LON, lat, lon));
     const prev = byHex.get(f.hex);
-
     if (!prev || d > prev.maxDistance) {
       byHex.set(f.hex, {
         hex: f.hex,
         airline: f.op || "—",
         callsign: (f.flight || "").trim() || "NO CALLSIGN",
         maxDistance: d,
-        lastSeen: Date.now(),
+        lastSeen: now,
       });
     }
   }
@@ -85,8 +91,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   await redis.set(NOTABLE_KEY, JSON.stringify(next));
 
   // --- FREQUENT FLIERS ---
-  // Debounce per callsign: count once per flight occurrence, not once per ingest tick.
-  // A 1-hour window assumes no single flight lingers overhead longer than that.
   const DEBOUNCE_MS = 60 * 60 * 1000;
 
   const ffRaw = (await redis.get(FREQUENT_FLIERS_KEY)) ?? "[]";
@@ -104,10 +108,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   for (const f of payload.aircraft) {
     const cs = (f.flight || "").trim();
     if (!cs || cs === "00000000") continue;
-
     const prev = byCallsign.get(cs);
-    const now = Date.now();
-
     if (prev) {
       if (now - prev.lastCountedAt > DEBOUNCE_MS) {
         prev.count += 1;
@@ -126,22 +127,64 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
   }
 
-  // Store all known callsigns sorted by count, capped at MAX_FREQUENT_FLIERS_STORED.
-  // Do NOT slice to display limit here — that happens at read time in frequent-fliers.ts.
-  // Keeping 500 rows costs ~50KB in Redis, well within any reasonable plan.
   const nextFF = [...byCallsign.values()]
     .sort((a, b) => b.count - a.count)
     .slice(0, MAX_FREQUENT_FLIERS_STORED);
 
   await redis.set(FREQUENT_FLIERS_KEY, JSON.stringify(nextFF));
 
+  // --- HEATMAP ---
+  // grid[weekday][hour] = count of unique callsigns seen in that cell (rolling 90d).
+  // Uniqueness enforced by per-callsign+cell keys with 90-day TTL. When TTL expires,
+  // that callsign can count again — giving us a natural rolling window for free.
+
+  const hmRaw = (await redis.get(HEATMAP_KEY)) ?? "null";
+  let grid: number[][] | null = null;
+  try {
+    grid = JSON.parse(hmRaw);
+  } catch {
+    grid = null;
+  }
+
+  if (!grid || !Array.isArray(grid) || grid.length !== 7) {
+    grid = Array.from({ length: 7 }, () => new Array(24).fill(0));
+  }
+
+  // Deduplicate callsigns within this payload before hitting Redis
+  const callsignsThisBatch = new Set<string>();
+  for (const f of payload.aircraft) {
+    const cs = (f.flight || "").trim();
+    if (!cs || cs === "00000000") continue;
+    callsignsThisBatch.add(cs);
+  }
+
+  const csArray = [...callsignsThisBatch];
+
+  // SET NX (only if not exists) with TTL — pipeline all at once
+  const pipeline = redis.pipeline();
+  for (const cs of csArray) {
+    pipeline.set(`hm:${cs}:${weekday}:${hour}`, "1", "EX", HEATMAP_DEBOUNCE_TTL, "NX");
+  }
+  const results = await pipeline.exec();
+
+  // "OK" means key was newly set = first time we've seen this callsign in this cell
+  let gridDirty = false;
+  for (let i = 0; i < csArray.length; i++) {
+    const [err, val] = results![i] as [Error | null, string | null];
+    if (!err && val === "OK") {
+      grid[weekday][hour] += 1;
+      gridDirty = true;
+    }
+  }
+
+  if (gridDirty) {
+    await redis.set(HEATMAP_KEY, JSON.stringify(grid));
+  }
+
   // --- LATEST FLIGHTS ---
   await redis.set(
     "latest-flights",
-    JSON.stringify({
-      receivedAt: Date.now(),
-      data: payload,
-    }),
+    JSON.stringify({ receivedAt: now, data: payload }),
     "EX",
     180
   );

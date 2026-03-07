@@ -548,17 +548,16 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       i === 0 ? "12a" : i < 12 ? `${i}a` : i === 12 ? "12p" : `${i - 12}p`
     );
 
-    function heatmapColor(value: number, max: number): string {
+    function heatmapColor(value, max) {
       if (max === 0 || value === 0) return "#f3f4f6";
       const intensity = value / max;
-      // Deep navy at full intensity, light blue-gray at low
       const r = Math.round(239 - intensity * 210);
       const g = Math.round(246 - intensity * 200);
       const b = Math.round(255 - intensity * 100);
       return `rgb(${r},${g},${b})`;
     }
 
-    function renderHeatmap(grid: number[][]) {
+    function renderHeatmap(grid) {
       const container = document.getElementById("heatmapGrid");
       if (!container) return;
 

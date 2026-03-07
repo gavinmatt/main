@@ -6,8 +6,8 @@ const redis = new Redis(process.env.REDIS_URL!);
 const NOTABLE_KEY = 'notable-pings:v1';
 const MAX_NOTABLES = 10;
 
-const FREQUENT_FLIERS_KEY = 'frequent-fliers:v1';
-const MAX_FREQUENT_FLIERS = 10;
+const FREQUENT_FLIERS_KEY = 'frequent-fliers:v2'; // bumped — must match flight-ingest.ts and frequent-fliers.ts
+const MAX_FREQUENT_FLIERS_STORED = 500;            // store enough to rank fairly
 const DEBOUNCE_MS = 60 * 60 * 1000;
 
 const RX_LAT = 48.415;
@@ -118,9 +118,11 @@ export default async function handler(
     }
   }
 
+  // Store up to MAX_FREQUENT_FLIERS_STORED — do NOT slice to display limit here.
+  // Slicing happens at read time in frequent-fliers.ts so all callsigns can compete.
   const nextFF = [...byCallsign.values()]
     .sort((a, b) => b.count - a.count)
-    .slice(0, MAX_FREQUENT_FLIERS);
+    .slice(0, MAX_FREQUENT_FLIERS_STORED);
 
   if (nextFF.length) {
     await redis.set(FREQUENT_FLIERS_KEY, JSON.stringify(nextFF));

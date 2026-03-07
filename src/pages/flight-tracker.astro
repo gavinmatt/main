@@ -34,21 +34,21 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     <div class="flex border-b border-gray-300 gap-1">
       <button
         id="tab-overhead"
-        class="tab-btn px-5 py-2.5 text-sm font-semibold border-b-2 border-black text-black -mb-px"
+        class="tab-btn px-5 py-2.5 text-base font-semibold border-b-2 border-black text-black -mb-px"
         onclick="switchTab('overhead')"
       >
         What's overhead?
       </button>
       <button
         id="tab-distant"
-        class="tab-btn px-5 py-2.5 text-sm font-semibold border-b-2 border-transparent text-gray-500 -mb-px hover:text-gray-800"
+        class="tab-btn px-5 py-2.5 text-base font-semibold border-b-2 border-transparent text-gray-500 -mb-px hover:text-gray-800"
         onclick="switchTab('distant')"
       >
         Distant pings
       </button>
       <button
         id="tab-frequent"
-        class="tab-btn px-5 py-2.5 text-sm font-semibold border-b-2 border-transparent text-gray-500 -mb-px hover:text-gray-800"
+        class="tab-btn px-5 py-2.5 text-base font-semibold border-b-2 border-transparent text-gray-500 -mb-px hover:text-gray-800"
         onclick="switchTab('frequent')"
       >
         Frequent fliers
@@ -57,13 +57,13 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     <!-- TAB: OVERHEAD -->
     <div id="panel-overhead" class="tab-panel pt-6">
-      <p class="text-gray-600 mb-3 text-sm">
+      <p class="text-gray-900 mb-3 text-base">
         More data about the planes currently flying in reach of my antenna. "—" and
         missing values are expected as not all planes send comprehensive data and
         data is lost as range increases. The table will flag interesting or uncommon
         flights.
       </p>
-      <p id="lastUpdated" class="text-sm text-gray-500 mb-4"></p>
+      <p id="lastUpdated" class="text-base text-gray-500 mb-4"></p>
 
       <div
         id="emptyState"
@@ -99,10 +99,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     <!-- TAB: DISTANT PINGS -->
     <div id="panel-distant" class="tab-panel pt-6 hidden">
-      <p class="text-gray-600 mb-1 text-sm">
+      <p class="text-gray-900 mb-1 text-base">
         Furthest away aircraft I've tracked. 1 NM = ~1.15 miles.
       </p>
-      <p class="text-gray-600 mb-4 text-sm">
+      <p class="text-gray-900 mb-4 text-base">
         Good = 120–180 NM, great = 180–250 NM, amazing = 250+ NM for my setup.
       </p>
 
@@ -125,7 +125,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     <!-- TAB: FREQUENT FLIERS -->
     <div id="panel-frequent" class="tab-panel pt-6 hidden">
-      <p class="text-gray-600 mb-4 text-sm">
+      <p class="text-gray-900 mb-4 text-base">
         Callsigns I've seen pass through most often. Route callsigns repeat daily,
         so this is effectively a ranking of the busiest routes over my antenna.
       </p>

@@ -52,9 +52,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const now = Date.now();
   const nowDate = new Date(now);
-  // Stored in UTC — good enough for a density heatmap near Whitefish (UTC-6/7)
-  const hour = nowDate.getUTCHours();    // 0–23
-  const weekday = nowDate.getUTCDay();   // 0 = Sunday … 6 = Saturday
+  // Convert to Mountain Time (MST = UTC-7, MDT = UTC-6), DST handled automatically
+  const mtDate = new Date(nowDate.toLocaleString("en-US", { timeZone: "America/Denver" }));
+  const hour = mtDate.getHours();
+  const weekday = mtDate.getDay();
 
   // --- NOTABLE PINGS ---
   const raw = (await redis.get(NOTABLE_KEY)) ?? "[]";

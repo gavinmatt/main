@@ -44,8 +44,10 @@ export default async function handler(
 
   const now = Date.now();
   const nowDate = new Date(now);
-  const hour = nowDate.getUTCHours();
-  const weekday = nowDate.getUTCDay();
+  // Convert to Mountain Time (MST = UTC-7, MDT = UTC-6), DST handled automatically
+  const mtDate = new Date(nowDate.toLocaleString("en-US", { timeZone: "America/Denver" }));
+  const hour = mtDate.getHours();
+  const weekday = mtDate.getDay();
 
   /* ---------- UPDATE NOTABLE PINGS ---------- */
 

@@ -156,9 +156,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     <!-- TAB: HEATMAP -->
     <div id="panel-heatmap" class="tab-panel pt-6 hidden w-full" style="width:100%">
       <p class="text-gray-900 mb-1 text-base">
-        Unique flights overhead by hour and day of week (UTC, rolling 90 days).
+        Unique flights overhead by hour and day of week (Mountain Time, rolling 90 days).
       </p>
-      <p class="text-gray-500 mb-6 text-sm">Darker = more traffic. Each cell counts distinct callsigns — a flight seen multiple times in the same hour only counts once.</p>
+      <p class="text-gray-500 mb-6 text-sm">Darker = more traffic. Each cell counts distinct ICAO codes — a flight seen multiple times in the same hour only counts once.</p>
 
       <div id="heatmapContainer" class="overflow-x-auto">
         <div id="heatmapGrid"></div>

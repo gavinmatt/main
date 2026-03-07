@@ -6,9 +6,12 @@ const redis = new Redis(process.env.REDIS_URL!);
 const NOTABLE_KEY = 'notable-pings:v1';
 const MAX_NOTABLES = 10;
 
-const FREQUENT_FLIERS_KEY = 'frequent-fliers:v2'; // bumped — must match flight-ingest.ts and frequent-fliers.ts
-const MAX_FREQUENT_FLIERS_STORED = 500;            // store enough to rank fairly
+const FREQUENT_FLIERS_KEY = 'frequent-fliers:v2';
+const MAX_FREQUENT_FLIERS_STORED = 500;
 const DEBOUNCE_MS = 60 * 60 * 1000;
+
+const HEATMAP_KEY = 'heatmap:v1';
+const HEATMAP_DEBOUNCE_TTL = 60 * 60 * 24 * 90;
 
 const RX_LAT = 48.415;
 const RX_LON = -114.459;
@@ -39,6 +42,13 @@ export default async function handler(
   const parsed = JSON.parse(raw);
   const aircraft = parsed.data.aircraft ?? [];
 
+  const now = Date.now();
+  const nowDate = new Date(now);
+  // Convert to Mountain Time (MST = UTC-7, MDT = UTC-6), DST handled automatically
+  const mtDate = new Date(nowDate.toLocaleString("en-US", { timeZone: "America/Denver" }));
+  const hour = mtDate.getHours();
+  const weekday = mtDate.getDay();
+
   /* ---------- UPDATE NOTABLE PINGS ---------- */
 
   const existingRaw = (await redis.get(NOTABLE_KEY)) ?? '[]';
@@ -64,7 +74,7 @@ export default async function handler(
         airline: f.op || '—',
         callsign: (f.flight || '').trim() || 'No callsign',
         maxDistance: d,
-        lastSeen: Date.now()
+        lastSeen: now,
       });
     }
   }
@@ -92,8 +102,6 @@ export default async function handler(
     frequentFliers.map((f) => [f.callsign, f])
   );
 
-  const now = Date.now();
-
   for (const f of aircraft) {
     const cs = (f.flight || '').trim();
     if (!cs || cs === '00000000') continue;
@@ -118,8 +126,6 @@ export default async function handler(
     }
   }
 
-  // Store up to MAX_FREQUENT_FLIERS_STORED — do NOT slice to display limit here.
-  // Slicing happens at read time in frequent-fliers.ts so all callsigns can compete.
   const nextFF = [...byCallsign.values()]
     .sort((a, b) => b.count - a.count)
     .slice(0, MAX_FREQUENT_FLIERS_STORED);
@@ -128,11 +134,54 @@ export default async function handler(
     await redis.set(FREQUENT_FLIERS_KEY, JSON.stringify(nextFF));
   }
 
+  /* ---------- UPDATE HEATMAP ---------- */
+
+  const hmRaw = (await redis.get(HEATMAP_KEY)) ?? 'null';
+  let grid: number[][] | null = null;
+  try {
+    grid = JSON.parse(hmRaw);
+  } catch {
+    grid = null;
+  }
+
+  if (!grid || !Array.isArray(grid) || grid.length !== 7) {
+    grid = Array.from({ length: 7 }, () => new Array(24).fill(0));
+  }
+
+  // Deduplicate by callsign if present, fall back to ICAO hex — catches all traffic
+  const callsignsThisBatch = new Set<string>();
+  for (const f of aircraft) {
+    const cs = (f.flight || '').trim();
+    const id = (cs && cs !== '00000000') ? cs : f.hex;
+    if (!id) continue;
+    callsignsThisBatch.add(id);
+  }
+
+  const csArray = [...callsignsThisBatch];
+  const pipeline = redis.pipeline();
+  for (const cs of csArray) {
+    pipeline.set(`hm:${cs}:${weekday}:${hour}`, '1', 'EX', HEATMAP_DEBOUNCE_TTL, 'NX');
+  }
+  const results = await pipeline.exec();
+
+  let gridDirty = false;
+  for (let i = 0; i < csArray.length; i++) {
+    const [err, val] = results![i] as [Error | null, string | null];
+    if (!err && val === 'OK') {
+      grid[weekday][hour] += 1;
+      gridDirty = true;
+    }
+  }
+
+  if (gridDirty) {
+    await redis.set(HEATMAP_KEY, JSON.stringify(grid));
+  }
+
   /* ---------- RETURN LIVE DATA ---------- */
 
   return res.status(200).json({
     receivedAt: parsed.receivedAt,
     count: parsed.data.count,
-    aircraft
+    aircraft,
   });
 }

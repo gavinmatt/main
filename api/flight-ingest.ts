@@ -150,12 +150,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     grid = Array.from({ length: 7 }, () => new Array(24).fill(0));
   }
 
-  // Deduplicate callsigns within this payload before hitting Redis
+  // Deduplicate by callsign if present, fall back to ICAO hex — catches all traffic
   const callsignsThisBatch = new Set<string>();
   for (const f of payload.aircraft) {
     const cs = (f.flight || "").trim();
-    if (!cs || cs === "00000000") continue;
-    callsignsThisBatch.add(cs);
+    const id = (cs && cs !== "00000000") ? cs : f.hex;
+    if (!id) continue;
+    callsignsThisBatch.add(id);
   }
 
   const csArray = [...callsignsThisBatch];

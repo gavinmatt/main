@@ -146,11 +146,13 @@ export default async function handler(
     grid = Array.from({ length: 7 }, () => new Array(24).fill(0));
   }
 
+  // Deduplicate by callsign if present, fall back to ICAO hex — catches all traffic
   const callsignsThisBatch = new Set<string>();
   for (const f of aircraft) {
     const cs = (f.flight || '').trim();
-    if (!cs || cs === '00000000') continue;
-    callsignsThisBatch.add(cs);
+    const id = (cs && cs !== '00000000') ? cs : f.hex;
+    if (!id) continue;
+    callsignsThisBatch.add(id);
   }
 
   const csArray = [...callsignsThisBatch];

@@ -6,8 +6,9 @@ const redis = new Redis(process.env.REDIS_URL!);
 const NOTABLE_KEY = "notable-pings:v1";
 const MAX_NOTABLES = 10;
 
-const FREQUENT_FLIERS_KEY = "frequent-fliers:v1";
-const MAX_FREQUENT_FLIERS = 10;
+const FREQUENT_FLIERS_KEY = "frequent-fliers:v2"; // bumped version to start fresh
+const MAX_FREQUENT_FLIERS_STORED = 500;           // cap storage, not ranking
+const MAX_FREQUENT_FLIERS_SERVED = 10;            // served via frequent-fliers.ts
 
 const RX_LAT = 48.415;
 const RX_LON = -114.459;
@@ -84,7 +85,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   await redis.set(NOTABLE_KEY, JSON.stringify(next));
 
   // --- FREQUENT FLIERS ---
-  const DEBOUNCE_MS = 60 * 60 * 1000; // 1 hour — assumes no single flight lingers >1hr
+  // Debounce per callsign: count once per flight occurrence, not once per ingest tick.
+  // A 1-hour window assumes no single flight lingers overhead longer than that.
+  const DEBOUNCE_MS = 60 * 60 * 1000;
 
   const ffRaw = (await redis.get(FREQUENT_FLIERS_KEY)) ?? "[]";
   let frequentFliers: any[];
@@ -109,8 +112,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       if (now - prev.lastCountedAt > DEBOUNCE_MS) {
         prev.count += 1;
         prev.lastCountedAt = now;
-        prev.airline = f.op || prev.airline || "—";
         prev.lastSeen = now;
+        prev.airline = f.op || prev.airline || "—";
       }
     } else {
       byCallsign.set(cs, {
@@ -123,9 +126,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
   }
 
+  // Store all known callsigns sorted by count, capped at MAX_FREQUENT_FLIERS_STORED.
+  // Do NOT slice to display limit here — that happens at read time in frequent-fliers.ts.
+  // Keeping 500 rows costs ~50KB in Redis, well within any reasonable plan.
   const nextFF = [...byCallsign.values()]
     .sort((a, b) => b.count - a.count)
-    .slice(0, MAX_FREQUENT_FLIERS);
+    .slice(0, MAX_FREQUENT_FLIERS_STORED);
 
   await redis.set(FREQUENT_FLIERS_KEY, JSON.stringify(nextFF));
 

@@ -343,7 +343,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       RAX: "Royal Air Freight", CBC: "SkyShare", RDN: "Red Barn Operations", TFF: "Talon Air",
       EJM: "Executive Jet Management", SYB: "SkyService Business Aviation", AZG: "Ameriflight",
       TKJ: "AJet", SDE: "Air Partners", CYO: "ATI Jet", NJM: "Northern Jet Management",
-      LKF: "Aviation Advisor",
+      LKF: "Aviation Advisor", ICV: "Cargolux Italia", JCM: "Secure Air Charter", DLX: "Dreamline Aviation", FGD: "Conair Aviation", ADS: "Anderson Air", JTL: "Jet Linx",
     };
 
     const COMMON_AIRLINES = new Set([
@@ -540,6 +540,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     setInterval(updateFlights, 10000);
     loadNotables();
     loadFrequentFliers();
+    loadHeatmap();
+    setInterval(loadNotables, 60000);
+    setInterval(loadFrequentFliers, 60000);
+    setInterval(loadHeatmap, 60000);
 
     /* ---------- HEATMAP ---------- */
 
@@ -563,12 +567,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
       const max = Math.max(...grid.flatMap(row => row));
 
-      // Build table: rows = days, cols = hours
       const cellSize = "36px";
 
       let html = `<table style="border-collapse:separate; border-spacing:3px; font-size:12px;">`;
 
-      // Hour header row
       html += `<thead><tr><th style="width:36px"></th>`;
       for (const h of HOURS) {
         html += `<th style="width:${cellSize}; text-align:center; color:#6b7280; font-weight:500; padding-bottom:4px;">${h}</th>`;
@@ -592,7 +594,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
       html += `</tbody></table>`;
 
-      // Legend
       html += `<div style="margin-top:12px; display:flex; align-items:center; gap:6px; font-size:12px; color:#6b7280;">`;
       html += `<span>Less</span>`;
       for (let i = 0; i <= 8; i++) {
@@ -611,7 +612,5 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         renderHeatmap(data.grid);
       } catch {}
     }
-
-    loadHeatmap();
   </script>
 </BaseLayout>

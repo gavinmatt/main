@@ -1,6 +1,6 @@
 import Redis from 'ioredis';
 
-const CACHE_KEY = 'lotw:qsl_map_v9';
+const CACHE_KEY = 'lotw:qsl_map_v10';
 const CACHE_TTL = 60 * 60 * 6;
 
 // Reference point — not exposed to client

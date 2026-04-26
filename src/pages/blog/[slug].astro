@@ -1,18 +1,17 @@
 ---
 export const prerender = true;
 
-import { CollectionEntry, getCollection } from "astro:content";
-import type { BlogSchema } from "../../content/config";
+import { CollectionEntry, getCollection, render } from "astro:content";
+import type { BlogSchema } from "../../content.config";
 import PostLayout from "../../layouts/PostLayout.astro";
 
 export async function getStaticPaths() {
   const postEntries = await getCollection("blog");
 
-  // Defensive: filter out anything weird/undefined
-  const safeEntries = (postEntries || []).filter((entry) => entry && entry.slug);
+  const safeEntries = (postEntries || []).filter((entry) => entry && entry.id);
 
   return safeEntries.map((entry) => ({
-    params: { slug: entry.slug },
+    params: { slug: entry.id.replace(/\.(md|mdx)$/, "") },
     props: { entry },
   }));
 }
@@ -23,13 +22,12 @@ interface Props {
 
 const { entry } = Astro.props;
 
-// If Astro ever hands us a bad entry for some reason, fail gracefully
 if (!entry) {
-  throw new Error("Missing blog entry prop. Is prerender enabled and getStaticPaths returning props correctly?");
+  throw new Error("Missing blog entry prop.");
 }
 
 const post: BlogSchema = entry.data;
-const { Content } = await entry.render();
+const { Content } = await render(entry);
 ---
 
 <PostLayout

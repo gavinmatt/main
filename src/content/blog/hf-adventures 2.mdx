@@ -1,0 +1,69 @@
+---
+title: "Adventures in HF: Part 2"
+description: "HOAs, EFHWs, and toilet-based electrical interference"
+pubDate: "April 10 2026"
+heroImage: "https://res.cloudinary.com/draaqu0o9/image/upload/f_auto,q_auto/v1775792837/hf-hero_wjxjed.png"
+tags: ["DIY", "Technology"]
+---
+
+import { Image } from 'astro:assets';
+import wiring1 from './wiring1.png';
+import radioPhoto from './kenwood.jpg';
+import vhfPhoto from './vhf.JPEG';
+import QSLMap from '../../components/QSLMap.tsx';
+
+<i>HOAs, EFHWs, and toilet-based electrical interference!</i>
+
+My last post covered the setup for HF radio - check it out.
+
+This one is going deeper into the antenna setup and the actual day to day of HF. Think stringing wire and using volume to dial in a contact. This is the really fun (or irritating) part of HF, and it's filled with just as many personalities, quirks, and undocumented steps as the rest!
+
+<b>More About that Antenna</b>
+
+I mentioned last time that I picked an End Fed Half Wave (EFHW) antenna for my HOA driven setup. This type of antenna is great for HF, but is typically strung horizontally between trees or from a roofline to a tree. But you can also cram them in an attic if you have the space and a lot of patience. While there are other good choices for the attic such as dipoles or loops, the EFHW I picked on a bad day gives you coverage across your workhorse bands - from 75m to 10m. Practically speaking, folding it into an attic compromises your range, directionality, and realistic band usage, but I've had no issue making this setup work for workhorse bands like 40m, 20m, and 17m. I've even had great luck down to 10m. Most places online will tell you to "never go with an attic antenna" because of the limits, but if you have to, and you have a long attic run, they're great.
+
+I picked the <a href="https://myantennas.com/wp/product/efhw-7510-1k-icas/?srsltid=AfmBOoq3jPwXvwz-3JGNt6wPD77YWaUWF4gZ_gCeNuqr63SAY4EIEpeh">MyAntennas EFHW-7510-1K-ICAS</a>. For a 100W radio and for the bands I wanted to cover, this was the natural choice. They have other antennas - some cheaper and more narrowly focused on a few key bands and some ready for yout 1.5kW setup. Sniff aroud for what you're most likely to use and benefit from. Ultimately, you're going to be out about $150, and it's money <i>very</i> well spent. MyAntennas are handmade, come with a great prewound transformer, and <b>typically require no tuner</b>. You can also DIY these, and that's going to be far cheaper if you're so inclined. This brand is just awesome - they even shut down for long vacations frequently, and take support and quality really personally. You should have no problem supporting them.
+
+What arrived was a tidy loop of 130' of wire, a transformer box, and instructions for the proper use - hanging it from a tree. Before you do anything else though, you'll need to run a feed line of coax from your radio/shack up to the attic. Remember that you want the shortest run of feed line going to the radio as possible, so do not just put a few hundred feet of coax up there. You need to be smart about where this goes, drill the holes, and run the wire before you start thinking antenna. This is the harder part, and you don't want to isntall the antenna and find out it demands 100' of wire creating extra resistance before you can hook up. This is wildly fun (ugh) - lots of navigating headers, finding where you are in a room by yelling, drilling through the ceiling by accident, and finally fishing wire around dense insulation. You'll wind up with a run of wire showing about 4-5ft on the radio side and maybe 10ft on the attic side - enough to absorb mistakes.
+
+Now back the antenna - as great as the EFHW is, they do <i>not</i> include instructions for attic installation, and the pattern continues online. While many people have installed attic EFHWs, few have documented it in a way you can follow. I'm here to break that! Behold, the diagram you want:
+
+<Image src={wiring1} alt="EFHW in the attic at a glance" width={750} />
+<div align="center" style="padding-bottom:10px"><i>Hopefully this makes it easier...</i></div>
+
+What you have here is a view of how your attic will look with the EFHW installed <i>along the ridge line</i>, orthogoal to the trusses (stay with me). In laymen (my) terms, this is the length part of the attic, not the width part where you're staring at trusses head on. Imagine you go up to your attic. Turn so that straight ahead, you see a sloping roof where your feed line comes up. To your left and right you should see the length of the attic - the section you can hopefully walk down. If you turned around, you'd face the opposite slope of your roof.
+
+The trick here is that the anteena is strung along this ridge view, starting from wherever your feed wire enters the attic. In my case, the feed line came in roughtly in the midpoint, right across from my access. So I started in the middle. To actually string the wire, you want to offset it from the wood trusses and with an insulator. That sounds expensive. Guess what - you can just head to Tractor Supply and snag cheap bags of <a href="https://www.tractorsupply.com/tsc/product/american-farmworks-wood-post-screw-in-ring-electric-fence-insulators-1213239">electic fence screw-in insulators</a> that are made to do exactly this! Most even come with a drill insert to make screwing them in easy. You can skip this step, but don't - putting these directly on the wood is a slight fire risk especially in high power digital modes, and performance will take a big hit. 
+
+Once you've found the right position, installation is really simple. Mount the transformer box to a truss face, then run the antenna wire up and about 10-12" below the ridge line (the peak of the roof lengthwise). It'll form a diagonal line upward - this is normal. Once you hit the height you want, drill in your wire standoffs at that height on the diagonal truss face all the way down the run of the attic. What does "truss face" mean? Imagine you're looking at a 2x4 edge - the 1.5" part. That's the face here, and you're just screwing these standoffs in 12" down in the middle of the edge. 
+
+When you get to the end of the attic, drop down about 12" <i>vertically</i> (i.e. measure straight up and down, not down the diagonal of the truss), move to the inside of the truss face (opposite the edge you just used), and run another row of standoffs straight down the entire length of the attic. Do the same thing again if you need to once you hit the end, staying on the inside of the truss. 
+
+Next, just hang the wire! You want the wire loose, not tight between standoffs, and you want to ensure components like the PVC knob near the end and the little circuit board stay hanging in the air. The one trick is what to do at the end of a run - you want to loop the wire down to the next run by making a gentle, wide, roughly basketball diameter half loop before continuing the run.
+
+
+
+
+
+I’ve always wanted to get into HF. I accidentally bought a really solid HF radio a few years back - a Kenwood TS-590S - at a swap meet. I was cocky and refused to admit that I didn’t have any of the gear for it, and it gathered dust for years. After a move, I decided it was finally time to figure out HF, and I cannot say more positive things about it.
+
+The physics here will feel like magic. It’s easy to understand how radio works - throw signal into sky, signal hops off of atmosphere (or more exotic things happen), signal happens to reach someone listening to that frequency, boom - contact. But in an everyday sense, it will feel absurd that you can throw 100W of power into space (about the power of an old incandescent lightbulb) and clearly and easily talk to a dude with too much free time/money in Poland as if they were in your room. And then 5 minutes later the sky gets angry and you hear nothing. Nothing about HF feels tangible, but yet it’s active all around you constantly. Likewise, I know putting in 2 times the power doesn’t equal 2 times the signal strength because the relationship is logarithmic, but it still feels strange and bizarre that I can’t simply buy a 200W radio to double the chances someone can hear me. This is the zone where “this was on my test and I took physics” slams into “what the hell” fast.
+
+Beyond the magic, HF is just alive. Thousands of radio operators across the world are on the air constantly to connect, chat, run “nets” (scheduled chat groups), and compete to see who can get the most/hardest/weirdest contacts. Different bands have different feels, and some become daily drivers while others open up at random and unlock whole continents for 20 minutes. This is no slight to VHF/UHF, but it’s a numbers game - HF just brings a worldwide audience to your shack any time you want. VHF/UHF also feels alive at times with over-the-internet radio and local nets, but HF is at that level of intensity on every band and every frequency at every hour. Until a solar storm kills propagation for a whole continent. 
+
+Getting on the air took a lot more thought than VHF/UHF require. Antennas are everything, and I have an HOA that specifically does not permit outside antennas. Most people online will immediately tell you that an outdoors antenna is king, but remember that people are on the air right now in apartments, attics, and summits. Turning to the attic was my option, where you can use a range of antenna shapes to get pretty good HF working. I chose the End Fed Half Wave (EFHW) antenna to give me more band coverage, as I have a large attic to use. I’ll cover how I did just that in a later post, but it was easy, deeply frustrating, and immediately rewarding. 
+
+<Image src={antennaPhoto} alt="Attic EFHW antenna" width={750} />
+<div align="center" style="padding-bottom:10px"><i>The middle box is the transformer, and the thin wire is the antenna looped across the attic trusses.</i></div>
+
+In the first 2 months, and across 2 serious contests and mostly just casual attempts at night, I’ve logged a confirmed 50+ contacts (called QSLs, where both me and the other person logged the contact) and well over 150 to be confirmed contacts (QSOs). This setup is working hard to land me dozens of US states, several countries across South America, Africa, and Europe, and even super niche and hard to hit confirmed contacts with places like Asiatic Russia, Galapagos Islands, and Guinea-Bissau. I’ve had long chats with random blokes in Australia, and practiced my rusty Russian with an operator in Kazakhstan. While some of this is a bit on the side of cheating (a crew flies out to Galapagos periodically to give people the chance to log this exotic contact), I’m reaching these contacts while outcompeting much larger stations and they can hear me clearly enough. It’s essentially like whispering in a stadium and having someone in nosebleeds nodding along.
+
+There are limits, but you can live with all of them. One of mine is that I cannot hit Brazil from my position and with my setup. I can hear Brazilian stations constantly, but they cannot hear me over their noise yet, even with prime conditions. Swap to a vertical mast, and I’m reaching Brazil more often than not. Some days, the bands are unusable - so noisy and loud that even the normal strong stations can’t be heard. Due to my home’s construction, someone flushing a toilet creates a deafening roar of RF on every band. But navigating these limits of my unique setup makes me a better operator. If it were easy, and I just ran a 1.5kW station in an open field on top of a mountain,  HF would feel simple. Instead, the challenges turn this into a frustrating, time wasting, deeply satisfying hobby. Better, these same skills - hearing weak signals, plucking signal from noise, and tinkering with antenna layout - translate well later on to harder challenges in HF like low power QRP operations (try reaching Russia with 4 watts), SOTA/POTA (head to a national park and string up a makeshift shack), and digital or non-voice modes like CW (Morse code). Real nerd shit. 
+
+Seeing is better than telling - I’m excited to share a new, live view of my contacts built right into my website! This includes a view of the states, provinces, and countries I’ve reached, my most distant contacts, and notable contacts. These feed from Logbook of the World (another can of worms for later) and update live as contacts confirm. The whole thing is <a href="/hf-adventures">here</a>, but this is the live map:
+
+<QSLMap client:only="react" />
+
+If you want to get started with all of this, it honestly will seem harder than it is. Get your license, get a good radio, stay simple and humble, and learn as you go. While VHF/UHF are very open with the entry level Technician license, HF is far less open. You’ll need a General license to use most of the bands, and an Extra to use the full range open to amateurs. Most operators I’ve run into, though, are Generals - the vast majority of amateur frequencies are open to you, and you can do pretty much anything an Extra can. If you love technology, find yourself tinkering, like talking to random people, or just want to get eyes on a world you cannot normally see all around you, HF is your calling.
+
+Next up, more posts on some of the more interesting aspects of HF - contests, QSL cards, and nets!

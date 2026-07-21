@@ -22,7 +22,7 @@
     "@astrojs/vercel": "^10.0.5",
     "@upstash/redis": "^1.36.1",
     "@vercel/blob": "^2.0.0",
-    "astro": "^6.1.6",
+    "astro": "^7.1.0",
     "axios": "^1.15.2",
     "chart.js": "^4.4.1",
     "daisyui": "^3.2.1",

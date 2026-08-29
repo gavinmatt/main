@@ -43,7 +43,7 @@ import { Image } from "astro:assets";
     
   </main>
   <div style="padding-bottom:15px"></div>
-  <script src="https://giscus.app/client.js"
+  <script id="giscus-script" src="https://giscus.app/client.js"
         data-repo="gavinmatt/main"
         data-repo-id="R_kgDOKzt3fw"
         data-category="General"
@@ -53,11 +53,29 @@ import { Image } from "astro:assets";
         data-reactions-enabled="1"
         data-emit-metadata="0"
         data-input-position="bottom"
-        data-theme="light_high_contrast"
         data-lang="en"
         data-loading="lazy"
         crossorigin="anonymous"
         async>
+</script>
+<script is:inline>
+  function giscusTheme(theme) {
+    return theme === 'lofi-dark' ? 'transparent_dark' : 'light_high_contrast';
+  }
+  // Set before the async client.js executes, so the widget's first render already
+  // matches the page's current theme instead of waiting for a postMessage correction.
+  document.getElementById('giscus-script').setAttribute(
+    'data-theme',
+    giscusTheme(document.documentElement.getAttribute('data-theme'))
+  );
+  window.addEventListener('themechange', function (e) {
+    var frame = document.querySelector('iframe.giscus-frame');
+    if (!frame) return;
+    frame.contentWindow.postMessage(
+      { giscus: { setConfig: { theme: giscusTheme(e.detail.theme) } } },
+      'https://giscus.app'
+    );
+  });
 </script>
 </BaseLayout>
 

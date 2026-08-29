@@ -22,8 +22,20 @@ const metaImage = ogImage ?? image;
 ---
 
 <!DOCTYPE html>
-<html lang="en" data-theme="lofi">
+<html lang="en">
   <head>
+    <script is:inline>
+      (function () {
+        var theme;
+        try {
+          var stored = localStorage.getItem('theme');
+          theme = stored || (matchMedia('(prefers-color-scheme: dark)').matches ? 'lofi-dark' : 'lofi');
+        } catch (e) {
+          theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'lofi-dark' : 'lofi';
+        }
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
     <BaseHead
     title={resolvedTitle}
   description={description}
@@ -66,5 +78,29 @@ const metaImage = ogImage ?? image;
         <SideBar sideBarActiveItemID={sideBarActiveItemID} />
       )}
     </div>
+
+    <script is:inline>
+      function syncToggles() {
+        var isDark = document.documentElement.getAttribute('data-theme') === 'lofi-dark';
+        document.querySelectorAll('.theme-toggle-input input').forEach(function (el) {
+          el.checked = isDark;
+        });
+      }
+      function setTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        try { localStorage.setItem('theme', theme); } catch (e) {}
+        syncToggles();
+        window.dispatchEvent(new CustomEvent('themechange', { detail: { theme: theme } }));
+      }
+      document.addEventListener('DOMContentLoaded', function () {
+        syncToggles();
+        window.dispatchEvent(new CustomEvent('themechange', { detail: { theme: document.documentElement.getAttribute('data-theme') } }));
+        document.querySelectorAll('.theme-toggle-input input').forEach(function (el) {
+          el.addEventListener('change', function (e) {
+            setTheme(e.target.checked ? 'lofi-dark' : 'lofi');
+          });
+        });
+      });
+    </script>
   </body>
 </html>

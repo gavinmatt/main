@@ -107,7 +107,7 @@ export default function QSLMap() {
         worldCopyJump: true,
       });
 
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      L.tileLayer(`https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?key=${import.meta.env.PUBLIC_CARTO_API_KEY}`, {
         attribution: '© OpenStreetMap © CARTO',
         subdomains: 'abcd',
       }).addTo(map);

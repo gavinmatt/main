@@ -201,11 +201,11 @@ export default function QSLMap() {
         </div>
       )}
 
-      <div className="flex border-b border-gray-300 gap-1">
+      <div className="flex border-b border-base-300 gap-1">
         {(['map', 'distance', 'rare'] as const).map(tab => (
           <button
             key={tab}
-            className={`px-5 py-2.5 text-base font-bold border-b-2 -mb-px ${activeTab === tab ? 'border-black text-black' : 'border-transparent text-gray-500 hover:text-gray-800'}`}
+            className={`px-5 py-2.5 text-base font-bold border-b-2 -mb-px ${activeTab === tab ? 'border-base-content text-base-content' : 'border-transparent text-base-content/50 hover:text-base-content/80'}`}
             onClick={() => setActiveTab(tab)}
           >
             {tab === 'map' ? 'Map' : tab === 'distance' ? 'Distant QSLs' : 'Rare Contacts'}
@@ -242,16 +242,16 @@ export default function QSLMap() {
 
         {activeTab === 'distance' && (
           <div className="pt-4">
-            <p className="text-gray-900 mb-1 text-base">
+            <p className="text-base-content mb-1 text-base">
               Furthest confirmed DX QSLs by great-circle distance from my home EFHW attic antenna in Whitefish, MT.
             </p>
-            <p className="text-gray-500 mb-4 text-sm">
+            <p className="text-base-content/50 mb-4 text-sm">
               4,500+ miles = distant · 7,000+ miles = long-haul · 9,000+ miles = extreme
             </p>
             <div className="overflow-x-auto">
-              <table className="min-w-full border-collapse text-base text-gray-900">
+              <table className="min-w-full border-collapse text-base text-base-content">
                 <thead>
-                  <tr className="border-b text-gray-700">
+                  <tr className="border-b text-base-content/70">
                     <th className="text-center py-2 px-3">Rank</th>
                     <th className="text-center py-2 px-3">Rating</th>
                     <th className="text-left py-2 px-3">Entity</th>
@@ -261,7 +261,7 @@ export default function QSLMap() {
                 </thead>
                 <tbody>
                   {!data && (
-                    <tr><td colSpan={5} className="text-center py-6 text-gray-500">Loading...</td></tr>
+                    <tr><td colSpan={5} className="text-center py-6 text-base-content/50">Loading...</td></tr>
                   )}
                   {data && (data.dxByDistance ?? []).map((d, i) => {
                     const label = distanceLabel(d.distanceMi);
@@ -287,13 +287,13 @@ export default function QSLMap() {
 
         {activeTab === 'rare' && (
           <div className="pt-4">
-            <p className="text-gray-900 mb-1 text-base">
+            <p className="text-base-content mb-1 text-base">
               Confirmed QSLs with notable or difficult-to-reach entities (rare areas).
             </p>
             <div className="overflow-x-auto">
-              <table className="min-w-full border-collapse text-base text-gray-900">
+              <table className="min-w-full border-collapse text-base text-base-content">
                 <thead>
-                  <tr className="border-b text-gray-700">
+                  <tr className="border-b text-base-content/70">
                     <th className="text-left py-2 px-3">Entity</th>
                     <th className="text-left py-2 px-3">Why It's Notable</th>
                     <th className="text-right py-2 px-3">QSL Count</th>
@@ -301,15 +301,15 @@ export default function QSLMap() {
                 </thead>
                 <tbody>
                   {!data && (
-                    <tr><td colSpan={3} className="text-center py-6 text-gray-500">Loading...</td></tr>
+                    <tr><td colSpan={3} className="text-center py-6 text-base-content/50">Loading...</td></tr>
                   )}
                   {data && rareContacts.length === 0 && (
-                    <tr><td colSpan={3} className="text-center py-6 text-gray-500">No rare contacts confirmed yet.</td></tr>
+                    <tr><td colSpan={3} className="text-center py-6 text-base-content/50">No rare contacts confirmed yet.</td></tr>
                   )}
                   {data && rareContacts.map(d => (
                     <tr key={d.country} className="border-b">
                       <td className="py-2 px-3 font-medium">{toProperCase(d.country)}</td>
-                      <td className="py-2 px-3 text-gray-500 text-sm">{d.reason}</td>
+                      <td className="py-2 px-3 text-base-content/50 text-sm">{d.reason}</td>
                       <td className="text-right py-2 px-3">{d.count}</td>
                     </tr>
                   ))}

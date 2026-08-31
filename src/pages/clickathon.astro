@@ -792,6 +792,21 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     window.addEventListener("focus", updateFocusState);
     window.addEventListener("blur", updateFocusState);
 
+    /* ---------- PRESENCE HEARTBEAT (admin-only "concurrent users") ---------- */
+
+    function sendPresenceHeartbeat() {
+      if (!isFocused) return;
+      fetch("/api/clickathon-counters", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "presence", playerId }),
+      }).catch(() => {});
+    }
+    sendPresenceHeartbeat();
+    window.addEventListener("focus", sendPresenceHeartbeat);
+    document.addEventListener("visibilitychange", sendPresenceHeartbeat);
+    setInterval(sendPresenceHeartbeat, 10000);
+
     setInterval(() => {
       if (!isFocused) return;
       personalSeconds++;

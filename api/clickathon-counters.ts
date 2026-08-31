@@ -18,11 +18,30 @@ function isCounterType(value: unknown): value is CounterType {
   return value === "clicks" || value === "time";
 }
 
+// Heartbeat-based presence: members are player ids, scores are last-seen
+// epoch ms. Read prunes anything older than the window, so the set is
+// self-cleaning without a separate cron job.
+const PRESENCE_KEY = "clickathon:presence:v1";
+const PRESENCE_WINDOW_MS = 25_000;
+const PLAYER_ID_RE = /^[A-Za-z0-9-]{8,64}$/;
+
 export default async function handler(
   req: VercelRequest,
   res: VercelResponse
 ) {
   if (req.method === "GET") {
+    if (req.query.type === "presence") {
+      try {
+        const cutoff = Date.now() - PRESENCE_WINDOW_MS;
+        await redis.zremrangebyscore(PRESENCE_KEY, "-inf", cutoff);
+        const count = await redis.zcard(PRESENCE_KEY);
+        return res.status(200).json({ count });
+      } catch (err) {
+        console.error("clickathon-counters presence read failed", err);
+        return res.status(500).json({ error: "Failed to read presence" });
+      }
+    }
+
     const type = req.query.type;
     if (!isCounterType(type)) {
       return res.status(400).send("Invalid type");
@@ -47,6 +66,20 @@ export default async function handler(
     payload = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
   } catch {
     return res.status(400).send("Invalid JSON");
+  }
+
+  if (payload?.type === "presence") {
+    const playerId = String(payload?.playerId ?? "").trim();
+    if (!PLAYER_ID_RE.test(playerId)) {
+      return res.status(400).send("Invalid player id");
+    }
+    try {
+      await redis.zadd(PRESENCE_KEY, Date.now(), playerId);
+      return res.status(200).json({ ok: true });
+    } catch (err) {
+      console.error("clickathon-counters presence write failed", err);
+      return res.status(500).json({ error: "Failed to record presence" });
+    }
   }
 
   const type = payload?.type;

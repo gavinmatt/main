@@ -9,7 +9,7 @@ const redis = new Redis(process.env.REDIS_URL);
 
 const LEADERBOARD_KEY = "clickathon:leaderboard:v1";
 const TOP_N = 25;
-const MAX_SCORE = 1_000_000;
+const MAX_LIMIT = 5000;
 const INITIALS_RE = /^[A-Z]{3}$/;
 
 // Slurs and hate symbols only — mild profanity (e.g. ASS) is fine.
@@ -32,10 +32,15 @@ export default async function handler(
 ) {
   if (req.method === "GET") {
     try {
+      const requestedLimit = parseInt(String(req.query.limit ?? ""), 10);
+      const limit =
+        Number.isFinite(requestedLimit) && requestedLimit > 0
+          ? Math.min(requestedLimit, MAX_LIMIT)
+          : TOP_N;
       const raw = await redis.zrevrange(
         LEADERBOARD_KEY,
         0,
-        TOP_N - 1,
+        limit - 1,
         "WITHSCORES"
       );
       const entries: { initials: string; score: number }[] = [];
@@ -81,12 +86,7 @@ export default async function handler(
   if (!INITIALS_RE.test(initials) || BLOCKED_INITIALS.has(initials)) {
     return res.status(400).send("Invalid initials");
   }
-  if (
-    !Number.isFinite(score) ||
-    !Number.isInteger(score) ||
-    score <= 0 ||
-    score > MAX_SCORE
-  ) {
+  if (!Number.isFinite(score) || !Number.isInteger(score) || score <= 0) {
     return res.status(400).send("Invalid score");
   }
 

@@ -8,7 +8,6 @@ if (!process.env.REDIS_URL) {
 const redis = new Redis(process.env.REDIS_URL);
 
 const TOTAL_KEY = "clickathon:total";
-const MAX_DELTA_PER_FLUSH = 75;
 
 export default async function handler(
   req: VercelRequest,
@@ -40,14 +39,9 @@ export default async function handler(
     return res.status(400).send("Invalid delta");
   }
 
-  const applied = Math.min(delta, MAX_DELTA_PER_FLUSH);
-  if (applied < delta) {
-    console.warn(`clickathon-clicks clamped delta ${delta} -> ${applied}`);
-  }
-
   try {
-    const total = await redis.incrby(TOTAL_KEY, applied);
-    return res.status(200).json({ total, applied });
+    const total = await redis.incrby(TOTAL_KEY, delta);
+    return res.status(200).json({ total, applied: delta });
   } catch (err) {
     console.error("clickathon-clicks write failed", err);
     return res.status(500).json({ error: "Failed to record clicks" });

@@ -12,8 +12,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   <div class="text-5xl font-bold text-center mt-6">Clickathon</div>
 
   <p class="text-center py-4 max-w-3xl mx-auto text-base-content/70">
-    A globally shared, entirely pointless clicking game. Click the button.
-    Watch the numbers go up. That's it, that's the whole game.
+    A globally shared, entirely pointless clicking game. Click the button. Watch
+    the numbers go up. That's it, that's the whole game.
   </p>
 
   <div id="initialsGate" class="max-w-sm mx-auto text-center py-12">
@@ -38,19 +38,28 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     <div class="flex justify-center gap-12 mt-8 mb-4 flex-wrap">
       <div class="text-center">
-        <div id="personalCount" class="text-4xl font-mono font-bold text-base-content">
+        <div
+          id="personalCount"
+          class="text-4xl font-mono font-bold text-base-content"
+        >
           0
         </div>
         <div class="text-base-content/50 text-sm mt-1">Your clicks</div>
       </div>
       <div class="text-center">
-        <div id="globalCount" class="text-4xl font-mono font-bold text-base-content">
+        <div
+          id="globalCount"
+          class="text-4xl font-mono font-bold text-base-content"
+        >
           —
         </div>
         <div class="text-base-content/50 text-sm mt-1">Global clicks</div>
       </div>
       <div class="text-center">
-        <div id="cpsCount" class="text-4xl font-mono font-bold text-base-content">
+        <div
+          id="cpsCount"
+          class="text-4xl font-mono font-bold text-base-content"
+        >
           0
         </div>
         <div class="text-base-content/50 text-sm mt-1">Your clicks/sec</div>
@@ -58,20 +67,24 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     </div>
 
     <div class="flex justify-center my-8">
-      <button id="clickBtn" class="win95-btn" type="button">
-        CLICK ME
-      </button>
+      <button id="clickBtn" class="win95-btn" type="button"> CLICK ME </button>
     </div>
 
     <div class="flex justify-center gap-12 mt-4 mb-2 flex-wrap">
       <div class="text-center">
-        <div id="personalTime" class="text-3xl font-mono font-bold text-base-content/80">
+        <div
+          id="personalTime"
+          class="text-3xl font-mono font-bold text-base-content/80"
+        >
           0s
         </div>
         <div class="text-base-content/50 text-sm mt-1">Your time wasted</div>
       </div>
       <div class="text-center">
-        <div id="globalTime" class="text-3xl font-mono font-bold text-base-content/80">
+        <div
+          id="globalTime"
+          class="text-3xl font-mono font-bold text-base-content/80"
+        >
           —
         </div>
         <div class="text-base-content/50 text-sm mt-1">Global time wasted</div>
@@ -90,7 +103,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         class="input input-bordered input-sm w-20 text-center uppercase tracking-widest"
         autocomplete="off"
       />
-      <span class="text-base-content/40 text-xs">auto-saved to the leaderboards</span>
+      <span class="text-base-content/40 text-xs"
+        >auto-saved to the leaderboards</span
+      >
     </div>
 
     <div
@@ -117,7 +132,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           </div>
         </div>
         <div>
-          <div class="text-2xl font-black mb-2 text-center">Most Clicks/Second</div>
+          <div class="text-2xl font-black mb-2 text-center">
+            Most Clicks/Second
+          </div>
           <div class="flex justify-center mb-3">
             <div id="yourRankCps" class="clickathon-rank-badge hidden"></div>
           </div>
@@ -135,7 +152,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           </div>
         </div>
         <div>
-          <div class="text-2xl font-black mb-2 text-center">Most Time Wasted</div>
+          <div class="text-2xl font-black mb-2 text-center">
+            Most Time Wasted
+          </div>
           <div class="flex justify-center mb-3">
             <div id="yourRankTime" class="clickathon-rank-badge hidden"></div>
           </div>
@@ -156,27 +175,34 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     </div>
   </div>
 
-  <div class="max-w-2xl mx-auto mb-10 px-4 text-base-content/70 text-sm leading-relaxed">
-    <div class="text-lg font-bold mb-3 text-base-content">How this was built</div>
+  <div
+    class="max-w-2xl mx-auto mb-10 px-4 text-base-content/70 text-sm leading-relaxed"
+  >
+    <div class="text-lg font-bold mb-3 text-base-content">
+      How this was built
+    </div>
     <p class="mb-4">
       I built this entire thing with Claude Code but with hands fully on
       keyboard. But the button, the Redis-backed leaderboards, the milestone
-      facts, all of it is agentically generated. It's absurdly similar to
-      the loop of PRD &gt; ask engineer &gt; provide feedback, but a strange
-      version with less typing, more directing, and a surprising amount of
-      "wait, why is that broken" followed by "oh, that's why."
+      facts, all of it is agent generated. It's absurdly similar to the loop of
+      draft PRD &gt; ask engineer &gt; provide feedback, but a strange version
+      with less typing, more directing, and a surprising amount of "wait, why is
+      that broken" followed by "oh, that's why." Also obviously inspired by <a
+        href="https://cookieclicker.com/">Cookie Clicker</a
+      > and <a href="https://neal.fun/stimulation-clicker/"
+        >Neal.fun's Stimulation Clicker</a
+      >.
     </p>
     <p>
-      The best bug: for a good while, none of the toast messages or the
-      confetti actually had their styling applied. Astro's CSS scoping
-      quietly requires an attribute that elements created on the fly in
-      JavaScript never get, so everything was rendering as plain, unstyled
-      text and I didn't notice for an embarrassingly long stretch. There was
-      also a brief period where the leaderboard had genuinely incorrect test
-      data sitting on it, because I kept testing against the real production
-      database instead of a sandbox. Both are fixed now. Mostly, though,
-      this was a lot of "try this," "no, smaller," "add a fake crisis when
-      someone hits #1" — and here we are!
+      The best bug: for a good while, none of the toast messages or the confetti
+      actually had their styling applied. Astro's CSS scoping quietly requires
+      an attribute that elements created on the fly in JavaScript never get, so
+      everything was rendering as plain, unstyled text and I didn't notice for
+      an embarrassingly long stretch. There was also a brief period where the
+      leaderboard had genuinely incorrect test data sitting on it, because I
+      kept testing against the real production database instead of a sandbox.
+      Both are fixed now. Mostly, though, this was a lot of "try this," "no,
+      smaller," and "add a fake crisis when someone hits #1" and here we are!
     </p>
   </div>
 
@@ -238,7 +264,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       text-align: center;
       opacity: 0;
       transform: scale(0.95);
-      transition: opacity 0.2s ease, transform 0.2s ease;
+      transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
     }
     .clickathon-toast.show {
       opacity: 1;
@@ -313,16 +341,33 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         clickathon-fade-out 0.4s ease-in 4.6s forwards;
     }
     @keyframes clickathon-bounce-in {
-      0% { transform: scale(0.3) rotate(-8deg); opacity: 0; }
-      60% { transform: scale(1.1) rotate(4deg); opacity: 1; }
-      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+      0% {
+        transform: scale(0.3) rotate(-8deg);
+        opacity: 0;
+      }
+      60% {
+        transform: scale(1.1) rotate(4deg);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+      }
     }
     @keyframes clickathon-wobble {
-      0%, 100% { transform: rotate(-2deg); }
-      50% { transform: rotate(2deg); }
+      0%,
+      100% {
+        transform: rotate(-2deg);
+      }
+      50% {
+        transform: rotate(2deg);
+      }
     }
     @keyframes clickathon-fade-out {
-      to { opacity: 0; transform: scale(0.8); }
+      to {
+        opacity: 0;
+        transform: scale(0.8);
+      }
     }
     .clickathon-confetti {
       position: absolute;
@@ -335,7 +380,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       animation-fill-mode: forwards;
     }
     @keyframes clickathon-confetti-fall {
-      to { transform: translateY(110vh) rotate(720deg); opacity: 0.2; }
+      to {
+        transform: translateY(110vh) rotate(720deg);
+        opacity: 0.2;
+      }
     }
   </style>
 
@@ -474,7 +522,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     function allMilestones() {
       const curated = Object.keys(MILESTONE_FACTS).map(Number);
-      const roundNumbers = [10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000];
+      const roundNumbers = [
+        10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000,
+      ];
       return [...new Set([...curated, ...roundNumbers])].sort((a, b) => a - b);
     }
     const MILESTONES = allMilestones();
@@ -499,7 +549,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         currentToastEl = null;
       }
       const el = document.createElement("div");
-      el.className = variant ? `clickathon-toast ${variant}` : "clickathon-toast";
+      el.className = variant
+        ? `clickathon-toast ${variant}`
+        : "clickathon-toast";
       el.textContent = text;
       toastContainer.appendChild(el);
       currentToastEl = el;
@@ -522,7 +574,15 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     /* ---------- #1 CELEBRATION ---------- */
 
-    const CONFETTI_COLORS = ["#ef4444", "#f59e0b", "#eab308", "#22c55e", "#3b82f6", "#8b5cf6", "#ec4899"];
+    const CONFETTI_COLORS = [
+      "#ef4444",
+      "#f59e0b",
+      "#eab308",
+      "#22c55e",
+      "#3b82f6",
+      "#8b5cf6",
+      "#ec4899",
+    ];
 
     function celebrateNumberOne(boardLabel, score, formatScore) {
       const format = formatScore ?? ((n) => n.toLocaleString());
@@ -533,7 +593,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         const piece = document.createElement("div");
         piece.className = "clickathon-confetti";
         piece.style.left = Math.random() * 100 + "vw";
-        piece.style.background = CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)];
+        piece.style.background =
+          CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)];
         piece.style.animationDuration = 2 + Math.random() * 2 + "s";
         piece.style.animationDelay = Math.random() * 0.5 + "s";
         overlay.appendChild(piece);
@@ -592,12 +653,14 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     let personalCount = 0;
     try {
-      personalCount = parseInt(localStorage.getItem("clickathon-count") ?? "0", 10) || 0;
+      personalCount =
+        parseInt(localStorage.getItem("clickathon-count") ?? "0", 10) || 0;
     } catch (e) {}
 
     let peakCps = 0;
     try {
-      peakCps = parseInt(localStorage.getItem("clickathon-peak-cps") ?? "0", 10) || 0;
+      peakCps =
+        parseInt(localStorage.getItem("clickathon-peak-cps") ?? "0", 10) || 0;
     } catch (e) {}
 
     let pendingDelta = 0;
@@ -697,13 +760,16 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     let personalSeconds = 0;
     try {
-      personalSeconds = parseInt(localStorage.getItem("clickathon-time-seconds") ?? "0", 10) || 0;
+      personalSeconds =
+        parseInt(localStorage.getItem("clickathon-time-seconds") ?? "0", 10) ||
+        0;
     } catch (e) {}
     let pendingTimeDelta = 0;
 
     personalTimeEl.textContent = formatDuration(personalSeconds);
 
-    let isFocused = document.visibilityState === "visible" && document.hasFocus();
+    let isFocused =
+      document.visibilityState === "visible" && document.hasFocus();
     function updateFocusState() {
       isFocused = document.visibilityState === "visible" && document.hasFocus();
     }
@@ -717,7 +783,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       pendingTimeDelta++;
       personalTimeEl.textContent = formatDuration(personalSeconds);
       try {
-        localStorage.setItem("clickathon-time-seconds", String(personalSeconds));
+        localStorage.setItem(
+          "clickathon-time-seconds",
+          String(personalSeconds)
+        );
       } catch (e) {}
     }, 1000);
 
@@ -843,10 +912,14 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       const rem100 = n % 100;
       if (rem100 >= 11 && rem100 <= 13) return `${n}th`;
       switch (n % 10) {
-        case 1: return `${n}st`;
-        case 2: return `${n}nd`;
-        case 3: return `${n}rd`;
-        default: return `${n}th`;
+        case 1:
+          return `${n}st`;
+        case 2:
+          return `${n}nd`;
+        case 3:
+          return `${n}rd`;
+        default:
+          return `${n}th`;
       }
     }
 
@@ -866,26 +939,24 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       el.textContent = flavor
         ? `${ordinal(you.rank)} place — ${flavor}`
         : `${ordinal(you.rank)} place — ${format(you.score)}${unit ? " " + unit : ""}`;
-      el.classList.remove(
-        "hidden",
-        "rank-1",
-        "rank-2",
-        "rank-3",
-        "rank-other"
-      );
+      el.classList.remove("hidden", "rank-1", "rank-2", "rank-3", "rank-other");
       el.classList.add(you.rank <= 3 ? `rank-${you.rank}` : "rank-other");
     }
 
     async function loadLeaderboard() {
       try {
         const qs = hasValidInitials() ? `&initials=${getInitials()}` : "";
-        const res = await fetch(`/api/clickathon-leaderboards?board=total${qs}`);
+        const res = await fetch(
+          `/api/clickathon-leaderboards?board=total${qs}`
+        );
         const data = await res.json();
         const entries = data.entries ?? [];
         renderLeaderboard(leaderboardBody, entries);
         renderYourRank(yourRankTotalEl, entries, data.you, "clicks");
         const isNumberOne =
-          hasValidInitials() && entries.length > 0 && entries[0].initials === getInitials();
+          hasValidInitials() &&
+          entries.length > 0 &&
+          entries[0].initials === getInitials();
         if (isNumberOne && !wasNumberOneTotal && hasLoadedTotalOnce) {
           celebrateNumberOne("Most Clicks", entries[0].score);
         }
@@ -903,7 +974,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         renderLeaderboard(cpsLeaderboardBody, entries);
         renderYourRank(yourRankCpsEl, entries, data.you, "clicks/sec");
         const isNumberOne =
-          hasValidInitials() && entries.length > 0 && entries[0].initials === getInitials();
+          hasValidInitials() &&
+          entries.length > 0 &&
+          entries[0].initials === getInitials();
         if (isNumberOne && !wasNumberOneCps && hasLoadedCpsOnce) {
           celebrateNumberOne("Most Clicks/Second", entries[0].score);
         }
@@ -921,9 +994,15 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         renderLeaderboard(timeLeaderboardBody, entries, formatDuration);
         renderYourRank(yourRankTimeEl, entries, data.you, "", formatDuration);
         const isNumberOne =
-          hasValidInitials() && entries.length > 0 && entries[0].initials === getInitials();
+          hasValidInitials() &&
+          entries.length > 0 &&
+          entries[0].initials === getInitials();
         if (isNumberOne && !wasNumberOneTime && hasLoadedTimeOnce) {
-          celebrateNumberOne("Most Time Wasted", entries[0].score, formatDuration);
+          celebrateNumberOne(
+            "Most Time Wasted",
+            entries[0].score,
+            formatDuration
+          );
         }
         wasNumberOneTime = isNumberOne;
         hasLoadedTimeOnce = true;
@@ -948,7 +1027,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           await fetch("/api/clickathon-leaderboards", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ board: "total", initials, score: personalCount }),
+            body: JSON.stringify({
+              board: "total",
+              initials,
+              score: personalCount,
+            }),
           });
         }
         if (peakCps > 0) {
@@ -962,7 +1045,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           await fetch("/api/clickathon-leaderboards", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ board: "time", initials, score: personalSeconds }),
+            body: JSON.stringify({
+              board: "time",
+              initials,
+              score: personalSeconds,
+            }),
           });
         }
         loadLeaderboard();

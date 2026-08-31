@@ -1,0 +1,128 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  customTitle="Clickathon Admin"
+  description="Live internal data for Clickathon."
+  noindex={true}
+>
+  <div class="text-3xl font-bold mt-6 mb-1">Clickathon Admin</div>
+  <p class="text-base-content/50 text-sm mb-8">
+    Not linked anywhere, not indexed. Refreshes every 5s.
+  </p>
+
+  <div class="flex gap-12 mb-10 flex-wrap">
+    <div>
+      <div id="adminGlobalClicks" class="text-4xl font-mono font-bold text-base-content">
+        —
+      </div>
+      <div class="text-base-content/50 text-sm mt-1">Global clicks</div>
+    </div>
+    <div>
+      <div id="adminGlobalTime" class="text-4xl font-mono font-bold text-base-content">
+        —
+      </div>
+      <div class="text-base-content/50 text-sm mt-1">Global time wasted</div>
+    </div>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-8" style="max-width: 1100px;">
+    <div>
+      <div class="text-xl font-bold mb-3">
+        Most Clicks <span id="adminTotalCount" class="text-base-content/50 font-normal text-sm"></span>
+      </div>
+      <div class="overflow-y-auto overflow-x-auto border border-base-300 rounded" style="max-height: 70vh;">
+        <table class="w-full border-collapse text-sm text-base-content">
+          <thead class="sticky top-0 bg-base-200">
+            <tr class="border-b text-base-content/70">
+              <th class="text-center py-2 px-3">Rank</th>
+              <th class="text-left py-2 px-3">Initials</th>
+              <th class="text-right py-2 px-3">Score</th>
+            </tr>
+          </thead>
+          <tbody id="adminLeaderboardBody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div>
+      <div class="text-xl font-bold mb-3">
+        Most Clicks/Second <span id="adminCpsCount" class="text-base-content/50 font-normal text-sm"></span>
+      </div>
+      <div class="overflow-y-auto overflow-x-auto border border-base-300 rounded" style="max-height: 70vh;">
+        <table class="w-full border-collapse text-sm text-base-content">
+          <thead class="sticky top-0 bg-base-200">
+            <tr class="border-b text-base-content/70">
+              <th class="text-center py-2 px-3">Rank</th>
+              <th class="text-left py-2 px-3">Initials</th>
+              <th class="text-right py-2 px-3">Clicks/sec</th>
+            </tr>
+          </thead>
+          <tbody id="adminCpsLeaderboardBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    const globalClicksEl = document.getElementById("adminGlobalClicks");
+    const globalTimeEl = document.getElementById("adminGlobalTime");
+    const totalCountEl = document.getElementById("adminTotalCount");
+    const cpsCountEl = document.getElementById("adminCpsCount");
+    const leaderboardBody = document.getElementById("adminLeaderboardBody");
+    const cpsLeaderboardBody = document.getElementById("adminCpsLeaderboardBody");
+
+    function formatDuration(totalSeconds) {
+      const s = Math.max(0, Math.floor(totalSeconds));
+      const days = Math.floor(s / 86400);
+      const hours = Math.floor((s % 86400) / 3600);
+      const minutes = Math.floor((s % 3600) / 60);
+      const seconds = s % 60;
+      if (days > 0) return `${days}d ${hours}h ${minutes}m`;
+      if (hours > 0) return `${hours}h ${minutes}m ${seconds}s`;
+      if (minutes > 0) return `${minutes}m ${seconds}s`;
+      return `${seconds}s`;
+    }
+
+    function renderTable(el, entries) {
+      if (!entries || !entries.length) {
+        el.innerHTML = `<tr><td colspan="3" class="text-center py-6 text-base-content/50">No entries.</td></tr>`;
+        return;
+      }
+      el.innerHTML = entries
+        .map(
+          (e, i) => `
+        <tr class="border-b">
+          <td class="text-center py-2 px-3">${i + 1}</td>
+          <td class="py-2 px-3 font-mono">${e.initials}</td>
+          <td class="text-right py-2 px-3 font-semibold">${e.score.toLocaleString()}</td>
+        </tr>`
+        )
+        .join("");
+    }
+
+    async function refresh() {
+      try {
+        const [clicksRes, timeRes, lbRes, cpsRes] = await Promise.all([
+          fetch("/api/clickathon-clicks"),
+          fetch("/api/clickathon-time"),
+          fetch("/api/clickathon-leaderboard?limit=5000"),
+          fetch("/api/clickathon-cps-leaderboard?limit=5000"),
+        ]);
+        const clicks = await clicksRes.json();
+        const time = await timeRes.json();
+        const lb = await lbRes.json();
+        const cps = await cpsRes.json();
+
+        globalClicksEl.textContent = (clicks.total ?? 0).toLocaleString();
+        globalTimeEl.textContent = formatDuration(time.seconds ?? 0);
+        totalCountEl.textContent = `(${(lb.entries ?? []).length} entries)`;
+        cpsCountEl.textContent = `(${(cps.entries ?? []).length} entries)`;
+        renderTable(leaderboardBody, lb.entries ?? []);
+        renderTable(cpsLeaderboardBody, cps.entries ?? []);
+      } catch {}
+    }
+    refresh();
+    setInterval(refresh, 5000);
+  </script>
+</BaseLayout>

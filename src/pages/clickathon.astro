@@ -1,0 +1,984 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  sideBarActiveItemID="clickathon"
+  customTitle="Clickathon"
+  description="A completely pointless global clicking game. Click a big Windows 95 button. Watch numbers go up. Compete for a spot on the leaderboard."
+  canonical="https://www.gavmatt.com/clickathon"
+  ogImage="https://www.gavmatt.com/clickathon.png"
+>
+  <div class="text-5xl font-bold text-center mt-6">Clickathon</div>
+
+  <p class="text-center py-4 max-w-3xl mx-auto text-base-content/70">
+    A globally shared, entirely pointless clicking game. Click the button.
+    Watch the numbers go up. That's it, that's the whole game.
+  </p>
+
+  <div id="initialsGate" class="max-w-sm mx-auto text-center py-12">
+    <div class="text-xl font-bold mb-4">Enter your initials to play</div>
+    <input
+      id="gateInitialsInput"
+      type="text"
+      maxlength="3"
+      placeholder="AAA"
+      class="input input-bordered input-lg w-32 text-center uppercase tracking-widest text-2xl mb-4"
+      autocomplete="off"
+    />
+    <div>
+      <button id="gateSubmitBtn" class="btn btn-primary btn-lg" disabled>
+        Get clicking
+      </button>
+    </div>
+  </div>
+
+  <div id="gameContent" class="hidden">
+    <div id="toastContainer" class="clickathon-toast-container"></div>
+
+    <div class="flex justify-center gap-12 mt-8 mb-4 flex-wrap">
+      <div class="text-center">
+        <div id="personalCount" class="text-4xl font-mono font-bold text-base-content">
+          0
+        </div>
+        <div class="text-base-content/50 text-sm mt-1">Your clicks</div>
+      </div>
+      <div class="text-center">
+        <div id="globalCount" class="text-4xl font-mono font-bold text-base-content">
+          —
+        </div>
+        <div class="text-base-content/50 text-sm mt-1">Global clicks</div>
+      </div>
+      <div class="text-center">
+        <div id="cpsCount" class="text-4xl font-mono font-bold text-base-content">
+          0
+        </div>
+        <div class="text-base-content/50 text-sm mt-1">Your clicks/sec</div>
+      </div>
+    </div>
+
+    <div class="flex justify-center my-8">
+      <button id="clickBtn" class="win95-btn" type="button">
+        CLICK ME
+      </button>
+    </div>
+
+    <div class="flex justify-center gap-12 mt-4 mb-2 flex-wrap">
+      <div class="text-center">
+        <div id="personalTime" class="text-3xl font-mono font-bold text-base-content/80">
+          0s
+        </div>
+        <div class="text-base-content/50 text-sm mt-1">Your time wasted</div>
+      </div>
+      <div class="text-center">
+        <div id="globalTime" class="text-3xl font-mono font-bold text-base-content/80">
+          —
+        </div>
+        <div class="text-base-content/50 text-sm mt-1">Global time wasted</div>
+      </div>
+    </div>
+
+    <div class="mx-auto mt-6 mb-10 flex justify-center items-center gap-2">
+      <label for="initialsInput" class="text-base-content/70 text-sm">
+        Playing as:
+      </label>
+      <input
+        id="initialsInput"
+        type="text"
+        maxlength="3"
+        placeholder="AAA"
+        class="input input-bordered input-sm w-20 text-center uppercase tracking-widest"
+        autocomplete="off"
+      />
+      <span class="text-base-content/40 text-xs">auto-saved to the leaderboards</span>
+    </div>
+
+    <div
+      class="mx-auto mb-10"
+      style="width: 100%; max-width: 1200px; padding-left: 1rem; padding-right: 1rem;"
+    >
+      <div class="grid md:grid-cols-3 gap-8">
+        <div>
+          <div class="text-2xl font-black mb-2 text-center">Most Clicks</div>
+          <div class="flex justify-center mb-3">
+            <div id="yourRankTotal" class="clickathon-rank-badge hidden"></div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full border-collapse text-base text-base-content">
+              <thead>
+                <tr class="border-b text-base-content/70">
+                  <th class="text-center py-2 px-3">Rank</th>
+                  <th class="text-left py-2 px-3">Initials</th>
+                  <th class="text-right py-2 px-3">Score</th>
+                </tr>
+              </thead>
+              <tbody id="leaderboardBody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div>
+          <div class="text-2xl font-black mb-2 text-center">Most Clicks/Second</div>
+          <div class="flex justify-center mb-3">
+            <div id="yourRankCps" class="clickathon-rank-badge hidden"></div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full border-collapse text-base text-base-content">
+              <thead>
+                <tr class="border-b text-base-content/70">
+                  <th class="text-center py-2 px-3">Rank</th>
+                  <th class="text-left py-2 px-3">Initials</th>
+                  <th class="text-right py-2 px-3">Clicks/sec</th>
+                </tr>
+              </thead>
+              <tbody id="cpsLeaderboardBody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div>
+          <div class="text-2xl font-black mb-2 text-center">Most Time Wasted</div>
+          <div class="flex justify-center mb-3">
+            <div id="yourRankTime" class="clickathon-rank-badge hidden"></div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full border-collapse text-base text-base-content">
+              <thead>
+                <tr class="border-b text-base-content/70">
+                  <th class="text-center py-2 px-3">Rank</th>
+                  <th class="text-left py-2 px-3">Initials</th>
+                  <th class="text-right py-2 px-3">Time</th>
+                </tr>
+              </thead>
+              <tbody id="timeLeaderboardBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-2xl mx-auto mb-10 px-4 text-base-content/70 text-sm leading-relaxed">
+    <div class="text-lg font-bold mb-3 text-base-content">How this was built</div>
+    <p class="mb-4">
+      I built this entire thing with Claude Code but with hands fully on
+      keyboard. But the button, the Redis-backed leaderboards, the milestone
+      facts, all of it is agentically generated. It's absurdly similar to
+      the loop of PRD &gt; ask engineer &gt; provide feedback, but a strange
+      version with less typing, more directing, and a surprising amount of
+      "wait, why is that broken" followed by "oh, that's why."
+    </p>
+    <p>
+      The best bug: for a good while, none of the toast messages or the
+      confetti actually had their styling applied. Astro's CSS scoping
+      quietly requires an attribute that elements created on the fly in
+      JavaScript never get, so everything was rendering as plain, unstyled
+      text and I didn't notice for an embarrassingly long stretch. There was
+      also a brief period where the leaderboard had genuinely incorrect test
+      data sitting on it, because I kept testing against the real production
+      database instead of a sandbox. Both are fixed now. Mostly, though,
+      this was a lot of "try this," "no, smaller," "add a fake crisis when
+      someone hits #1" — and here we are!
+    </p>
+  </div>
+
+  <style is:global>
+    .win95-btn {
+      background: #c0c0c0;
+      border: none;
+      border-radius: 0;
+      box-shadow:
+        inset -1px -1px 0 #000000,
+        inset 1px 1px 0 #dfdfdf,
+        inset -2px -2px 0 #808080,
+        inset 2px 2px 0 #ffffff;
+      color: #000000;
+      font-family: Tahoma, Arial, sans-serif;
+      font-size: 1.5rem;
+      font-weight: bold;
+      padding: 1.5rem 3rem;
+      cursor: pointer;
+      user-select: none;
+    }
+    .win95-btn:active,
+    .win95-btn.pressed {
+      box-shadow:
+        inset 1px 1px 0 #000000,
+        inset -1px -1px 0 #dfdfdf,
+        inset 2px 2px 0 #808080,
+        inset -2px -2px 0 #ffffff;
+    }
+    @media (max-width: 480px) {
+      .win95-btn {
+        padding: 1.25rem 2rem;
+        font-size: 1.25rem;
+      }
+    }
+
+    .clickathon-toast-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      align-items: center;
+      min-height: 2.5rem;
+      justify-content: center;
+      padding-top: 0.5rem;
+    }
+    .clickathon-toast {
+      background: #c0c0c0;
+      color: #000000;
+      border: none;
+      box-shadow:
+        inset -1px -1px 0 #000000,
+        inset 1px 1px 0 #dfdfdf,
+        inset -2px -2px 0 #808080,
+        inset 2px 2px 0 #ffffff;
+      font-family: Tahoma, Arial, sans-serif;
+      font-size: 0.9rem;
+      padding: 0.6rem 1rem;
+      max-width: min(90vw, 420px);
+      text-align: center;
+      opacity: 0;
+      transform: scale(0.95);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+    .clickathon-toast.show {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .clickathon-toast.golden {
+      color: #b45309;
+      font-weight: bold;
+      text-shadow: 0 0 6px rgba(234, 179, 8, 0.6);
+    }
+
+    .clickathon-rank-badge {
+      display: inline-block;
+      padding: 0.5rem 1.25rem;
+      border-radius: 0.75rem;
+      font-weight: 800;
+      font-size: 1rem;
+      text-align: center;
+      border: 2px solid;
+      max-width: 100%;
+    }
+    .clickathon-rank-badge.hidden {
+      display: none;
+    }
+    .clickathon-rank-badge.rank-1 {
+      background: #fef3c7;
+      border-color: #d97706;
+      color: #92400e;
+    }
+    .clickathon-rank-badge.rank-2 {
+      background: #f1f5f9;
+      border-color: #64748b;
+      color: #334155;
+    }
+    .clickathon-rank-badge.rank-3 {
+      background: #fed7aa;
+      border-color: #c2410c;
+      color: #7c2d12;
+    }
+    .clickathon-rank-badge.rank-other {
+      background: transparent;
+      border-color: #64748b;
+      color: #64748b;
+    }
+
+    .clickathon-celebration {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .clickathon-celebration-banner {
+      font-family: Tahoma, Arial, sans-serif;
+      font-weight: 900;
+      font-size: clamp(1.5rem, 5vw, 3rem);
+      text-align: center;
+      padding: 1.5rem 2.5rem;
+      background: #c0c0c0;
+      color: #000000;
+      box-shadow:
+        inset -2px -2px 0 #000000,
+        inset 2px 2px 0 #ffffff,
+        inset -4px -4px 0 #808080,
+        inset 4px 4px 0 #dfdfdf;
+      animation:
+        clickathon-bounce-in 0.4s ease-out,
+        clickathon-wobble 0.6s ease-in-out 0.4s infinite,
+        clickathon-fade-out 0.4s ease-in 4.6s forwards;
+    }
+    @keyframes clickathon-bounce-in {
+      0% { transform: scale(0.3) rotate(-8deg); opacity: 0; }
+      60% { transform: scale(1.1) rotate(4deg); opacity: 1; }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+    @keyframes clickathon-wobble {
+      0%, 100% { transform: rotate(-2deg); }
+      50% { transform: rotate(2deg); }
+    }
+    @keyframes clickathon-fade-out {
+      to { opacity: 0; transform: scale(0.8); }
+    }
+    .clickathon-confetti {
+      position: absolute;
+      top: -20px;
+      width: 10px;
+      height: 10px;
+      opacity: 0.9;
+      animation-name: clickathon-confetti-fall;
+      animation-timing-function: linear;
+      animation-fill-mode: forwards;
+    }
+    @keyframes clickathon-confetti-fall {
+      to { transform: translateY(110vh) rotate(720deg); opacity: 0.2; }
+    }
+  </style>
+
+  <script type="module">
+    /* ---------- MILESTONE FACTS ---------- */
+
+    const MILESTONE_FACTS = {
+      1: "The loneliest number.",
+      2: "It takes two.",
+      3: "Third time's the charm — in advance.",
+      4: "Four score minus everything else.",
+      5: "High five!",
+      6: "Half a dozen.",
+      7: "Lucky number seven.",
+      8: "Turned sideways, it's infinity.",
+      9: "One short of cloud nine.",
+      10: "Double digits!",
+      11: "Two of a kind.",
+      12: "A dozen.",
+      13: "Unlucky for some.",
+      14: "Two weeks, in days.",
+      16: "Sweet sixteen.",
+      18: "Finally an adult (in most places).",
+      20: "A score.",
+      21: "Blackjack!",
+      22: "Catch-22.",
+      23: "Michael Jordan's number.",
+      24: "Hours in a day.",
+      25: "A quarter century of clicks.",
+      30: "Dirty thirty.",
+      32: "Freezing point of water, in Fahrenheit.",
+      33: "Jesus's traditional age.",
+      36: "A perfect square, if you're into that.",
+      40: "Life begins, allegedly.",
+      42: "The Answer to the Ultimate Question of Life, the Universe, and Everything.",
+      45: "A vinyl single's RPM.",
+      50: "Nifty fifty.",
+      55: "The speed limit, back when that mattered.",
+      60: "Seconds in a minute.",
+      64: "Squares on a chessboard.",
+      66: "Route 66.",
+      69: "Nice.",
+      73: "The best number. Ask a mathematician.",
+      77: "Lucky sevens, doubled.",
+      80: "Around the world, allegedly, in days.",
+      88: "88 miles per hour — Great Scott!",
+      90: "A right angle, in degrees.",
+      99: "Luftballons.",
+      100: "A century of clicks.",
+      108: "Stitches on a baseball.",
+      120: "A power of two, doubled up on itself.",
+      121: "11 squared.",
+      128: "A power of two.",
+      144: "A dozen dozen.",
+      150: "Roughly a book of Shakespearean sonnets.",
+      151: "Overproof rum.",
+      180: "Halfway around a protractor.",
+      200: "Double century.",
+      212: "Boiling point, in Fahrenheit.",
+      221: "Baker Street, probably.",
+      256: "A power of two — and your RAM circa 2005.",
+      300: "This is Sparta.",
+      314: "Pi, sort of.",
+      333: "Half of the beast.",
+      360: "Degrees in a full circle.",
+      365: "Days in a year.",
+      404: "Not found.",
+      420: "Blaze it.",
+      451: "The temperature books allegedly burn at.",
+      500: "Half a grand.",
+      512: "Another power of two.",
+      555: "A suspiciously fake-sounding phone number.",
+      666: "The number of the beast.",
+      777: "Jackpot!",
+      808: "A legendary drum machine.",
+      911: "Also a Porsche.",
+      999: "One away from four digits.",
+      1000: "A grand. Four whole digits.",
+      1024: "A kilobyte, technically.",
+      1138: "A Lucas reference, for the nerds.",
+      1337: "L33T.",
+      1440: "Minutes in a day.",
+      1600: "Pennsylvania Avenue's address number.",
+      1969: "One small click for man...",
+      2000: "Y2K-compliant.",
+      2001: "A Space Odyssey.",
+      2048: "A very addictive tile game.",
+      2520: "Divisible by every number 1 through 10.",
+      3141: "Pi, casually.",
+      3600: "Seconds in an hour.",
+      5000: "A solid 5K.",
+      5280: "Feet in a mile.",
+      6174: "Kaprekar's constant. Look it up.",
+      6969: "Nice, times a hundred-ish.",
+      7777: "Extremely lucky, apparently.",
+      8128: "A perfect number. Look it up.",
+      9000: "IT'S OVER 9000!",
+      9999: "So close to five digits.",
+      10000: "Five whole digits.",
+      12345: "Counting in order.",
+      13337: "Leet, with extra steps.",
+      20000: "Leagues under the sea, allegedly.",
+      30000: "Feet — cruising altitude.",
+      33333: "Triple threes, thrice.",
+      42195: "A marathon, in meters.",
+      50000: "Halfway to six figures.",
+      54321: "Counting down.",
+      65536: "2^16 possibilities in a byte pair.",
+      69420: "You know exactly why this one's here.",
+      86400: "Seconds in a day.",
+      88888: "Extremely lucky, in Chinese numerology.",
+      99999: "One away from six digits.",
+      100000: "Six figures.",
+      123456: "Still counting in order.",
+      250000: "A quarter of a million.",
+      299792: "Roughly the speed of light, in km/s.",
+      314159: "Pi, if you squint.",
+      333333: "Triple threes, sixfold.",
+      500000: "Halfway to a million.",
+      666666: "The beast, repeating.",
+      777777: "Maximally lucky.",
+      999999: "One away from seven digits.",
+      1000000: "A million! Go outside.",
+      1234567: "Counting in order, seven digits deep.",
+      2000000: "Two million. This might be a problem.",
+      9999999: "One away from eight digits. Deeply unhinged.",
+    };
+
+    function factForMilestone(n) {
+      if (MILESTONE_FACTS[n]) return MILESTONE_FACTS[n];
+      // fallback for big round numbers not curated above
+      const log = Math.log10(n);
+      if (Number.isInteger(log) && log >= 1) return "A nice round number.";
+      return null;
+    }
+
+    function allMilestones() {
+      const curated = Object.keys(MILESTONE_FACTS).map(Number);
+      const roundNumbers = [10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000];
+      return [...new Set([...curated, ...roundNumbers])].sort((a, b) => a - b);
+    }
+    const MILESTONES = allMilestones();
+
+    function highestCrossed(prev, next) {
+      let best = null;
+      for (const m of MILESTONES) {
+        if (m > prev && m <= next) best = m;
+      }
+      return best;
+    }
+
+    /* ---------- TOASTS ---------- */
+
+    const toastContainer = document.getElementById("toastContainer");
+    let currentToastEl = null;
+    let currentToastTimer = null;
+    function showToast(text, variant) {
+      if (currentToastEl) {
+        clearTimeout(currentToastTimer);
+        currentToastEl.remove();
+        currentToastEl = null;
+      }
+      const el = document.createElement("div");
+      el.className = variant ? `clickathon-toast ${variant}` : "clickathon-toast";
+      el.textContent = text;
+      toastContainer.appendChild(el);
+      currentToastEl = el;
+      requestAnimationFrame(() => el.classList.add("show"));
+      currentToastTimer = setTimeout(() => {
+        el.classList.remove("show");
+        setTimeout(() => {
+          el.remove();
+          if (currentToastEl === el) currentToastEl = null;
+        }, 250);
+      }, 4000);
+    }
+
+    function checkMilestone(prev, next) {
+      const crossed = highestCrossed(prev, next);
+      if (crossed == null) return;
+      const fact = factForMilestone(crossed);
+      showToast(`${crossed.toLocaleString()} — ${fact}`);
+    }
+
+    /* ---------- #1 CELEBRATION ---------- */
+
+    const CONFETTI_COLORS = ["#ef4444", "#f59e0b", "#eab308", "#22c55e", "#3b82f6", "#8b5cf6", "#ec4899"];
+
+    function celebrateNumberOne(boardLabel, score, formatScore) {
+      const format = formatScore ?? ((n) => n.toLocaleString());
+      const overlay = document.createElement("div");
+      overlay.className = "clickathon-celebration";
+
+      for (let i = 0; i < 40; i++) {
+        const piece = document.createElement("div");
+        piece.className = "clickathon-confetti";
+        piece.style.left = Math.random() * 100 + "vw";
+        piece.style.background = CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)];
+        piece.style.animationDuration = 2 + Math.random() * 2 + "s";
+        piece.style.animationDelay = Math.random() * 0.5 + "s";
+        overlay.appendChild(piece);
+      }
+
+      const banner = document.createElement("div");
+      banner.className = "clickathon-celebration-banner";
+      banner.textContent = `YOU'RE #1 — ${boardLabel} (${format(score)})!`;
+      overlay.appendChild(banner);
+
+      document.body.appendChild(overlay);
+      setTimeout(() => overlay.remove(), 5000);
+    }
+
+    /* ---------- INITIALS GATE ---------- */
+
+    const initialsGate = document.getElementById("initialsGate");
+    const gameContent = document.getElementById("gameContent");
+    const gateInput = document.getElementById("gateInitialsInput");
+    const gateBtn = document.getElementById("gateSubmitBtn");
+    const initialsInput = document.getElementById("initialsInput");
+
+    let savedInitials = "";
+    try {
+      savedInitials = localStorage.getItem("clickathon-initials") ?? "";
+    } catch (e) {}
+
+    function enterGame(initials) {
+      initialsInput.value = initials;
+      initialsGate.classList.add("hidden");
+      gameContent.classList.remove("hidden");
+      submitScores();
+    }
+
+    if (/^[A-Z]{3}$/.test(savedInitials)) {
+      enterGame(savedInitials);
+    }
+
+    gateInput.addEventListener("input", () => {
+      gateInput.value = gateInput.value.toUpperCase().replace(/[^A-Z]/g, "");
+      gateBtn.disabled = !/^[A-Z]{3}$/.test(gateInput.value);
+    });
+    gateInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !gateBtn.disabled) gateBtn.click();
+    });
+    gateBtn.addEventListener("click", () => {
+      const initials = gateInput.value;
+      if (!/^[A-Z]{3}$/.test(initials)) return;
+      try {
+        localStorage.setItem("clickathon-initials", initials);
+      } catch (e) {}
+      enterGame(initials);
+    });
+
+    /* ---------- STATE ---------- */
+
+    let personalCount = 0;
+    try {
+      personalCount = parseInt(localStorage.getItem("clickathon-count") ?? "0", 10) || 0;
+    } catch (e) {}
+
+    let peakCps = 0;
+    try {
+      peakCps = parseInt(localStorage.getItem("clickathon-peak-cps") ?? "0", 10) || 0;
+    } catch (e) {}
+
+    let pendingDelta = 0;
+    let clickTimestamps = [];
+
+    const personalCountEl = document.getElementById("personalCount");
+    const globalCountEl = document.getElementById("globalCount");
+    const cpsCountEl = document.getElementById("cpsCount");
+    const clickBtn = document.getElementById("clickBtn");
+    const leaderboardBody = document.getElementById("leaderboardBody");
+    const cpsLeaderboardBody = document.getElementById("cpsLeaderboardBody");
+
+    personalCountEl.textContent = personalCount.toLocaleString();
+
+    try {
+      if (savedInitials) initialsInput.value = savedInitials;
+    } catch (e) {}
+
+    function getInitials() {
+      return initialsInput.value.trim().toUpperCase();
+    }
+    function hasValidInitials() {
+      return /^[A-Z]{3}$/.test(getInitials());
+    }
+
+    /* ---------- GOLDEN CLICK ---------- */
+
+    const GOLDEN_CHANCE = 1 / 200;
+    const GOLDEN_BONUS = 49; // on top of the base +1, so a golden click nets +50
+    const GOLDEN_MESSAGES = [
+      "🎭 GOLDEN CLICK! +50",
+      "🎭 Jackpot! +50 clicks",
+      "🎭 The click gods smile upon you. +50",
+      "🎭 A wild golden click appears! +50",
+    ];
+
+    function rollGolden() {
+      return Math.random() < GOLDEN_CHANCE;
+    }
+
+    /* ---------- CLICK HANDLER ---------- */
+
+    clickBtn.addEventListener("click", () => {
+      const prevPersonal = personalCount;
+      const golden = rollGolden();
+      const gain = golden ? 1 + GOLDEN_BONUS : 1;
+      personalCount += gain;
+      pendingDelta += gain;
+      clickTimestamps.push(Date.now());
+      personalCountEl.textContent = personalCount.toLocaleString();
+      try {
+        localStorage.setItem("clickathon-count", String(personalCount));
+      } catch (e) {}
+      clickBtn.classList.add("pressed");
+      setTimeout(() => clickBtn.classList.remove("pressed"), 100);
+      if (golden) {
+        showToast(
+          GOLDEN_MESSAGES[Math.floor(Math.random() * GOLDEN_MESSAGES.length)],
+          "golden"
+        );
+      } else {
+        checkMilestone(prevPersonal, personalCount);
+      }
+    });
+
+    /* ---------- LIVE CLICKS/SEC ---------- */
+
+    setInterval(() => {
+      const now = Date.now();
+      clickTimestamps = clickTimestamps.filter((t) => now - t <= 2000);
+      const cps = clickTimestamps.filter((t) => now - t <= 1000).length;
+      cpsCountEl.textContent = cps.toLocaleString();
+      if (cps > peakCps) {
+        peakCps = cps;
+        try {
+          localStorage.setItem("clickathon-peak-cps", String(peakCps));
+        } catch (e) {}
+      }
+    }, 1000);
+
+    /* ---------- TIME WASTED ---------- */
+
+    const personalTimeEl = document.getElementById("personalTime");
+    const globalTimeEl = document.getElementById("globalTime");
+
+    function formatDuration(totalSeconds) {
+      const s = Math.max(0, Math.floor(totalSeconds));
+      const days = Math.floor(s / 86400);
+      const hours = Math.floor((s % 86400) / 3600);
+      const minutes = Math.floor((s % 3600) / 60);
+      const seconds = s % 60;
+      if (days > 0) return `${days}d ${hours}h`;
+      if (hours > 0) return `${hours}h ${minutes}m`;
+      if (minutes > 0) return `${minutes}m ${seconds}s`;
+      return `${seconds}s`;
+    }
+
+    let personalSeconds = 0;
+    try {
+      personalSeconds = parseInt(localStorage.getItem("clickathon-time-seconds") ?? "0", 10) || 0;
+    } catch (e) {}
+    let pendingTimeDelta = 0;
+
+    personalTimeEl.textContent = formatDuration(personalSeconds);
+
+    let isFocused = document.visibilityState === "visible" && document.hasFocus();
+    function updateFocusState() {
+      isFocused = document.visibilityState === "visible" && document.hasFocus();
+    }
+    document.addEventListener("visibilitychange", updateFocusState);
+    window.addEventListener("focus", updateFocusState);
+    window.addEventListener("blur", updateFocusState);
+
+    setInterval(() => {
+      if (!isFocused) return;
+      personalSeconds++;
+      pendingTimeDelta++;
+      personalTimeEl.textContent = formatDuration(personalSeconds);
+      try {
+        localStorage.setItem("clickathon-time-seconds", String(personalSeconds));
+      } catch (e) {}
+    }, 1000);
+
+    async function flushTime() {
+      if (pendingTimeDelta <= 0) return;
+      const toSend = pendingTimeDelta;
+      pendingTimeDelta = 0;
+      try {
+        const res = await fetch("/api/clickathon-time", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ seconds: toSend }),
+        });
+        if (!res.ok) {
+          pendingTimeDelta += toSend;
+          return;
+        }
+        const data = await res.json();
+        globalTimeEl.textContent = formatDuration(data.seconds);
+      } catch {
+        pendingTimeDelta += toSend;
+      }
+    }
+    setInterval(flushTime, 10000);
+
+    async function loadGlobalTime() {
+      try {
+        const res = await fetch("/api/clickathon-time");
+        const data = await res.json();
+        globalTimeEl.textContent = formatDuration(data.seconds ?? 0);
+      } catch {}
+    }
+    loadGlobalTime();
+    setInterval(loadGlobalTime, 10000);
+
+    /* ---------- FLUSH LOOP (global click total) ---------- */
+
+    async function flushClicks() {
+      if (pendingDelta <= 0) return;
+      const toSend = pendingDelta;
+      pendingDelta = 0;
+      try {
+        const res = await fetch("/api/clickathon-clicks", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ delta: toSend }),
+        });
+        if (!res.ok) {
+          pendingDelta += toSend;
+          return;
+        }
+        const data = await res.json();
+        applyGlobalTotal(data.total);
+      } catch {
+        pendingDelta += toSend;
+      }
+    }
+    setInterval(flushClicks, 2000);
+
+    /* ---------- GLOBAL COUNT POLLING ---------- */
+
+    function applyGlobalTotal(total) {
+      globalCountEl.textContent = (total ?? 0).toLocaleString();
+    }
+
+    async function loadGlobalTotal() {
+      try {
+        const res = await fetch("/api/clickathon-clicks");
+        const data = await res.json();
+        applyGlobalTotal(data.total);
+      } catch {}
+    }
+    loadGlobalTotal();
+    setInterval(loadGlobalTotal, 5000);
+
+    /* ---------- LEADERBOARDS ---------- */
+
+    function renderLeaderboard(el, entries, formatScore) {
+      const format = formatScore ?? ((n) => n.toLocaleString());
+      if (!entries || !entries.length) {
+        el.innerHTML = `<tr><td colspan="3" class="text-center py-6 text-base-content/50">No scores yet.</td></tr>`;
+        return;
+      }
+      const medals = ["🥇", "🥈", "🥉"];
+      el.innerHTML = entries
+        .map((e, i) => {
+          const rank = medals[i] ?? String(i + 1);
+          return `
+          <tr class="border-b">
+            <td class="text-center py-2 px-3">${rank}</td>
+            <td class="py-2 px-3 font-mono">${e.initials}</td>
+            <td class="text-right py-2 px-3 font-semibold">${format(e.score)}</td>
+          </tr>`;
+        })
+        .join("");
+    }
+
+    function readWasNumberOne(key) {
+      try {
+        return localStorage.getItem(key) === "1";
+      } catch (e) {
+        return false;
+      }
+    }
+    function writeWasNumberOne(key, value) {
+      try {
+        localStorage.setItem(key, value ? "1" : "0");
+      } catch (e) {}
+    }
+
+    let wasNumberOneTotal = readWasNumberOne("clickathon-was-1-total");
+    let wasNumberOneCps = readWasNumberOne("clickathon-was-1-cps");
+    let wasNumberOneTime = readWasNumberOne("clickathon-was-1-time");
+    const yourRankTotalEl = document.getElementById("yourRankTotal");
+    const yourRankCpsEl = document.getElementById("yourRankCps");
+    const yourRankTimeEl = document.getElementById("yourRankTime");
+    const timeLeaderboardBody = document.getElementById("timeLeaderboardBody");
+
+    function ordinal(n) {
+      const rem100 = n % 100;
+      if (rem100 >= 11 && rem100 <= 13) return `${n}th`;
+      switch (n % 10) {
+        case 1: return `${n}st`;
+        case 2: return `${n}nd`;
+        case 3: return `${n}rd`;
+        default: return `${n}th`;
+      }
+    }
+
+    const RANK_FLAVOR = {
+      1: "You're in the lead. Try to act like it.",
+      2: "So close! Step it up.",
+      3: "Your lack of commitment is showing.",
+    };
+
+    function renderYourRank(el, entries, you, unit, formatScore) {
+      const format = formatScore ?? ((n) => n.toLocaleString());
+      if (!hasValidInitials() || !you) {
+        el.classList.add("hidden");
+        return;
+      }
+      const flavor = RANK_FLAVOR[you.rank];
+      el.textContent = flavor
+        ? `${ordinal(you.rank)} place — ${flavor}`
+        : `${ordinal(you.rank)} place — ${format(you.score)}${unit ? " " + unit : ""}`;
+      el.classList.remove(
+        "hidden",
+        "rank-1",
+        "rank-2",
+        "rank-3",
+        "rank-other"
+      );
+      el.classList.add(you.rank <= 3 ? `rank-${you.rank}` : "rank-other");
+    }
+
+    async function loadLeaderboard() {
+      try {
+        const qs = hasValidInitials() ? `?initials=${getInitials()}` : "";
+        const res = await fetch(`/api/clickathon-leaderboard${qs}`);
+        const data = await res.json();
+        const entries = data.entries ?? [];
+        renderLeaderboard(leaderboardBody, entries);
+        renderYourRank(yourRankTotalEl, entries, data.you, "clicks");
+        const isNumberOne =
+          hasValidInitials() && entries.length > 0 && entries[0].initials === getInitials();
+        if (isNumberOne && !wasNumberOneTotal) {
+          celebrateNumberOne("Most Clicks", entries[0].score);
+        }
+        wasNumberOneTotal = isNumberOne;
+        writeWasNumberOne("clickathon-was-1-total", isNumberOne);
+      } catch {}
+    }
+    async function loadCpsLeaderboard() {
+      try {
+        const qs = hasValidInitials() ? `?initials=${getInitials()}` : "";
+        const res = await fetch(`/api/clickathon-cps-leaderboard${qs}`);
+        const data = await res.json();
+        const entries = data.entries ?? [];
+        renderLeaderboard(cpsLeaderboardBody, entries);
+        renderYourRank(yourRankCpsEl, entries, data.you, "clicks/sec");
+        const isNumberOne =
+          hasValidInitials() && entries.length > 0 && entries[0].initials === getInitials();
+        if (isNumberOne && !wasNumberOneCps) {
+          celebrateNumberOne("Most Clicks/Second", entries[0].score);
+        }
+        wasNumberOneCps = isNumberOne;
+        writeWasNumberOne("clickathon-was-1-cps", isNumberOne);
+      } catch {}
+    }
+    async function loadTimeLeaderboard() {
+      try {
+        const qs = hasValidInitials() ? `?initials=${getInitials()}` : "";
+        const res = await fetch(`/api/clickathon-time-leaderboard${qs}`);
+        const data = await res.json();
+        const entries = data.entries ?? [];
+        renderLeaderboard(timeLeaderboardBody, entries, formatDuration);
+        renderYourRank(yourRankTimeEl, entries, data.you, "", formatDuration);
+        const isNumberOne =
+          hasValidInitials() && entries.length > 0 && entries[0].initials === getInitials();
+        if (isNumberOne && !wasNumberOneTime) {
+          celebrateNumberOne("Most Time Wasted", entries[0].score, formatDuration);
+        }
+        wasNumberOneTime = isNumberOne;
+        writeWasNumberOne("clickathon-was-1-time", isNumberOne);
+      } catch {}
+    }
+
+    loadLeaderboard();
+    loadCpsLeaderboard();
+    loadTimeLeaderboard();
+    setInterval(loadLeaderboard, 15000);
+    setInterval(loadCpsLeaderboard, 15000);
+    setInterval(loadTimeLeaderboard, 15000);
+
+    /* ---------- AUTO-SUBMIT (no manual submit button — arcade style) ---------- */
+
+    async function submitScores() {
+      if (!hasValidInitials()) return;
+      const initials = getInitials();
+      try {
+        if (personalCount > 0) {
+          await fetch("/api/clickathon-leaderboard", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ initials, score: personalCount }),
+          });
+        }
+        if (peakCps > 0) {
+          await fetch("/api/clickathon-cps-leaderboard", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ initials, score: peakCps }),
+          });
+        }
+        if (personalSeconds > 0) {
+          await fetch("/api/clickathon-time-leaderboard", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ initials, score: personalSeconds }),
+          });
+        }
+        loadLeaderboard();
+        loadCpsLeaderboard();
+        loadTimeLeaderboard();
+      } catch {}
+    }
+
+    let initialsSaveTimer = null;
+    initialsInput.addEventListener("input", () => {
+      const value = initialsInput.value.toUpperCase().replace(/[^A-Z]/g, "");
+      initialsInput.value = value;
+      clearTimeout(initialsSaveTimer);
+      initialsSaveTimer = setTimeout(() => {
+        if (!hasValidInitials()) return;
+        try {
+          localStorage.setItem("clickathon-initials", getInitials());
+        } catch (e) {}
+        submitScores();
+      }, 500);
+    });
+
+    setInterval(submitScores, 10000);
+  </script>
+</BaseLayout>

@@ -28,3 +28,6 @@ pnpm-debug.log*
 
 # Local-only workspace file (committing this breaks the Vercel build)
 pnpm-workspace.yaml
+
+# Claude Code local project state
+.claude/

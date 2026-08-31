@@ -7,16 +7,19 @@ export interface Props {
 	title: string;
 	description: string;
 	image?: string;
+	canonical?: string;
 	noindex?: boolean;
 }
 
-const { title, description, image = '/social_img.png', noindex = false } = Astro.props;
+const { title, description, image = '/social_img.png', canonical, noindex = false } = Astro.props;
+const canonicalURL = new URL(canonical ?? Astro.url.pathname, Astro.site ?? Astro.url);
 ---
 
 <!-- Global Metadata -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+<link rel="canonical" href={canonicalURL} />
 <meta name="generator" content={Astro.generator} />
 {noindex && <meta name="robots" content="noindex, nofollow" />}
 

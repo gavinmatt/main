@@ -6,8 +6,15 @@ import react from '@astrojs/react'
 import vercel from '@astrojs/vercel'   // ⬅️ add this
 
 export default defineConfig({
-  site: 'https://gavmatt.com',
+  site: 'https://www.gavmatt.com',
   output: 'server',                                // ⬅️ critical
   adapter: vercel(),                               // ⬅️ critical
-  integrations: [mdx(), sitemap(), tailwind(), react()],
+  integrations: [
+    mdx(),
+    sitemap({
+      filter: (page) => !page.includes('/clickathon-admin'),
+    }),
+    tailwind(),
+    react(),
+  ],
 })

@@ -624,6 +624,19 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       savedInitials = localStorage.getItem("clickathon-initials") ?? "";
     } catch (e) {}
 
+    // Persistent per-browser identity so the leaderboards can tell apart
+    // two different players who happen to pick the same initials.
+    let playerId = "";
+    try {
+      playerId = localStorage.getItem("clickathon-player-id") ?? "";
+      if (!playerId) {
+        playerId = crypto.randomUUID();
+        localStorage.setItem("clickathon-player-id", playerId);
+      }
+    } catch (e) {
+      if (!playerId) playerId = crypto.randomUUID();
+    }
+
     function enterGame(initials) {
       initialsInput.value = initials;
       initialsGate.classList.add("hidden");
@@ -947,7 +960,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     async function loadLeaderboard() {
       try {
-        const qs = hasValidInitials() ? `&initials=${getInitials()}` : "";
+        const qs = `&playerId=${playerId}`;
         const res = await fetch(
           `/api/clickathon-leaderboards?board=total${qs}`
         );
@@ -958,7 +971,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         const isNumberOne =
           hasValidInitials() &&
           entries.length > 0 &&
-          entries[0].initials === getInitials();
+          entries[0].id === playerId;
         if (isNumberOne && !wasNumberOneTotal && hasLoadedTotalOnce) {
           celebrateNumberOne("Most Clicks", entries[0].score);
         }
@@ -969,7 +982,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
     async function loadCpsLeaderboard() {
       try {
-        const qs = hasValidInitials() ? `&initials=${getInitials()}` : "";
+        const qs = `&playerId=${playerId}`;
         const res = await fetch(`/api/clickathon-leaderboards?board=cps${qs}`);
         const data = await res.json();
         const entries = data.entries ?? [];
@@ -978,7 +991,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         const isNumberOne =
           hasValidInitials() &&
           entries.length > 0 &&
-          entries[0].initials === getInitials();
+          entries[0].id === playerId;
         if (isNumberOne && !wasNumberOneCps && hasLoadedCpsOnce) {
           celebrateNumberOne("Most Clicks/Second", entries[0].score);
         }
@@ -989,7 +1002,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
     async function loadTimeLeaderboard() {
       try {
-        const qs = hasValidInitials() ? `&initials=${getInitials()}` : "";
+        const qs = `&playerId=${playerId}`;
         const res = await fetch(`/api/clickathon-leaderboards?board=time${qs}`);
         const data = await res.json();
         const entries = data.entries ?? [];
@@ -998,7 +1011,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         const isNumberOne =
           hasValidInitials() &&
           entries.length > 0 &&
-          entries[0].initials === getInitials();
+          entries[0].id === playerId;
         if (isNumberOne && !wasNumberOneTime && hasLoadedTimeOnce) {
           celebrateNumberOne(
             "Most Time Wasted",
@@ -1031,6 +1044,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               board: "total",
+              playerId,
               initials,
               score: personalCount,
             }),
@@ -1040,7 +1054,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           await fetch("/api/clickathon-leaderboards", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ board: "cps", initials, score: peakCps }),
+            body: JSON.stringify({
+              board: "cps",
+              playerId,
+              initials,
+              score: peakCps,
+            }),
           });
         }
         if (personalSeconds > 0) {
@@ -1049,6 +1068,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               board: "time",
+              playerId,
               initials,
               score: personalSeconds,
             }),

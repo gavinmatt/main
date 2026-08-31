@@ -11,12 +11,18 @@ const KEYS = {
   clicks: "clickathon:total",
   time: "clickathon:time-wasted-seconds",
   shareArrivals: "clickathon:share-arrivals",
+  cheatersCaught: "clickathon:cheaters-caught",
 } as const;
 
 type CounterType = keyof typeof KEYS;
 
 function isCounterType(value: unknown): value is CounterType {
-  return value === "clicks" || value === "time" || value === "shareArrivals";
+  return (
+    value === "clicks" ||
+    value === "time" ||
+    value === "shareArrivals" ||
+    value === "cheatersCaught"
+  );
 }
 
 // Heartbeat-based presence: members are player ids, scores are last-seen

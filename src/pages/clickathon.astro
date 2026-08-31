@@ -790,6 +790,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     function showCheatBanner() {
       if (cheatBannerShown) return;
       cheatBannerShown = true;
+      fetch("/api/clickathon-counters", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "cheatersCaught", delta: 1 }),
+      }).catch(() => {});
       const banner = document.createElement("div");
       banner.className = "clickathon-cheat-banner";
       const message = document.createElement("span");
@@ -805,12 +810,39 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       document.body.appendChild(banner);
     }
 
+    // A "replay" style autoclicker (record real clicks, loop them forever)
+    // defeats variance checks -- one cycle genuinely has human timing. But
+    // looping the exact same recording means the interval sequence repeats
+    // near-identically every cycle, which a real person never does. Look
+    // for a short period P where intervals[i] keeps matching intervals[i+P].
+    function findRepeatingCycle(intervals) {
+      const TOLERANCE_MS = 4;
+      const MIN_CYCLES = 2;
+      const maxPeriod = Math.floor(intervals.length / (MIN_CYCLES + 1));
+      for (let period = 2; period <= maxPeriod; period++) {
+        let matches = 0;
+        let comparisons = 0;
+        for (let i = 0; i + period < intervals.length; i++) {
+          comparisons++;
+          if (Math.abs(intervals[i] - intervals[i + period]) <= TOLERANCE_MS) {
+            matches++;
+          }
+        }
+        if (comparisons >= period * MIN_CYCLES && matches / comparisons >= 0.9) {
+          return true;
+        }
+      }
+      return false;
+    }
+
     let lastClickTime = null;
     let recentClickIntervals = [];
     function checkForCheating(event) {
       // A click not triggered by real input (e.g. element.click() from an
       // autoclicker extension/bookmarklet) is never isTrusted. Can't be
-      // spoofed from page JS -- the browser sets this.
+      // spoofed from page JS -- the browser sets this. Doesn't catch
+      // OS-level input simulation (e.g. robotjs) -- that's genuinely
+      // indistinguishable from a real mouse at this layer.
       if (event && event.isTrusted === false) {
         showCheatBanner();
         return;
@@ -818,7 +850,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       const now = Date.now();
       if (lastClickTime != null) {
         recentClickIntervals.push(now - lastClickTime);
-        if (recentClickIntervals.length > 10) recentClickIntervals.shift();
+        if (recentClickIntervals.length > 30) recentClickIntervals.shift();
         if (recentClickIntervals.length >= 6) {
           const mean =
             recentClickIntervals.reduce((a, b) => a + b, 0) /
@@ -830,6 +862,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           // Fast AND suspiciously metronomic -- real jitter-clicking has
           // far more variance than a script firing on a fixed timer.
           if (mean < 150 && stdev < 12) {
+            showCheatBanner();
+          } else if (findRepeatingCycle(recentClickIntervals)) {
             showCheatBanner();
           }
         }

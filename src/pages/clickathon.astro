@@ -726,10 +726,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       const toSend = pendingTimeDelta;
       pendingTimeDelta = 0;
       try {
-        const res = await fetch("/api/clickathon-time", {
+        const res = await fetch("/api/clickathon-counters", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ seconds: toSend }),
+          body: JSON.stringify({ type: "time", seconds: toSend }),
         });
         if (!res.ok) {
           pendingTimeDelta += toSend;
@@ -745,7 +745,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     async function loadGlobalTime() {
       try {
-        const res = await fetch("/api/clickathon-time");
+        const res = await fetch("/api/clickathon-counters?type=time");
         const data = await res.json();
         globalTimeEl.textContent = formatDuration(data.seconds ?? 0);
       } catch {}
@@ -760,10 +760,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       const toSend = pendingDelta;
       pendingDelta = 0;
       try {
-        const res = await fetch("/api/clickathon-clicks", {
+        const res = await fetch("/api/clickathon-counters", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ delta: toSend }),
+          body: JSON.stringify({ type: "clicks", delta: toSend }),
         });
         if (!res.ok) {
           pendingDelta += toSend;
@@ -785,7 +785,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     async function loadGlobalTotal() {
       try {
-        const res = await fetch("/api/clickathon-clicks");
+        const res = await fetch("/api/clickathon-counters?type=clicks");
         const data = await res.json();
         applyGlobalTotal(data.total);
       } catch {}
@@ -875,8 +875,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     async function loadLeaderboard() {
       try {
-        const qs = hasValidInitials() ? `?initials=${getInitials()}` : "";
-        const res = await fetch(`/api/clickathon-leaderboard${qs}`);
+        const qs = hasValidInitials() ? `&initials=${getInitials()}` : "";
+        const res = await fetch(`/api/clickathon-leaderboards?board=total${qs}`);
         const data = await res.json();
         const entries = data.entries ?? [];
         renderLeaderboard(leaderboardBody, entries);
@@ -892,8 +892,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
     async function loadCpsLeaderboard() {
       try {
-        const qs = hasValidInitials() ? `?initials=${getInitials()}` : "";
-        const res = await fetch(`/api/clickathon-cps-leaderboard${qs}`);
+        const qs = hasValidInitials() ? `&initials=${getInitials()}` : "";
+        const res = await fetch(`/api/clickathon-leaderboards?board=cps${qs}`);
         const data = await res.json();
         const entries = data.entries ?? [];
         renderLeaderboard(cpsLeaderboardBody, entries);
@@ -909,8 +909,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
     async function loadTimeLeaderboard() {
       try {
-        const qs = hasValidInitials() ? `?initials=${getInitials()}` : "";
-        const res = await fetch(`/api/clickathon-time-leaderboard${qs}`);
+        const qs = hasValidInitials() ? `&initials=${getInitials()}` : "";
+        const res = await fetch(`/api/clickathon-leaderboards?board=time${qs}`);
         const data = await res.json();
         const entries = data.entries ?? [];
         renderLeaderboard(timeLeaderboardBody, entries, formatDuration);
@@ -939,24 +939,24 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       const initials = getInitials();
       try {
         if (personalCount > 0) {
-          await fetch("/api/clickathon-leaderboard", {
+          await fetch("/api/clickathon-leaderboards", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ initials, score: personalCount }),
+            body: JSON.stringify({ board: "total", initials, score: personalCount }),
           });
         }
         if (peakCps > 0) {
-          await fetch("/api/clickathon-cps-leaderboard", {
+          await fetch("/api/clickathon-leaderboards", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ initials, score: peakCps }),
+            body: JSON.stringify({ board: "cps", initials, score: peakCps }),
           });
         }
         if (personalSeconds > 0) {
-          await fetch("/api/clickathon-time-leaderboard", {
+          await fetch("/api/clickathon-leaderboards", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ initials, score: personalSeconds }),
+            body: JSON.stringify({ board: "time", initials, score: personalSeconds }),
           });
         }
         loadLeaderboard();

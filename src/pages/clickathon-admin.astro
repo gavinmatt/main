@@ -27,7 +27,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     </div>
   </div>
 
-  <div class="grid md:grid-cols-2 gap-8" style="max-width: 1100px;">
+  <div class="grid md:grid-cols-3 gap-8" style="max-width: 1500px;">
     <div>
       <div class="text-xl font-bold mb-3">
         Most Clicks <span id="adminTotalCount" class="text-base-content/50 font-normal text-sm"></span>
@@ -62,6 +62,23 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         </table>
       </div>
     </div>
+    <div>
+      <div class="text-xl font-bold mb-3">
+        Most Time Wasted <span id="adminTimeCount" class="text-base-content/50 font-normal text-sm"></span>
+      </div>
+      <div class="overflow-y-auto overflow-x-auto border border-base-300 rounded" style="max-height: 70vh;">
+        <table class="w-full border-collapse text-sm text-base-content">
+          <thead class="sticky top-0 bg-base-200">
+            <tr class="border-b text-base-content/70">
+              <th class="text-center py-2 px-3">Rank</th>
+              <th class="text-left py-2 px-3">Initials</th>
+              <th class="text-right py-2 px-3">Time</th>
+            </tr>
+          </thead>
+          <tbody id="adminTimeLeaderboardBody"></tbody>
+        </table>
+      </div>
+    </div>
   </div>
 
   <script type="module">
@@ -71,6 +88,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     const cpsCountEl = document.getElementById("adminCpsCount");
     const leaderboardBody = document.getElementById("adminLeaderboardBody");
     const cpsLeaderboardBody = document.getElementById("adminCpsLeaderboardBody");
+    const timeCountEl = document.getElementById("adminTimeCount");
+    const timeLeaderboardBody = document.getElementById("adminTimeLeaderboardBody");
 
     function formatDuration(totalSeconds) {
       const s = Math.max(0, Math.floor(totalSeconds));
@@ -84,7 +103,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       return `${seconds}s`;
     }
 
-    function renderTable(el, entries) {
+    function renderTable(el, entries, formatScore) {
+      const format = formatScore ?? ((n) => n.toLocaleString());
       if (!entries || !entries.length) {
         el.innerHTML = `<tr><td colspan="3" class="text-center py-6 text-base-content/50">No entries.</td></tr>`;
         return;
@@ -95,7 +115,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         <tr class="border-b">
           <td class="text-center py-2 px-3">${i + 1}</td>
           <td class="py-2 px-3 font-mono">${e.initials}</td>
-          <td class="text-right py-2 px-3 font-semibold">${e.score.toLocaleString()}</td>
+          <td class="text-right py-2 px-3 font-semibold">${format(e.score)}</td>
         </tr>`
         )
         .join("");
@@ -103,23 +123,27 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     async function refresh() {
       try {
-        const [clicksRes, timeRes, lbRes, cpsRes] = await Promise.all([
-          fetch("/api/clickathon-clicks"),
-          fetch("/api/clickathon-time"),
-          fetch("/api/clickathon-leaderboard?limit=5000"),
-          fetch("/api/clickathon-cps-leaderboard?limit=5000"),
+        const [clicksRes, timeRes, lbRes, cpsRes, timeLbRes] = await Promise.all([
+          fetch("/api/clickathon-counters?type=clicks"),
+          fetch("/api/clickathon-counters?type=time"),
+          fetch("/api/clickathon-leaderboards?board=total&limit=5000"),
+          fetch("/api/clickathon-leaderboards?board=cps&limit=5000"),
+          fetch("/api/clickathon-leaderboards?board=time&limit=5000"),
         ]);
         const clicks = await clicksRes.json();
         const time = await timeRes.json();
         const lb = await lbRes.json();
         const cps = await cpsRes.json();
+        const timeLb = await timeLbRes.json();
 
         globalClicksEl.textContent = (clicks.total ?? 0).toLocaleString();
         globalTimeEl.textContent = formatDuration(time.seconds ?? 0);
         totalCountEl.textContent = `(${(lb.entries ?? []).length} entries)`;
         cpsCountEl.textContent = `(${(cps.entries ?? []).length} entries)`;
+        timeCountEl.textContent = `(${(timeLb.entries ?? []).length} entries)`;
         renderTable(leaderboardBody, lb.entries ?? []);
         renderTable(cpsLeaderboardBody, cps.entries ?? []);
+        renderTable(timeLeaderboardBody, timeLb.entries ?? [], formatDuration);
       } catch {}
     }
     refresh();

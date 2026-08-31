@@ -123,6 +123,30 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     </div>
   </div>
 
+  <div class="max-w-2xl mx-auto mb-10 px-4 text-base-content/70 text-sm leading-relaxed">
+    <div class="text-lg font-bold mb-3 text-base-content">How this was built</div>
+    <p class="mb-4">
+      I built this entire thing with Claude Code but with hands fully on
+      keyboard. But the button, the Redis-backed leaderboards, the milestone
+      facts, all of it is agentically generated. It's absurdly similar to
+      the loop of PRD &gt; ask engineer &gt; provide feedback, but a strange
+      version with less typing, more directing, and a surprising amount of
+      "wait, why is that broken" followed by "oh, that's why."
+    </p>
+    <p>
+      The best bug: for a good while, none of the toast messages or the
+      confetti actually had their styling applied. Astro's CSS scoping
+      quietly requires an attribute that elements created on the fly in
+      JavaScript never get, so everything was rendering as plain, unstyled
+      text and I didn't notice for an embarrassingly long stretch. There was
+      also a brief period where the leaderboard had genuinely incorrect test
+      data sitting on it, because I kept testing against the real production
+      database instead of a sandbox. Both are fixed now. Mostly, though,
+      this was a lot of "try this," "no, smaller," "add a fake crisis when
+      someone hits #1" — and here we are!
+    </p>
+  </div>
+
   <style is:global>
     .win95-btn {
       background: #c0c0c0;

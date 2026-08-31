@@ -1,0 +1,250 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  sideBarActiveItemID="clickathon"
+  customTitle="Clickathon"
+  description="A completely pointless global clicking game. Click a big Windows 95 button. Watch numbers go up. Compete for a spot on the leaderboard."
+  canonical="https://www.gavmatt.com/clickathon"
+  ogImage="https://www.gavmatt.com/clickathon.png"
+>
+  <div class="text-5xl font-bold text-center mt-6">Clickathon</div>
+
+  <p class="text-center py-4 max-w-3xl mx-auto text-base-content/70">
+    A globally shared, entirely pointless clicking game. Click the button.
+    Watch the numbers go up. That's it, that's the whole game.
+  </p>
+
+  <div class="flex justify-center gap-16 my-8 flex-wrap">
+    <div class="text-center">
+      <div id="personalCount" class="text-4xl font-mono font-bold text-base-content">
+        0
+      </div>
+      <div class="text-base-content/50 text-sm mt-1">Your clicks</div>
+    </div>
+    <div class="text-center">
+      <div id="globalCount" class="text-4xl font-mono font-bold text-base-content">
+        —
+      </div>
+      <div class="text-base-content/50 text-sm mt-1">Global clicks</div>
+    </div>
+  </div>
+
+  <div class="flex justify-center my-10">
+    <button id="clickBtn" class="win95-btn" type="button">
+      CLICK ME
+    </button>
+  </div>
+
+  <div
+    class="mx-auto mb-10"
+    style="width: 100%; max-width: 640px; padding-left: 1rem; padding-right: 1rem;"
+  >
+    <div class="text-2xl font-bold mb-4 text-center">Leaderboard</div>
+
+    <form
+      id="scoreForm"
+      class="flex justify-center items-center gap-2 mb-6"
+    >
+      <input
+        id="initialsInput"
+        type="text"
+        maxlength="3"
+        placeholder="AAA"
+        class="input input-bordered w-24 text-center uppercase tracking-widest"
+        autocomplete="off"
+      />
+      <button type="submit" class="btn btn-primary">Submit score</button>
+    </form>
+
+    <p id="submitMsg" class="text-center text-sm mb-4 h-5"></p>
+
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse text-base text-base-content">
+        <thead>
+          <tr class="border-b text-base-content/70">
+            <th class="text-center py-2 px-3">Rank</th>
+            <th class="text-left py-2 px-3">Initials</th>
+            <th class="text-right py-2 px-3">Score</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboardBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <style>
+    .win95-btn {
+      background: #c0c0c0;
+      border: none;
+      border-radius: 0;
+      box-shadow:
+        inset -1px -1px 0 #000000,
+        inset 1px 1px 0 #dfdfdf,
+        inset -2px -2px 0 #808080,
+        inset 2px 2px 0 #ffffff;
+      color: #000000;
+      font-family: Tahoma, Arial, sans-serif;
+      font-size: 1.5rem;
+      font-weight: bold;
+      padding: 1.5rem 3rem;
+      cursor: pointer;
+      user-select: none;
+    }
+    .win95-btn:active,
+    .win95-btn.pressed {
+      box-shadow:
+        inset 1px 1px 0 #000000,
+        inset -1px -1px 0 #dfdfdf,
+        inset 2px 2px 0 #808080,
+        inset -2px -2px 0 #ffffff;
+    }
+    @media (max-width: 480px) {
+      .win95-btn {
+        padding: 1.25rem 2rem;
+        font-size: 1.25rem;
+      }
+    }
+  </style>
+
+  <script type="module">
+    /* ---------- STATE ---------- */
+
+    let personalCount = 0;
+    try {
+      personalCount = parseInt(localStorage.getItem("clickathon-count") ?? "0", 10) || 0;
+    } catch (e) {}
+
+    let pendingDelta = 0;
+
+    const personalCountEl = document.getElementById("personalCount");
+    const globalCountEl = document.getElementById("globalCount");
+    const clickBtn = document.getElementById("clickBtn");
+    const initialsInput = document.getElementById("initialsInput");
+    const scoreForm = document.getElementById("scoreForm");
+    const submitMsg = document.getElementById("submitMsg");
+    const leaderboardBody = document.getElementById("leaderboardBody");
+
+    personalCountEl.textContent = personalCount.toLocaleString();
+
+    try {
+      const savedInitials = localStorage.getItem("clickathon-initials");
+      if (savedInitials) initialsInput.value = savedInitials;
+    } catch (e) {}
+
+    /* ---------- CLICK HANDLER ---------- */
+
+    clickBtn.addEventListener("click", () => {
+      personalCount++;
+      pendingDelta++;
+      personalCountEl.textContent = personalCount.toLocaleString();
+      try {
+        localStorage.setItem("clickathon-count", String(personalCount));
+      } catch (e) {}
+      clickBtn.classList.add("pressed");
+      setTimeout(() => clickBtn.classList.remove("pressed"), 100);
+    });
+
+    /* ---------- FLUSH LOOP ---------- */
+
+    async function flushClicks() {
+      if (pendingDelta <= 0) return;
+      const toSend = pendingDelta;
+      pendingDelta = 0;
+      try {
+        const res = await fetch("/api/clickathon-clicks", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ delta: toSend }),
+        });
+        if (!res.ok) {
+          pendingDelta += toSend;
+          return;
+        }
+        const data = await res.json();
+        globalCountEl.textContent = data.total.toLocaleString();
+      } catch {
+        pendingDelta += toSend;
+      }
+    }
+    setInterval(flushClicks, 2000);
+
+    /* ---------- GLOBAL COUNT POLLING ---------- */
+
+    async function loadGlobalTotal() {
+      try {
+        const res = await fetch("/api/clickathon-clicks");
+        const data = await res.json();
+        globalCountEl.textContent = (data.total ?? 0).toLocaleString();
+      } catch {}
+    }
+    loadGlobalTotal();
+    setInterval(loadGlobalTotal, 5000);
+
+    /* ---------- LEADERBOARD ---------- */
+
+    function renderLeaderboard(entries) {
+      if (!entries || !entries.length) {
+        leaderboardBody.innerHTML = `<tr><td colspan="3" class="text-center py-6 text-base-content/50">No scores yet. Be the first!</td></tr>`;
+        return;
+      }
+      const medals = ["🥇", "🥈", "🥉"];
+      leaderboardBody.innerHTML = entries
+        .map((e, i) => {
+          const rank = medals[i] ?? String(i + 1);
+          return `
+          <tr class="border-b">
+            <td class="text-center py-2 px-3">${rank}</td>
+            <td class="py-2 px-3 font-mono">${e.initials}</td>
+            <td class="text-right py-2 px-3 font-semibold">${e.score.toLocaleString()}</td>
+          </tr>`;
+        })
+        .join("");
+    }
+
+    async function loadLeaderboard() {
+      try {
+        const res = await fetch("/api/clickathon-leaderboard");
+        const data = await res.json();
+        renderLeaderboard(data.entries ?? []);
+      } catch {}
+    }
+    loadLeaderboard();
+    setInterval(loadLeaderboard, 15000);
+
+    scoreForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const initials = initialsInput.value.trim().toUpperCase();
+      if (!/^[A-Z]{3}$/.test(initials)) {
+        submitMsg.textContent = "Enter exactly 3 letters.";
+        return;
+      }
+      const submitBtn = scoreForm.querySelector("button[type=submit]");
+      submitBtn.disabled = true;
+      try {
+        const res = await fetch("/api/clickathon-leaderboard", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ initials, score: personalCount }),
+        });
+        if (!res.ok) {
+          submitMsg.textContent = "Something went wrong. Try again.";
+          return;
+        }
+        const data = await res.json();
+        try {
+          localStorage.setItem("clickathon-initials", initials);
+        } catch (e) {}
+        submitMsg.textContent = data.updated
+          ? "New high score!"
+          : "Submitted — no improvement over your best.";
+        loadLeaderboard();
+      } catch {
+        submitMsg.textContent = "Something went wrong. Try again.";
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
+</BaseLayout>

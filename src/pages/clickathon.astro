@@ -111,9 +111,22 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     </div>
 
     <div class="flex justify-center mb-10">
-      <button id="shareRankBtn" class="btn btn-sm btn-outline" type="button">
-        Share your rank
-      </button>
+      <div class="dropdown dropdown-bottom">
+        <div tabindex="0" role="button" class="btn btn-sm btn-outline">
+          Share your rank
+        </div>
+        <ul
+          tabindex="0"
+          class="dropdown-content menu z-10 w-52 rounded-box bg-base-200 p-2 shadow"
+        >
+          <li><a id="shareTwitter">Share on X</a></li>
+          <li><a id="shareLinkedIn">Share on LinkedIn</a></li>
+          <li><a id="shareCopyLink">Copy link</a></li>
+          <li id="shareMoreItem" class="hidden">
+            <a id="shareMore">More options…</a>
+          </li>
+        </ul>
+      </div>
     </div>
 
     <div
@@ -1109,27 +1122,60 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     /* ---------- SHARE YOUR RANK ---------- */
 
-    const shareRankBtn = document.getElementById("shareRankBtn");
-    shareRankBtn.addEventListener("click", async () => {
-      const url = "https://www.gavmatt.com/clickathon";
-      const text = lastYouTotal
+    const shareUrl = "https://www.gavmatt.com/clickathon";
+    function buildShareText() {
+      return lastYouTotal
         ? `I'm ${ordinal(lastYouTotal.rank)} on Clickathon with ${lastYouTotal.score.toLocaleString()} clicks. Think you can beat me?`
         : "I'm wasting my life clicking a button on Clickathon. Join me.";
-      try {
-        if (navigator.share) {
-          await navigator.share({ text, url });
-          return;
-        }
-      } catch (e) {
-        return; // user cancelled the native share sheet
-      }
-      try {
-        await navigator.clipboard.writeText(`${text} ${url}`);
-        showToast("Copied! Go brag.");
-      } catch (e) {
-        showToast(text);
-      }
+    }
+    function closeShareMenu() {
+      if (document.activeElement) document.activeElement.blur();
+    }
+
+    document.getElementById("shareTwitter").addEventListener("click", (e) => {
+      e.preventDefault();
+      const href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(buildShareText())}&url=${encodeURIComponent(shareUrl)}`;
+      window.open(href, "_blank", "noopener,noreferrer,width=600,height=500");
+      closeShareMenu();
     });
+
+    document
+      .getElementById("shareLinkedIn")
+      .addEventListener("click", (e) => {
+        e.preventDefault();
+        const href = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
+        window.open(
+          href,
+          "_blank",
+          "noopener,noreferrer,width=600,height=600"
+        );
+        closeShareMenu();
+      });
+
+    document
+      .getElementById("shareCopyLink")
+      .addEventListener("click", async (e) => {
+        e.preventDefault();
+        const text = buildShareText();
+        try {
+          await navigator.clipboard.writeText(`${text} ${shareUrl}`);
+          showToast("Copied! Go brag.");
+        } catch (err) {
+          showToast(text);
+        }
+        closeShareMenu();
+      });
+
+    if (navigator.share) {
+      document.getElementById("shareMoreItem").classList.remove("hidden");
+      document.getElementById("shareMore").addEventListener("click", async (e) => {
+        e.preventDefault();
+        closeShareMenu();
+        try {
+          await navigator.share({ text: buildShareText(), url: shareUrl });
+        } catch (err) {} // user cancelled the native share sheet
+      });
+    }
 
     /* ---------- AUTO-SUBMIT (no manual submit button — arcade style) ---------- */
 

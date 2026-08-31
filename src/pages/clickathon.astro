@@ -831,6 +831,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     let wasNumberOneTotal = readWasNumberOne("clickathon-was-1-total");
     let wasNumberOneCps = readWasNumberOne("clickathon-was-1-cps");
     let wasNumberOneTime = readWasNumberOne("clickathon-was-1-time");
+    let hasLoadedTotalOnce = false;
+    let hasLoadedCpsOnce = false;
+    let hasLoadedTimeOnce = false;
     const yourRankTotalEl = document.getElementById("yourRankTotal");
     const yourRankCpsEl = document.getElementById("yourRankCps");
     const yourRankTimeEl = document.getElementById("yourRankTime");
@@ -883,10 +886,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         renderYourRank(yourRankTotalEl, entries, data.you, "clicks");
         const isNumberOne =
           hasValidInitials() && entries.length > 0 && entries[0].initials === getInitials();
-        if (isNumberOne && !wasNumberOneTotal) {
+        if (isNumberOne && !wasNumberOneTotal && hasLoadedTotalOnce) {
           celebrateNumberOne("Most Clicks", entries[0].score);
         }
         wasNumberOneTotal = isNumberOne;
+        hasLoadedTotalOnce = true;
         writeWasNumberOne("clickathon-was-1-total", isNumberOne);
       } catch {}
     }
@@ -900,10 +904,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         renderYourRank(yourRankCpsEl, entries, data.you, "clicks/sec");
         const isNumberOne =
           hasValidInitials() && entries.length > 0 && entries[0].initials === getInitials();
-        if (isNumberOne && !wasNumberOneCps) {
+        if (isNumberOne && !wasNumberOneCps && hasLoadedCpsOnce) {
           celebrateNumberOne("Most Clicks/Second", entries[0].score);
         }
         wasNumberOneCps = isNumberOne;
+        hasLoadedCpsOnce = true;
         writeWasNumberOne("clickathon-was-1-cps", isNumberOne);
       } catch {}
     }
@@ -917,10 +922,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         renderYourRank(yourRankTimeEl, entries, data.you, "", formatDuration);
         const isNumberOne =
           hasValidInitials() && entries.length > 0 && entries[0].initials === getInitials();
-        if (isNumberOne && !wasNumberOneTime) {
+        if (isNumberOne && !wasNumberOneTime && hasLoadedTimeOnce) {
           celebrateNumberOne("Most Time Wasted", entries[0].score, formatDuration);
         }
         wasNumberOneTime = isNumberOne;
+        hasLoadedTimeOnce = true;
         writeWasNumberOne("clickathon-was-1-time", isNumberOne);
       } catch {}
     }

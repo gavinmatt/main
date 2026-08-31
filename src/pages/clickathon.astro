@@ -84,7 +84,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     >
       <div class="grid md:grid-cols-2 gap-8">
         <div>
-          <div class="text-xl font-bold mb-3 text-center">Most Clicks</div>
+          <div class="text-3xl font-black mb-2 text-center">Most Clicks</div>
+          <div class="flex justify-center mb-3">
+            <div id="yourRankTotal" class="clickathon-rank-badge hidden"></div>
+          </div>
           <div class="overflow-x-auto">
             <table class="w-full border-collapse text-base text-base-content">
               <thead>
@@ -99,7 +102,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           </div>
         </div>
         <div>
-          <div class="text-xl font-bold mb-3 text-center">Fastest Clicking</div>
+          <div class="text-3xl font-black mb-2 text-center">Most Clicks/Second</div>
+          <div class="flex justify-center mb-3">
+            <div id="yourRankCps" class="clickathon-rank-badge hidden"></div>
+          </div>
           <div class="overflow-x-auto">
             <table class="w-full border-collapse text-base text-base-content">
               <thead>
@@ -117,7 +123,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     </div>
   </div>
 
-  <style>
+  <style is:global>
     .win95-btn {
       background: #c0c0c0;
       border: none;
@@ -180,6 +186,45 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     .clickathon-toast.show {
       opacity: 1;
       transform: scale(1);
+    }
+    .clickathon-toast.golden {
+      color: #b45309;
+      font-weight: bold;
+      text-shadow: 0 0 6px rgba(234, 179, 8, 0.6);
+    }
+
+    .clickathon-rank-badge {
+      display: inline-block;
+      padding: 0.5rem 1.25rem;
+      border-radius: 0.75rem;
+      font-weight: 800;
+      font-size: 1rem;
+      text-align: center;
+      border: 2px solid;
+      max-width: 100%;
+    }
+    .clickathon-rank-badge.hidden {
+      display: none;
+    }
+    .clickathon-rank-badge.rank-1 {
+      background: #fef3c7;
+      border-color: #d97706;
+      color: #92400e;
+    }
+    .clickathon-rank-badge.rank-2 {
+      background: #f1f5f9;
+      border-color: #64748b;
+      color: #334155;
+    }
+    .clickathon-rank-badge.rank-3 {
+      background: #fed7aa;
+      border-color: #c2410c;
+      color: #7c2d12;
+    }
+    .clickathon-rank-badge.rank-other {
+      background: transparent;
+      border-color: #64748b;
+      color: #64748b;
     }
 
     .clickathon-celebration {
@@ -308,15 +353,26 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     /* ---------- TOASTS ---------- */
 
     const toastContainer = document.getElementById("toastContainer");
-    function showToast(text) {
+    let currentToastEl = null;
+    let currentToastTimer = null;
+    function showToast(text, variant) {
+      if (currentToastEl) {
+        clearTimeout(currentToastTimer);
+        currentToastEl.remove();
+        currentToastEl = null;
+      }
       const el = document.createElement("div");
-      el.className = "clickathon-toast";
+      el.className = variant ? `clickathon-toast ${variant}` : "clickathon-toast";
       el.textContent = text;
       toastContainer.appendChild(el);
+      currentToastEl = el;
       requestAnimationFrame(() => el.classList.add("show"));
-      setTimeout(() => {
+      currentToastTimer = setTimeout(() => {
         el.classList.remove("show");
-        setTimeout(() => el.remove(), 250);
+        setTimeout(() => {
+          el.remove();
+          if (currentToastEl === el) currentToastEl = null;
+        }, 250);
       }, 4000);
     }
 
@@ -429,12 +485,29 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       return /^[A-Z]{3}$/.test(getInitials());
     }
 
+    /* ---------- GOLDEN CLICK ---------- */
+
+    const GOLDEN_CHANCE = 1 / 200;
+    const GOLDEN_BONUS = 49; // on top of the base +1, so a golden click nets +50
+    const GOLDEN_MESSAGES = [
+      "🎭 GOLDEN CLICK! +50",
+      "🎭 Jackpot! +50 clicks",
+      "🎭 The click gods smile upon you. +50",
+      "🎭 A wild golden click appears! +50",
+    ];
+
+    function rollGolden() {
+      return Math.random() < GOLDEN_CHANCE;
+    }
+
     /* ---------- CLICK HANDLER ---------- */
 
     clickBtn.addEventListener("click", () => {
       const prevPersonal = personalCount;
-      personalCount++;
-      pendingDelta++;
+      const golden = rollGolden();
+      const gain = golden ? 1 + GOLDEN_BONUS : 1;
+      personalCount += gain;
+      pendingDelta += gain;
       clickTimestamps.push(Date.now());
       personalCountEl.textContent = personalCount.toLocaleString();
       try {
@@ -442,7 +515,14 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       } catch (e) {}
       clickBtn.classList.add("pressed");
       setTimeout(() => clickBtn.classList.remove("pressed"), 100);
-      checkMilestone(prevPersonal, personalCount);
+      if (golden) {
+        showToast(
+          GOLDEN_MESSAGES[Math.floor(Math.random() * GOLDEN_MESSAGES.length)],
+          "golden"
+        );
+      } else {
+        checkMilestone(prevPersonal, personalCount);
+      }
     });
 
     /* ---------- LIVE CLICKS/SEC ---------- */
@@ -521,35 +601,92 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         .join("");
     }
 
-    let wasNumberOneTotal = false;
-    let wasNumberOneCps = false;
+    function readWasNumberOne(key) {
+      try {
+        return localStorage.getItem(key) === "1";
+      } catch (e) {
+        return false;
+      }
+    }
+    function writeWasNumberOne(key, value) {
+      try {
+        localStorage.setItem(key, value ? "1" : "0");
+      } catch (e) {}
+    }
+
+    let wasNumberOneTotal = readWasNumberOne("clickathon-was-1-total");
+    let wasNumberOneCps = readWasNumberOne("clickathon-was-1-cps");
+    const yourRankTotalEl = document.getElementById("yourRankTotal");
+    const yourRankCpsEl = document.getElementById("yourRankCps");
+
+    function ordinal(n) {
+      const rem100 = n % 100;
+      if (rem100 >= 11 && rem100 <= 13) return `${n}th`;
+      switch (n % 10) {
+        case 1: return `${n}st`;
+        case 2: return `${n}nd`;
+        case 3: return `${n}rd`;
+        default: return `${n}th`;
+      }
+    }
+
+    const RANK_FLAVOR = {
+      1: "You're in the lead. Try to act like it.",
+      2: "So close! Step it up.",
+      3: "Your lack of commitment is showing.",
+    };
+
+    function renderYourRank(el, entries, you, unit) {
+      if (!hasValidInitials() || !you) {
+        el.classList.add("hidden");
+        return;
+      }
+      const flavor = RANK_FLAVOR[you.rank];
+      el.textContent = flavor
+        ? `${ordinal(you.rank)} place — ${flavor}`
+        : `${ordinal(you.rank)} place — ${you.score.toLocaleString()} ${unit}`;
+      el.classList.remove(
+        "hidden",
+        "rank-1",
+        "rank-2",
+        "rank-3",
+        "rank-other"
+      );
+      el.classList.add(you.rank <= 3 ? `rank-${you.rank}` : "rank-other");
+    }
 
     async function loadLeaderboard() {
       try {
-        const res = await fetch("/api/clickathon-leaderboard");
+        const qs = hasValidInitials() ? `?initials=${getInitials()}` : "";
+        const res = await fetch(`/api/clickathon-leaderboard${qs}`);
         const data = await res.json();
         const entries = data.entries ?? [];
         renderLeaderboard(leaderboardBody, entries);
+        renderYourRank(yourRankTotalEl, entries, data.you, "clicks");
         const isNumberOne =
           hasValidInitials() && entries.length > 0 && entries[0].initials === getInitials();
         if (isNumberOne && !wasNumberOneTotal) {
           celebrateNumberOne("Most Clicks", entries[0].score);
         }
         wasNumberOneTotal = isNumberOne;
+        writeWasNumberOne("clickathon-was-1-total", isNumberOne);
       } catch {}
     }
     async function loadCpsLeaderboard() {
       try {
-        const res = await fetch("/api/clickathon-cps-leaderboard");
+        const qs = hasValidInitials() ? `?initials=${getInitials()}` : "";
+        const res = await fetch(`/api/clickathon-cps-leaderboard${qs}`);
         const data = await res.json();
         const entries = data.entries ?? [];
         renderLeaderboard(cpsLeaderboardBody, entries);
+        renderYourRank(yourRankCpsEl, entries, data.you, "clicks/sec");
         const isNumberOne =
           hasValidInitials() && entries.length > 0 && entries[0].initials === getInitials();
         if (isNumberOne && !wasNumberOneCps) {
-          celebrateNumberOne("Fastest Clicking", entries[0].score);
+          celebrateNumberOne("Most Clicks/Second", entries[0].score);
         }
         wasNumberOneCps = isNumberOne;
+        writeWasNumberOne("clickathon-was-1-cps", isNumberOne);
       } catch {}
     }
     loadLeaderboard();

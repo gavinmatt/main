@@ -28,7 +28,20 @@ export default async function handler(
       for (let i = 0; i < raw.length; i += 2) {
         entries.push({ initials: raw[i], score: Number(raw[i + 1]) });
       }
-      return res.status(200).json({ entries });
+
+      const queryInitials = String(req.query.initials ?? "")
+        .trim()
+        .toUpperCase();
+      let you: { rank: number; score: number } | null = null;
+      if (INITIALS_RE.test(queryInitials)) {
+        const rank = await redis.zrevrank(LEADERBOARD_KEY, queryInitials);
+        if (rank != null) {
+          const score = await redis.zscore(LEADERBOARD_KEY, queryInitials);
+          you = { rank: rank + 1, score: Number(score) };
+        }
+      }
+
+      return res.status(200).json({ entries, you });
     } catch (err) {
       console.error("clickathon-leaderboard read failed", err);
       return res.status(500).json({ error: "Failed to read leaderboard" });

@@ -413,6 +413,17 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   </style>
 
   <script type="module">
+    /* ---------- SHARE REFERRAL TRACKING ---------- */
+
+    if (new URLSearchParams(location.search).get("ref") === "share") {
+      fetch("/api/clickathon-counters", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "shareArrivals", delta: 1 }),
+      }).catch(() => {});
+      history.replaceState(null, "", location.pathname);
+    }
+
     /* ---------- MILESTONE FACTS ---------- */
 
     const MILESTONE_FACTS = {
@@ -1122,7 +1133,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     /* ---------- SHARE YOUR RANK ---------- */
 
-    const shareUrl = "https://www.gavmatt.com/clickathon";
+    const shareUrl = "https://www.gavmatt.com/clickathon?ref=share";
     function buildShareText() {
       return lastYouTotal
         ? `I'm ${ordinal(lastYouTotal.rank)} on Clickathon with ${lastYouTotal.score.toLocaleString()} clicks. Think you can beat me?`

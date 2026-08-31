@@ -10,12 +10,13 @@ const redis = new Redis(process.env.REDIS_URL);
 const KEYS = {
   clicks: "clickathon:total",
   time: "clickathon:time-wasted-seconds",
+  shareArrivals: "clickathon:share-arrivals",
 } as const;
 
 type CounterType = keyof typeof KEYS;
 
 function isCounterType(value: unknown): value is CounterType {
-  return value === "clicks" || value === "time";
+  return value === "clicks" || value === "time" || value === "shareArrivals";
 }
 
 // Heartbeat-based presence: members are player ids, scores are last-seen
@@ -48,9 +49,13 @@ export default async function handler(
     }
     try {
       const value = Number((await redis.get(KEYS[type])) ?? 0);
-      return res
-        .status(200)
-        .json(type === "clicks" ? { total: value } : { seconds: value });
+      const body =
+        type === "clicks"
+          ? { total: value }
+          : type === "time"
+            ? { seconds: value }
+            : { count: value };
+      return res.status(200).json(body);
     } catch (err) {
       console.error("clickathon-counters read failed", err);
       return res.status(500).json({ error: "Failed to read counter" });
@@ -87,20 +92,25 @@ export default async function handler(
     return res.status(400).send("Invalid type");
   }
 
-  const amount = type === "clicks" ? payload?.delta : payload?.seconds;
+  const amount =
+    type === "clicks"
+      ? payload?.delta
+      : type === "time"
+        ? payload?.seconds
+        : payload?.delta;
   if (!Number.isFinite(amount) || !Number.isInteger(amount) || amount <= 0) {
     return res.status(400).send("Invalid amount");
   }
 
   try {
     const total = await redis.incrby(KEYS[type], amount);
-    return res
-      .status(200)
-      .json(
-        type === "clicks"
-          ? { total, applied: amount }
-          : { seconds: total, applied: amount }
-      );
+    const body =
+      type === "clicks"
+        ? { total, applied: amount }
+        : type === "time"
+          ? { seconds: total, applied: amount }
+          : { count: total, applied: amount };
+    return res.status(200).json(body);
   } catch (err) {
     console.error("clickathon-counters write failed", err);
     return res.status(500).json({ error: "Failed to record" });

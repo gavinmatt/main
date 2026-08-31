@@ -31,6 +31,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       </div>
       <div class="text-base-content/50 text-sm mt-1">Concurrent users (focused)</div>
     </div>
+    <div>
+      <div id="adminShareArrivals" class="text-4xl font-mono font-bold text-base-content">
+        —
+      </div>
+      <div class="text-base-content/50 text-sm mt-1">Arrivals from shared links</div>
+    </div>
   </div>
 
   <div class="grid md:grid-cols-3 gap-8" style="max-width: 1500px;">
@@ -91,6 +97,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     const globalClicksEl = document.getElementById("adminGlobalClicks");
     const globalTimeEl = document.getElementById("adminGlobalTime");
     const concurrentUsersEl = document.getElementById("adminConcurrentUsers");
+    const shareArrivalsEl = document.getElementById("adminShareArrivals");
     const totalCountEl = document.getElementById("adminTotalCount");
     const cpsCountEl = document.getElementById("adminCpsCount");
     const leaderboardBody = document.getElementById("adminLeaderboardBody");
@@ -130,18 +137,27 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     async function refresh() {
       try {
-        const [clicksRes, timeRes, presenceRes, lbRes, cpsRes, timeLbRes] =
-          await Promise.all([
-            fetch("/api/clickathon-counters?type=clicks"),
-            fetch("/api/clickathon-counters?type=time"),
-            fetch("/api/clickathon-counters?type=presence"),
-            fetch("/api/clickathon-leaderboards?board=total&limit=5000"),
-            fetch("/api/clickathon-leaderboards?board=cps&limit=5000"),
-            fetch("/api/clickathon-leaderboards?board=time&limit=5000"),
-          ]);
+        const [
+          clicksRes,
+          timeRes,
+          presenceRes,
+          shareArrivalsRes,
+          lbRes,
+          cpsRes,
+          timeLbRes,
+        ] = await Promise.all([
+          fetch("/api/clickathon-counters?type=clicks"),
+          fetch("/api/clickathon-counters?type=time"),
+          fetch("/api/clickathon-counters?type=presence"),
+          fetch("/api/clickathon-counters?type=shareArrivals"),
+          fetch("/api/clickathon-leaderboards?board=total&limit=5000"),
+          fetch("/api/clickathon-leaderboards?board=cps&limit=5000"),
+          fetch("/api/clickathon-leaderboards?board=time&limit=5000"),
+        ]);
         const clicks = await clicksRes.json();
         const time = await timeRes.json();
         const presence = await presenceRes.json();
+        const shareArrivals = await shareArrivalsRes.json();
         const lb = await lbRes.json();
         const cps = await cpsRes.json();
         const timeLb = await timeLbRes.json();
@@ -149,6 +165,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         globalClicksEl.textContent = (clicks.total ?? 0).toLocaleString();
         globalTimeEl.textContent = formatDuration(time.seconds ?? 0);
         concurrentUsersEl.textContent = (presence.count ?? 0).toLocaleString();
+        shareArrivalsEl.textContent = (
+          shareArrivals.count ?? 0
+        ).toLocaleString();
         totalCountEl.textContent = `(${(lb.entries ?? []).length} entries)`;
         cpsCountEl.textContent = `(${(cps.entries ?? []).length} entries)`;
         timeCountEl.textContent = `(${(timeLb.entries ?? []).length} entries)`;

@@ -110,6 +110,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       >
     </div>
 
+    <div class="flex justify-center mb-10">
+      <button id="shareRankBtn" class="btn btn-sm btn-outline" type="button">
+        Share your rank
+      </button>
+    </div>
+
     <div
       class="mx-auto mb-10"
       style="width: 100%; max-width: 1200px; padding-left: 1rem; padding-right: 1rem;"
@@ -278,6 +284,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       color: #b45309;
       font-weight: bold;
       text-shadow: 0 0 6px rgba(234, 179, 8, 0.6);
+    }
+    .clickathon-toast.passed {
+      color: #b91c1c;
+      font-weight: bold;
     }
 
     .clickathon-rank-badge {
@@ -703,7 +713,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     /* ---------- GOLDEN CLICK ---------- */
 
-    const GOLDEN_CHANCE = 1 / 200;
+    const GOLDEN_CHANCE = 1 / 400;
     const GOLDEN_BONUS = 49; // on top of the base +1, so a golden click nets +50
     const GOLDEN_MESSAGES = [
       "🎭 GOLDEN CLICK! +50",
@@ -973,6 +983,25 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       el.classList.add(you.rank <= 3 ? `rank-${you.rank}` : "rank-other");
     }
 
+    /* ---------- "JUST PASSED YOU" TOAST ---------- */
+
+    let prevRankTotal = null;
+    let prevRankCps = null;
+    let prevRankTime = null;
+    let lastYouTotal = null;
+
+    // Personal scores only ever go up, so a worse rank between polls can
+    // only mean someone else's score newly exceeds yours -- never that
+    // your own score dropped.
+    function checkPassedYou(prevRank, you, entries, boardLabel) {
+      if (you && prevRank != null && you.rank > prevRank) {
+        const passer = entries[you.rank - 2];
+        const name = passer ? passer.initials : "Someone";
+        showToast(`${name} just passed you on ${boardLabel}!`, "passed");
+      }
+      return you ? you.rank : prevRank;
+    }
+
     async function loadLeaderboard() {
       try {
         const qs = `&playerId=${playerId}`;
@@ -983,6 +1012,17 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         const entries = data.entries ?? [];
         renderLeaderboard(leaderboardBody, entries);
         renderYourRank(yourRankTotalEl, entries, data.you, "clicks");
+        lastYouTotal = data.you;
+        if (hasLoadedTotalOnce) {
+          prevRankTotal = checkPassedYou(
+            prevRankTotal,
+            data.you,
+            entries,
+            "Most Clicks"
+          );
+        } else {
+          prevRankTotal = data.you ? data.you.rank : null;
+        }
         const isNumberOne =
           hasValidInitials() &&
           entries.length > 0 &&
@@ -1003,6 +1043,16 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         const entries = data.entries ?? [];
         renderLeaderboard(cpsLeaderboardBody, entries);
         renderYourRank(yourRankCpsEl, entries, data.you, "clicks/sec");
+        if (hasLoadedCpsOnce) {
+          prevRankCps = checkPassedYou(
+            prevRankCps,
+            data.you,
+            entries,
+            "Most Clicks/Second"
+          );
+        } else {
+          prevRankCps = data.you ? data.you.rank : null;
+        }
         const isNumberOne =
           hasValidInitials() &&
           entries.length > 0 &&
@@ -1023,6 +1073,16 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         const entries = data.entries ?? [];
         renderLeaderboard(timeLeaderboardBody, entries, formatDuration);
         renderYourRank(yourRankTimeEl, entries, data.you, "", formatDuration);
+        if (hasLoadedTimeOnce) {
+          prevRankTime = checkPassedYou(
+            prevRankTime,
+            data.you,
+            entries,
+            "Most Time Wasted"
+          );
+        } else {
+          prevRankTime = data.you ? data.you.rank : null;
+        }
         const isNumberOne =
           hasValidInitials() &&
           entries.length > 0 &&
@@ -1046,6 +1106,30 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     setInterval(loadLeaderboard, 15000);
     setInterval(loadCpsLeaderboard, 15000);
     setInterval(loadTimeLeaderboard, 15000);
+
+    /* ---------- SHARE YOUR RANK ---------- */
+
+    const shareRankBtn = document.getElementById("shareRankBtn");
+    shareRankBtn.addEventListener("click", async () => {
+      const url = "https://www.gavmatt.com/clickathon";
+      const text = lastYouTotal
+        ? `I'm ${ordinal(lastYouTotal.rank)} on Clickathon with ${lastYouTotal.score.toLocaleString()} clicks. Think you can beat me?`
+        : "I'm wasting my life clicking a button on Clickathon. Join me.";
+      try {
+        if (navigator.share) {
+          await navigator.share({ text, url });
+          return;
+        }
+      } catch (e) {
+        return; // user cancelled the native share sheet
+      }
+      try {
+        await navigator.clipboard.writeText(`${text} ${url}`);
+        showToast("Copied! Go brag.");
+      } catch (e) {
+        showToast(text);
+      }
+    });
 
     /* ---------- AUTO-SUBMIT (no manual submit button — arcade style) ---------- */
 

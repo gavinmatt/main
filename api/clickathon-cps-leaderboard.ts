@@ -7,9 +7,9 @@ if (!process.env.REDIS_URL) {
 
 const redis = new Redis(process.env.REDIS_URL);
 
-const LEADERBOARD_KEY = "clickathon:leaderboard:v1";
+const LEADERBOARD_KEY = "clickathon:cps-leaderboard:v1";
 const TOP_N = 25;
-const MAX_SCORE = 1_000_000;
+const MAX_SCORE = 100; // no human clicks 100x/sec
 const INITIALS_RE = /^[A-Z]{3}$/;
 
 export default async function handler(
@@ -30,7 +30,7 @@ export default async function handler(
       }
       return res.status(200).json({ entries });
     } catch (err) {
-      console.error("clickathon-leaderboard read failed", err);
+      console.error("clickathon-cps-leaderboard read failed", err);
       return res.status(500).json({ error: "Failed to read leaderboard" });
     }
   }
@@ -73,7 +73,7 @@ export default async function handler(
     );
     return res.status(200).json({ updated: changed === 1 });
   } catch (err) {
-    console.error("clickathon-leaderboard write failed", err);
+    console.error("clickathon-cps-leaderboard write failed", err);
     return res.status(500).json({ error: "Failed to submit score" });
   }
 }

@@ -7,11 +7,21 @@ export interface Props {
 	title: string;
 	description: string;
 	image?: string;
+	imageWidth?: number;
+	imageHeight?: number;
 	canonical?: string;
 	noindex?: boolean;
 }
 
-const { title, description, image = '/social_img.png', canonical, noindex = false } = Astro.props;
+const {
+	title,
+	description,
+	image = '/social_img.png',
+	imageWidth = 400,
+	imageHeight = 400,
+	canonical,
+	noindex = false,
+} = Astro.props;
 const canonicalURL = new URL(canonical ?? Astro.url.pathname, Astro.site ?? Astro.url);
 ---
 
@@ -34,6 +44,8 @@ const canonicalURL = new URL(canonical ?? Astro.url.pathname, Astro.site ?? Astr
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:image" content={new URL(image, Astro.url)} />
+<meta property="og:image:width" content={String(imageWidth)} />
+<meta property="og:image:height" content={String(imageHeight)} />
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image" />

@@ -14,7 +14,8 @@ const {
   sideBarActiveItemID,
   canonical,
   ogImage,
-  image
+  image,
+  noindex
 } = Astro.props;
 
 const resolvedTitle = customTitle ?? title ?? SITE_TITLE;
@@ -41,6 +42,7 @@ const metaImage = ogImage ?? image;
   description={description}
   image={metaImage}
   canonical={canonical}
+  noindex={noindex}
     />
 
     <!-- Google tag (gtag.js) -->

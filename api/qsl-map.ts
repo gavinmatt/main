@@ -1,4 +1,4 @@
-import Redis from 'ioredis';
+import { Redis } from 'ioredis';
 
 const CACHE_KEY = 'lotw:qsl_map_v11';
 const CACHE_TTL = 60 * 60 * 6;

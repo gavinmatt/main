@@ -303,6 +303,39 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       font-weight: bold;
     }
 
+    .clickathon-cheat-banner {
+      position: fixed;
+      top: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 300;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: #c0c0c0;
+      color: #000000;
+      font-family: Tahoma, Arial, sans-serif;
+      font-weight: bold;
+      font-size: 1rem;
+      padding: 0.75rem 1rem;
+      max-width: min(90vw, 420px);
+      box-shadow:
+        inset -1px -1px 0 #000000,
+        inset 1px 1px 0 #dfdfdf,
+        inset -2px -2px 0 #808080,
+        inset 2px 2px 0 #ffffff;
+    }
+    .clickathon-cheat-banner-close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1.1rem;
+      line-height: 1;
+      color: #000000;
+      padding: 0 0.25rem;
+    }
+
     .clickathon-rank-badge {
       display: inline-block;
       padding: 0.5rem 1.25rem;
@@ -750,9 +783,64 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       return Math.random() < GOLDEN_CHANCE;
     }
 
+    /* ---------- LIGHTHEARTED CHEAT DETECTION ---------- */
+    // Not enforcement -- scores still count. Just calling it out for fun.
+
+    let cheatBannerShown = false;
+    function showCheatBanner() {
+      if (cheatBannerShown) return;
+      cheatBannerShown = true;
+      const banner = document.createElement("div");
+      banner.className = "clickathon-cheat-banner";
+      const message = document.createElement("span");
+      message.textContent = "Cheater! 😂 I'm onto you";
+      const closeBtn = document.createElement("button");
+      closeBtn.className = "clickathon-cheat-banner-close";
+      closeBtn.type = "button";
+      closeBtn.setAttribute("aria-label", "Dismiss");
+      closeBtn.textContent = "×";
+      closeBtn.addEventListener("click", () => banner.remove());
+      banner.appendChild(message);
+      banner.appendChild(closeBtn);
+      document.body.appendChild(banner);
+    }
+
+    let lastClickTime = null;
+    let recentClickIntervals = [];
+    function checkForCheating(event) {
+      // A click not triggered by real input (e.g. element.click() from an
+      // autoclicker extension/bookmarklet) is never isTrusted. Can't be
+      // spoofed from page JS -- the browser sets this.
+      if (event && event.isTrusted === false) {
+        showCheatBanner();
+        return;
+      }
+      const now = Date.now();
+      if (lastClickTime != null) {
+        recentClickIntervals.push(now - lastClickTime);
+        if (recentClickIntervals.length > 10) recentClickIntervals.shift();
+        if (recentClickIntervals.length >= 6) {
+          const mean =
+            recentClickIntervals.reduce((a, b) => a + b, 0) /
+            recentClickIntervals.length;
+          const variance =
+            recentClickIntervals.reduce((a, b) => a + (b - mean) ** 2, 0) /
+            recentClickIntervals.length;
+          const stdev = Math.sqrt(variance);
+          // Fast AND suspiciously metronomic -- real jitter-clicking has
+          // far more variance than a script firing on a fixed timer.
+          if (mean < 150 && stdev < 12) {
+            showCheatBanner();
+          }
+        }
+      }
+      lastClickTime = now;
+    }
+
     /* ---------- CLICK HANDLER ---------- */
 
-    clickBtn.addEventListener("click", () => {
+    clickBtn.addEventListener("click", (event) => {
+      checkForCheating(event);
       const prevPersonal = personalCount;
       const golden = rollGolden();
       const gain = golden ? 1 + GOLDEN_BONUS : 1;

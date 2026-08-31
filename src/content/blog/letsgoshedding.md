@@ -18,7 +18,7 @@ Once we had a relatively flat spot, we mapped out a 14ft x 10ft area and complet
 
 <img src="/images/shed/shed_terrace.png">
 
-Let me tell you about shed anchoring. Despite being one of the most common big boy DIY tasks I think someone can do, the amount of information out there about how to actually position and anchor your shed ranges the gambit of useful to useless. Even for a relatively small shed (we’re not parking cars), opinions range from “set it on gravel” to “support each joist with cement columns at every corner.” I’ll admit - I agonized over stability for weeks and still got it wrong as you’ll see later.
+Let me tell you about shed anchoring. Despite being one of the most common big boy DIY tasks I think someone can do, the amount of information out there about how to actually position and anchor your shed runs the gamut of useful to useless. Even for a relatively small shed (we’re not parking cars), opinions range from “set it on gravel” to “support each joist with cement columns at every corner.” I’ll admit - I agonized over stability for weeks and still got it wrong as you’ll see later.
 
 Next up, cement. We went with 8” sonotubes, placing 6 total - 3 in parallel along the longest supports...failing to reinforce the corners. Oh well. I did find a slick way to bring all of my supplies up in the laziest way possible using a skid steer, wheelbarrow, and hopes and prayers.
 
@@ -62,7 +62,7 @@ We then threw on trusses, put on the roof planks (slamming nails in as fast as p
 
 But par for the course, this journey ended abruptly. Literally the day that we finished the shed, the last of a posse of 10(!) skunks moved in underneath. After it sprayed our dogs for the 4th time, we captured and removed it, hammered in hardware cloth, and called it a season.
 
-**Viola:**
+**Voilà:**
 
 <img src="/images/shed/shed_final.png">
 

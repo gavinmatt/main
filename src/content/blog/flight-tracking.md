@@ -21,9 +21,9 @@ Collecting this data is about as barebones of a project as you can get. You need
 <li>Free time and incredible patience troubleshooting your feeders using out of date forums</li>
 </ul>
 
-There are countless guides out there for the setup. I used a few, but recommend that you just follow [Flightaware’s guide](https://www.flightaware.com/adsb/). You can also start with guides from Flightradar24 or anyone else, but apparently Flighaware’s image runs a bit more predictably when feeding multiple sites.
+There are countless guides out there for the setup. I used a few, but recommend that you just follow [Flightaware’s guide](https://www.flightaware.com/adsb/). You can also start with guides from Flightradar24 or anyone else, but apparently Flightaware’s image runs a bit more predictably when feeding multiple sites.
 
-In my case, I use Raspberry’s fancy Raspberry Pi Imager to…image the microSD card. Think of this as pushing the operating system onto the SD card so that the Pi has brains. After than, you can SSH in and follow the guides as each unique service has its own set of copy and paste requirements to get things running. Once you have one service running, you can also add other “feeders,” or services that collect and push ADS-B data somewhere else, easily. 
+In my case, I use Raspberry’s fancy Raspberry Pi Imager to…image the microSD card. Think of this as pushing the operating system onto the SD card so that the Pi has brains. After that, you can SSH in and follow the guides as each unique service has its own set of copy and paste requirements to get things running. Once you have one service running, you can also add other “feeders,” or services that collect and push ADS-B data somewhere else, easily. 
 
 Now the madness - I had to reimage my Pi probably 30+ times for various reasons. That includes corrupted SD cards, several images that added random SSH and network SSID values, and conflicting crashing feeders. It's pretty hard to fix a headless Pi when you can't SSH into it! Each loop took 30ish minutes to fail, meaning I wasted hours and hours at night or on the weekends jogging back and forth between my house and garage to push a button. I finally got a stable build by doing Flightradar, THEN piaware, and THEN ADS-B Exchange. Leet hacker skills.
 

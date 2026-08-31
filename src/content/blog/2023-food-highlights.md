@@ -15,7 +15,7 @@ Now, to the food!
 
 <h2>Eat More Beef</h2>
 
-We are meat eaters. It's not the sole focus of our diet, but I firmly believe that meat plays a role in the best dishes. This isn't a political statement - don't take it a judgement of any diet. We just find that a good protein makes or breaks a lot of meals.
+We are meat eaters. It's not the sole focus of our diet, but I firmly believe that meat plays a role in the best dishes. This isn't a political statement - don't take it as a judgement of any diet. We just find that a good protein makes or breaks a lot of meals.
 
 <b>Sous Vide Surf and Turf</b>
 
@@ -151,7 +151,7 @@ If you visit our house, you’re likely getting Cornell Chicken. I don’t devia
 
 <b>Chicken Parm Sans Gluten</b>
 
-We summoned our inner Action Bronson and took a spin at gluten-free Chicken Parm. Take a homemade marinara, toss chicken in some GF Panko and italian breadcrumbs, cook a pack of the only good gluten-free pasta (Barilla Fettuccine) and it passes! No illusions - it’s fine, but not quite there.
+We summoned our inner Action Bronson and took a spin at gluten-free Chicken Parm. Take a homemade marinara, toss chicken in some GF Panko and Italian breadcrumbs, cook a pack of the only good gluten-free pasta (Barilla Fettuccine) and it passes! No illusions - it’s fine, but not quite there.
 
 Gluten-free is my wife's doing. Absolutely do this with real breadcrumbs.
 

@@ -12,6 +12,20 @@ const TOP_N = 25;
 const MAX_SCORE = 100; // no human clicks 100x/sec
 const INITIALS_RE = /^[A-Z]{3}$/;
 
+// Slurs and hate symbols only — mild profanity (e.g. ASS) is fine.
+const BLOCKED_INITIALS = new Set([
+  "FAG",
+  "DYK",
+  "NIG",
+  "COO",
+  "WOP",
+  "JAP",
+  "KYK",
+  "KKK",
+  "NAZ",
+  "KYS",
+]);
+
 export default async function handler(
   req: VercelRequest,
   res: VercelResponse
@@ -64,7 +78,7 @@ export default async function handler(
     .toUpperCase();
   const score = payload?.score;
 
-  if (!INITIALS_RE.test(initials)) {
+  if (!INITIALS_RE.test(initials) || BLOCKED_INITIALS.has(initials)) {
     return res.status(400).send("Invalid initials");
   }
   if (

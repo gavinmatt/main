@@ -33,17 +33,27 @@ const PRESENCE_WINDOW_MS = 25_000;
 const PLAYER_ID_RE = /^[A-Za-z0-9-]{8,64}$/;
 
 // Not real anti-abuse -- there's no auth here and there isn't going to be,
-// and this is trivially bypassed with `curl -A "Mozilla/5.0 ..."`. It's
-// just friction for casual scripting: real browsers always send a
-// "Mozilla/5.0" token (a legacy convention every browser still follows),
-// so anything without it is almost certainly curl/Postman/a script, not a
-// player. Those get a random silly error every time. Real browser traffic
-// still gets the occasional (1-in-10) chaos error for fun, and is
-// otherwise unaffected -- clicks/time are flushed on a short interval, so
-// a dropped request just quietly retries on the next cycle.
+// and this is trivially bypassed with `curl -A "Mozilla/5.0 ..."`. Goal is
+// "semi functional but really irritating," not a hard wall: real browsers
+// always send a "Mozilla/5.0" token (a legacy convention every browser
+// still follows), so anything without it is almost certainly curl/Postman/
+// a script, not a player. Those pay a random multi-second latency tax on
+// every single request, and still have a coin-flip chance of getting
+// bounced with a silly error after waiting -- so it mostly still works,
+// just painfully slowly and unpredictably. Real browser traffic skips the
+// delay and only gets the occasional (1-in-10) chaos error for fun; either
+// way a dropped request just quietly retries on the client's next cycle.
 function looksLikeBrowser(userAgent: string): boolean {
   return /Mozilla\/\d/.test(userAgent);
 }
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+const AUTOMATED_DELAY_MIN_MS = 1500;
+const AUTOMATED_DELAY_MAX_MS = 6000;
+const AUTOMATED_ERROR_RATE = 0.5;
 
 const CHAOS_COUNTER_KEY = "clickathon:counters-post-chaos-counter";
 const CHAOS_EVERY_N = 10;
@@ -111,9 +121,18 @@ export default async function handler(
   }
 
   const isAutomated = !looksLikeBrowser(String(req.headers["user-agent"] ?? ""));
+  if (isAutomated) {
+    const delay =
+      AUTOMATED_DELAY_MIN_MS +
+      Math.random() * (AUTOMATED_DELAY_MAX_MS - AUTOMATED_DELAY_MIN_MS);
+    await sleep(delay);
+  }
   try {
     const requestCount = await redis.incr(CHAOS_COUNTER_KEY);
-    if (isAutomated || requestCount % CHAOS_EVERY_N === 0) {
+    const shouldChaos =
+      (isAutomated && Math.random() < AUTOMATED_ERROR_RATE) ||
+      requestCount % CHAOS_EVERY_N === 0;
+    if (shouldChaos) {
       const chaosError =
         CHAOS_ERRORS[Math.floor(Math.random() * CHAOS_ERRORS.length)];
       return res.status(chaosError.status).send(chaosError.body);

@@ -32,6 +32,37 @@ const PRESENCE_KEY = "clickathon:presence:v1";
 const PRESENCE_WINDOW_MS = 25_000;
 const PLAYER_ID_RE = /^[A-Za-z0-9-]{8,64}$/;
 
+// Not real anti-abuse -- there's no auth here and there isn't going to be,
+// and this is trivially bypassed with `curl -A "Mozilla/5.0 ..."`. It's
+// just friction for casual scripting: real browsers always send a
+// "Mozilla/5.0" token (a legacy convention every browser still follows),
+// so anything without it is almost certainly curl/Postman/a script, not a
+// player. Those get a random silly error every time. Real browser traffic
+// still gets the occasional (1-in-10) chaos error for fun, and is
+// otherwise unaffected -- clicks/time are flushed on a short interval, so
+// a dropped request just quietly retries on the next cycle.
+function looksLikeBrowser(userAgent: string): boolean {
+  return /Mozilla\/\d/.test(userAgent);
+}
+
+const CHAOS_COUNTER_KEY = "clickathon:counters-post-chaos-counter";
+const CHAOS_EVERY_N = 10;
+const CHAOS_ERRORS: { status: number; body: string }[] = [
+  { status: 418, body: "418 I'm a teapot. This endpoint refuses to brew your score." },
+  { status: 429, body: "429 Too Many Requests. Slow your roll, speedrunner." },
+  {
+    status: 503,
+    body: "503 Service Unavailable. The hamster powering this server needed a snack break.",
+  },
+  { status: 420, body: "420 Enhance Your Calm." },
+  { status: 402, body: "402 Payment Required. Clicks aren't free, apparently." },
+  {
+    status: 451,
+    body: "451 Unavailable For Legal Reasons. Your lawyer has been notified.",
+  },
+  { status: 409, body: "409 Conflict. The universe disagrees with your click count." },
+];
+
 export default async function handler(
   req: VercelRequest,
   res: VercelResponse
@@ -77,6 +108,19 @@ export default async function handler(
     payload = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
   } catch {
     return res.status(400).send("Invalid JSON");
+  }
+
+  const isAutomated = !looksLikeBrowser(String(req.headers["user-agent"] ?? ""));
+  try {
+    const requestCount = await redis.incr(CHAOS_COUNTER_KEY);
+    if (isAutomated || requestCount % CHAOS_EVERY_N === 0) {
+      const chaosError =
+        CHAOS_ERRORS[Math.floor(Math.random() * CHAOS_ERRORS.length)];
+      return res.status(chaosError.status).send(chaosError.body);
+    }
+  } catch (err) {
+    // Don't let the chaos counter itself block a real write.
+    console.error("clickathon-counters chaos counter failed", err);
   }
 
   if (payload?.type === "presence") {

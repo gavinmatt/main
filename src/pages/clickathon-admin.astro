@@ -135,7 +135,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           (e, i) => `
         <tr class="border-b">
           <td class="text-center py-2 px-3">${i + 1}</td>
-          <td class="py-2 px-3 font-mono">${e.initials}</td>
+          <td class="py-2 px-3 font-mono">${e.initials}${e.flagged ? " 🚨" : ""}</td>
           <td class="text-right py-2 px-3 font-semibold">${format(e.score)}</td>
         </tr>`
         )

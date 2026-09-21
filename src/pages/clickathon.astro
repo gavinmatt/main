@@ -796,6 +796,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ type: "cheatersCaught", delta: 1 }),
       }).catch(() => {});
+      fetch("/api/clickathon-leaderboards", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "flagCheater", playerId }),
+      }).catch(() => {});
       const banner = document.createElement("div");
       banner.className = "clickathon-cheat-banner";
       const message = document.createElement("span");
@@ -1061,10 +1066,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       el.innerHTML = entries
         .map((e, i) => {
           const rank = medals[i] ?? String(i + 1);
+          const flag = e.flagged ? " 🚨" : "";
           return `
           <tr class="border-b">
             <td class="text-center py-2 px-3">${rank}</td>
-            <td class="py-2 px-3 font-mono">${e.initials}</td>
+            <td class="py-2 px-3 font-mono">${e.initials}${flag}</td>
             <td class="text-right py-2 px-3 font-semibold">${format(e.score)}</td>
           </tr>`;
         })

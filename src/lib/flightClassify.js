@@ -352,6 +352,16 @@ export const AIRLINE_NAMES = {
   GES: "Gestair",
   IPD: "Business Aviators",
   JLG: "Jet Logistics",
+  JNY: "Journey Aviation",
+  JUS: "USA Jet Airlines",
+  JXA: "Jet Access",
+  KAI: "KaiserAir",
+  KLE: "RusAero",
+  KOC: "SetAir",
+  KPO: "Fly Alliance",
+  LTX: "Aerolytix International",
+  MLM: "Comlux Malta",
+  MWH: "Elemental Aviation",
 };
 
 export const COMMON_AIRLINES = new Set([
@@ -555,6 +565,15 @@ export const COMMON_AIRLINES = new Set([
   "Gestair",
   "Business Aviators",
   "Jet Logistics",
+  "Journey Aviation",
+  "USA Jet Airlines",
+  "Jet Access",
+  "KaiserAir",
+  "SetAir",
+  "Fly Alliance",
+  "Aerolytix International",
+  "Comlux Malta",
+  "Elemental Aviation",
 ]);
 
 export function airlineFromCallsign(cs) {

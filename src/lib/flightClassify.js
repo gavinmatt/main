@@ -244,6 +244,16 @@ export const AIRLINE_NAMES = {
   TOR: "FLYGTA Airlines",
   UAG: "Union Aviation",
   VLZ: "Volare Aviation",
+  EDG: "Jet Edge",
+  IJA: "International Jet",
+  KFB: "STAjets",
+  LVW: "Pacific Sky Aviation",
+  MBK: "Chrono Jet",
+  AKJ: "Akasa Air",
+  FSY: "Private Air",
+  JBA: "Helijet International",
+  KAY: "K5 Aviation",
+  KII: "Kalitta Charters II",
 };
 
 export const COMMON_AIRLINES = new Set([
@@ -362,6 +372,15 @@ export const COMMON_AIRLINES = new Set([
   "Alante Air Charter",
   "Union Aviation",
   "Volare Aviation",
+  "Jet Edge",
+  "International Jet",
+  "STAjets",
+  "Pacific Sky Aviation",
+  "Chrono Jet",
+  "Private Air",
+  "Helijet International",
+  "K5 Aviation",
+  "Kalitta Charters II",
 ]);
 
 export function airlineFromCallsign(cs) {

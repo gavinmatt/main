@@ -294,6 +294,7 @@ export const AIRLINE_NAMES = {
   ERY: "Sky Quest",
   FWK: "Flightworks",
   MWT: "Midwest Aviation Division",
+  MWJ: "Private",
 };
 
 export const COMMON_AIRLINES = new Set([

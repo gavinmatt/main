@@ -1,4 +1,4 @@
-import type { VercelRequest, VercelResponse } from "@vercel/node";
+import type { VercelRequest, VercelResponse } from "./_vercel.js";
 import { Redis } from "ioredis";
 
 if (!process.env.REDIS_URL) {

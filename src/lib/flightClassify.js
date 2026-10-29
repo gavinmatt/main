@@ -120,7 +120,7 @@ export const AIRLINE_NAMES = {
   LVL: "Level Airlines",
   LYC: "Lynden Air Cargo",
   MSR: "Egypt Air",
-  TCN: "BellAir",
+  TCN: "Jet Excellence",
   BBB: "Blackbird Air",
   AIH: "AirZeta",
   VJT: "VistaJet",
@@ -174,6 +174,11 @@ export const AIRLINE_NAMES = {
   CRN: "Carson Air",
   CPT: "Corporate Air",
   CNS: "PlaneSense",
+  BGR: "Bridger Aerospace",
+  TIV: "Thrive Aviation",
+  PBR: "Fast Air",
+  PXT: "Pacific Coast Jet",
+  STT: "Western Aircraft",
 };
 
 export const COMMON_AIRLINES = new Set([
@@ -244,12 +249,19 @@ export const COMMON_AIRLINES = new Set([
   "Morningstar Air",
   "Air Partners",
   "SkyService Business Aviation",
-  "BellAir",
+  "Jet Excellence",
   "Turkish Airlines",
   "Emirates",
   "Virgin Atlantic",
   "VistaJet",
   "Red Barn Operations (Boeing)",
+  "Bridger Aerospace",
+  "Thrive Aviation",
+  "Fast Air",
+  "Pacific Coast Jet",
+  "Western Aircraft",
+  "SkyShare",
+  "Canadian North",
 ]);
 
 export function airlineFromCallsign(cs) {

@@ -362,6 +362,16 @@ export const AIRLINE_NAMES = {
   LTX: "Aerolytix International",
   MLM: "Comlux Malta",
   MWH: "Elemental Aviation",
+  NGF: "Air Charity Network",
+  NJZ: "Neojets",
+  OBD: "BOND",
+  PCH: "Pilatus Flugzeugwerke",
+  PKW: "Sierra West Airlines",
+  PRD: "Presidential Aviation",
+  RKS: "Phenix Jet",
+  SBE: "Leviate Air Group",
+  SIL: "Argentum Airways",
+  SJJ: "SpiritJets",
 };
 
 export const COMMON_AIRLINES = new Set([
@@ -574,6 +584,16 @@ export const COMMON_AIRLINES = new Set([
   "Aerolytix International",
   "Comlux Malta",
   "Elemental Aviation",
+  "Air Charity Network",
+  "Neojets",
+  "BOND",
+  "Pilatus Flugzeugwerke",
+  "Sierra West Airlines",
+  "Presidential Aviation",
+  "Phenix Jet",
+  "Leviate Air Group",
+  "Argentum Airways",
+  "SpiritJets",
 ]);
 
 export function airlineFromCallsign(cs) {

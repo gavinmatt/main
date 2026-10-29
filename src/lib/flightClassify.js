@@ -274,6 +274,17 @@ export const AIRLINE_NAMES = {
   SLH: "Silverhawk Aviation",
   WMN: "Trident Aircraft",
   XGN: "NextGen Flight Solutions",
+  ETA: "Reynolds Jet",
+  FRG: "Freight Runners Express",
+  GXA: "GlobalX",
+  IFL: "IFL Group",
+  IJW: "InterJet West",
+  JCO: "Jet Concierge Club",
+  JPR: "Bighorn Airways",
+  LUA: "Luminair",
+  OKC: "Private Jets",
+  POD: "Craft Charter",
+  STV: "Saturn Aviation",
 };
 
 export const COMMON_AIRLINES = new Set([
@@ -420,6 +431,17 @@ export const COMMON_AIRLINES = new Set([
   "Silverhawk Aviation",
   "Trident Aircraft",
   "NextGen Flight Solutions",
+  "Reynolds Jet",
+  "Freight Runners Express",
+  "GlobalX",
+  "IFL Group",
+  "InterJet West",
+  "Jet Concierge Club",
+  "Bighorn Airways",
+  "Luminair",
+  "Private Jets",
+  "Craft Charter",
+  "Saturn Aviation",
 ]);
 
 export function airlineFromCallsign(cs) {

@@ -217,6 +217,7 @@ export const AIRLINE_NAMES = {
   PXT: "Pacific Coast Jet",
   STT: "Western Aircraft",
   THT: "Air Tahiti Nui",
+  BFF: "Air Nunavut",
 };
 
 export const COMMON_AIRLINES = new Set([

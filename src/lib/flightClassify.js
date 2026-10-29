@@ -35,7 +35,7 @@ export function emergencyReason(f) {
 }
 
 // Aerial firefighting operators, by callsign prefix.
-export const FIREFIGHTING_OPERATORS = new Set(["BGR", "FGD", "TKR", "XCN", "CUL"]);
+export const FIREFIGHTING_OPERATORS = new Set(["BGR", "FGD", "TKR", "XCN", "CUL", "ASB"]);
 
 export function isFirefighting(f) {
   const prefix = callsignRaw(f).match(/^[A-Z]{3}/)?.[0];
@@ -335,6 +335,13 @@ export const AIRLINE_NAMES = {
   RFS: "Rainier Flight Service",
   ROT: "TAROM",
   SRA: "Saudi Royal Flight",
+  TFJ: "Private",
+  TSU: "Gulf and Caribbean Cargo",
+  AAB: "Luxaviation Belgium",
+  ASB: "Air Spray",
+  AWC: "Titan Airways",
+  BRG: "Bering Air",
+  BVR: "ACM Air Charter",
 };
 
 export const COMMON_AIRLINES = new Set([
@@ -529,6 +536,8 @@ export const COMMON_AIRLINES = new Set([
   "Shell Aviation",
   "Quanta Aviation Services",
   "Rainier Flight Service",
+  "Luxaviation Belgium",
+  "ACM Air Charter",
 ]);
 
 export function airlineFromCallsign(cs) {

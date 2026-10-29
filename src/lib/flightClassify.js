@@ -342,6 +342,16 @@ export const AIRLINE_NAMES = {
   AWC: "Titan Airways",
   BRG: "Bering Air",
   BVR: "ACM Air Charter",
+  CNF: "CanaryFly",
+  DCS: "DC Aviation",
+  DGX: "DASNAIR",
+  DHC: "De Havilland Canada",
+  DOJ: "US Department of Justice",
+  FLT: "FltPlan",
+  FTD: "AB Jets",
+  GES: "Gestair",
+  IPD: "Business Aviators",
+  JLG: "Jet Logistics",
 };
 
 export const COMMON_AIRLINES = new Set([
@@ -538,6 +548,13 @@ export const COMMON_AIRLINES = new Set([
   "Rainier Flight Service",
   "Luxaviation Belgium",
   "ACM Air Charter",
+  "DC Aviation",
+  "DASNAIR",
+  "De Havilland Canada",
+  "AB Jets",
+  "Gestair",
+  "Business Aviators",
+  "Jet Logistics",
 ]);
 
 export function airlineFromCallsign(cs) {

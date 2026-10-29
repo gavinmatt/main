@@ -166,6 +166,9 @@ export const AIRLINE_NAMES = {
   WUP: "Wheels Up",
   XSR: "Executive AirShare",
   PWA: "Priester Aviation",
+  CRN: "Carson Air",
+  CPT: "Corporate Air",
+  CNS: "PlaneSense",
 };
 
 export const COMMON_AIRLINES = new Set([
@@ -213,6 +216,34 @@ export const COMMON_AIRLINES = new Set([
   "AirSprint",
   "Flexjet",
   "Jazz",
+  "Carson Air",
+  "Corporate Air",
+  "ABX Air",
+  "Anderson Air",
+  "Air France",
+  "All Nippon Airways",
+  "British Airways",
+  "China Airlines",
+  "Kalitta Air",
+  "Cathay Pacific",
+  "Lufthansa",
+  "Executive Jet Management",
+  "EVA Air",
+  "Atlas Air",
+  "Icelandair",
+  "Japan Airlines",
+  "FlyExclusive",
+  "Jet Linx",
+  "Korean Air",
+  "KLM Royal Dutch Airlines",
+  "Morningstar Air",
+  "Air Partners",
+  "SkyService Business Aviation",
+  "BellAir",
+  "Turkish Airlines",
+  "Emirates",
+  "Virgin Atlantic",
+  "VistaJet",
 ]);
 
 export function airlineFromCallsign(cs) {
@@ -286,7 +317,7 @@ export function militaryBranch(f) {
     }
     return "USAF";
   }
-  if (/^(ENRGY|QID|TEX|GOLD|NACHO|RCH|REACH|MC|AMC)/.test(cs))
+  if (/^(ENRGY|QID|TEX|GOLD|NACHO|RCH|REACH|AMC)/.test(cs))
     return "USAF (TANKER)";
   if (/^(NAVY|CNV|VV)/.test(cs)) return "USN";
   if (/^(PAT|ARMY)/.test(cs)) return "USA";

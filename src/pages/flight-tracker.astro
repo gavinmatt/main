@@ -266,7 +266,7 @@ import FlightMap from "../components/FlightMap.tsx";
     function notableLabelForFlight(f) {
       if (hexUpper(f).startsWith("AE")) return "USAF";
       const cs = callsignRaw(f);
-      if (/^(ENRGY|QID|TEX|GOLD|NACHO|RCH|REACH|MC|AMC)/.test(cs))
+      if (/^(ENRGY|QID|TEX|GOLD|NACHO|RCH|REACH|AMC)/.test(cs))
         return "USAF";
       return airlineFromFlight(f);
     }

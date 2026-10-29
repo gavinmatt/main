@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Map as LeafletMap, LayerGroup } from 'leaflet';
+import { classifyNotability } from '../lib/flightClassify.js';
 
 const RX_LAT = 48.415;
 const RX_LON = -114.459;
@@ -18,13 +19,46 @@ interface Aircraft {
   alt_geom?: number;
   gs?: number;
   seen?: number;
+  category?: string;
 }
 
-function planeSvg(track: number) {
+const DEFAULT_COLOR = '#cbd5e1';
+
+// Mirrors the badge colors in the flight table.
+const FLAG_COLORS = {
+  military: '#ef4444',
+  tanker: '#b91c1c',
+  heli: '#10b981',
+  test: '#f59e0b',
+  uncommon: '#3b82f6',
+  fastHigh: '#facc15',
+};
+
+const LEGEND = [
+  { color: FLAG_COLORS.military, label: 'Military' },
+  { color: FLAG_COLORS.heli, label: 'Helicopter' },
+  { color: FLAG_COLORS.test, label: 'Test flight' },
+  { color: FLAG_COLORS.uncommon, label: 'Uncommon airline' },
+  { color: FLAG_COLORS.fastHigh, label: 'Fast/high' },
+  { color: DEFAULT_COLOR, label: 'Other' },
+];
+
+function flagColor(label: string | undefined) {
+  if (!label) return DEFAULT_COLOR;
+  if (label.includes('TANKER')) return FLAG_COLORS.tanker;
+  if (/^US[AFNM]/.test(label)) return FLAG_COLORS.military;
+  if (label === 'HELI') return FLAG_COLORS.heli;
+  if (label === 'Test Flight') return FLAG_COLORS.test;
+  if (label === 'UNCOMMON') return FLAG_COLORS.uncommon;
+  if (label === 'FAST/HIGH') return FLAG_COLORS.fastHigh;
+  return DEFAULT_COLOR;
+}
+
+function planeSvg(track: number, color: string) {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
     style="transform: rotate(${track}deg); transform-origin: 50% 50%;">
     <path d="M12 2c.6 0 1 .5 1 1.2V9l8 4.5v2l-8-2.4V18l2.5 1.8V21.5L12 20.6l-3.5.9V19.8L11 18v-4.9l-8 2.4v-2L11 9V3.2C11 2.5 11.4 2 12 2z"
-      fill="#facc15" stroke="#1f2937" stroke-width="0.8"/>
+      fill="${color}" stroke="#1f2937" stroke-width="0.8"/>
   </svg>`;
 }
 
@@ -94,9 +128,10 @@ export default function FlightMap() {
           for (const f of aircraft) {
             const cs = f.flight?.trim() || 'No callsign';
             const alt = f.alt_baro ?? f.alt_geom ?? '—';
+            const flag = classifyNotability(f)?.label;
             L.marker([f.lat!, f.lon!], {
               icon: L.divIcon({
-                html: planeSvg(f.track ?? 0),
+                html: planeSvg(f.track ?? 0, flagColor(flag)),
                 className: '',
                 iconSize: [22, 22],
                 iconAnchor: [11, 11],
@@ -104,7 +139,7 @@ export default function FlightMap() {
             })
               .bindTooltip(cs, { direction: 'top', offset: [0, -10] })
               .bindPopup(
-                `<b>${cs}</b><br>ICAO: ${f.hex ?? '—'}<br>Alt: ${alt} ft<br>Speed: ${f.gs ?? '—'} kt<br>Track: ${f.track ?? '—'}°`
+                `<b>${cs}</b>${flag ? ` · ${flag}` : ''}<br>ICAO: ${f.hex ?? '—'}<br>Alt: ${alt} ft<br>Speed: ${f.gs ?? '—'} kt<br>Track: ${f.track ?? '—'}°`
               )
               .addTo(layer);
           }
@@ -132,7 +167,14 @@ export default function FlightMap() {
         style={{ height: '600px', width: '100%' }}
         className="rounded-lg overflow-hidden border border-base-300"
       />
-      <div className="text-xs text-base-content/50 mt-2">
+      <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-base-content/50 mt-2">
+        {LEGEND.map(({ color, label }) => (
+          <span key={label} className="flex items-center gap-1">
+            <span className="inline-block w-3 h-3 rounded-full" style={{ background: color }} /> {label}
+          </span>
+        ))}
+      </div>
+      <div className="text-xs text-base-content/50 mt-1">
         {count == null ? 'Loading aircraft…' : `${count} aircraft on map`} · rings every 50 NM
       </div>
     </div>

@@ -3,7 +3,6 @@ import type { LatLng, Map as LeafletMap, LayerGroup, Marker as LeafletMarker, Po
 import {
   airlineFromFlight,
   classifyNotability,
-  distanceNm,
   emergencyReason,
   escapeHtml,
 } from '../lib/flightClassify.js';
@@ -15,7 +14,8 @@ const STALE_AFTER_S = 90;
 const RING_NM = [50, 100, 150, 200, 250];
 const NM_TO_M = 1852;
 const TRAIL_POINTS = 30; // fallback when the API sends no stored trail
-const OVERHEAD_NM = 3;
+const VISIBLE_NM = 10; // how close a pass has to be to look up and see it
+const LOOKAHEAD_MIN = 3;
 const TOAST_MS = 10_000;
 
 interface Aircraft {
@@ -88,6 +88,28 @@ function planeSvg(track: number, color: string, emergency: boolean) {
   return emergency ? `<div class="flightmap-emergency">${svg}</div>` : svg;
 }
 
+const COMPASS = ['north', 'northeast', 'east', 'southeast', 'south', 'southwest', 'west', 'northwest'];
+
+// Closest point of approach to the receiver, projecting the plane along its current
+// track and ground speed on a flat local plane (fine at these distances).
+function closestApproach(f: Aircraft) {
+  const x = (f.lon! - RX_LON) * 60 * Math.cos((RX_LAT * Math.PI) / 180);
+  const y = (f.lat! - RX_LAT) * 60;
+  let t = 0;
+  let cx = x;
+  let cy = y;
+  if (typeof f.gs === 'number' && typeof f.track === 'number' && f.gs > 0) {
+    const rad = (f.track * Math.PI) / 180;
+    const vx = (f.gs * Math.sin(rad)) / 60; // NM per minute
+    const vy = (f.gs * Math.cos(rad)) / 60;
+    t = Math.max(0, -(x * vx + y * vy) / (vx * vx + vy * vy));
+    cx = x + vx * t;
+    cy = y + vy * t;
+  }
+  const bearing = ((Math.atan2(cx, cy) * 180) / Math.PI + 360) % 360;
+  return { nm: Math.hypot(cx, cy), minutes: t, side: COMPASS[Math.round(bearing / 45) % 8] };
+}
+
 function planeIcon(L: typeof import('leaflet'), html: string, emergency: boolean) {
   const size = emergency ? 30 : 22;
   return L.divIcon({ html, className: '', iconSize: [size, size], iconAnchor: [size / 2, size / 2] });
@@ -154,7 +176,7 @@ export default function FlightMap() {
 
       // Markers are updated in place by ICAO hex so open popups survive refreshes.
       const planes = new Map<string, { marker: LeafletMarker; iconHtml: string; trail: Polyline }>();
-      const overhead = new Set<string>();
+      const alerted = new Set<string>();
 
       async function refresh() {
         try {
@@ -223,15 +245,18 @@ export default function FlightMap() {
               planes.set(hex, { marker, iconHtml, trail });
             }
 
-            // Toast once each time a plane comes within range of the house.
-            const isOverhead = distanceNm(RX_LAT, RX_LON, pos[0], pos[1]) <= OVERHEAD_NM;
-            if (isOverhead && !overhead.has(hex)) {
-              overhead.add(hex);
+            // Toast once when a plane is passing, or about to pass, close enough to see.
+            const cpa = closestApproach(f);
+            const visible = cpa.nm <= VISIBLE_NM && cpa.minutes <= LOOKAHEAD_MIN;
+            if (visible && !alerted.has(hex)) {
+              alerted.add(hex);
               const who = hasAirline ? `${f.flight?.trim()} · ${airline}` : f.flight?.trim() || 'Aircraft';
               const altText = typeof f.alt_baro === 'number' ? ` at ${f.alt_baro.toLocaleString()} ft` : '';
-              showToast(hex, `${who} is directly overhead${altText}`);
-            } else if (!isOverhead) {
-              overhead.delete(hex);
+              const where = cpa.nm < 1 ? 'directly overhead' : `${Math.round(cpa.nm)} NM ${cpa.side}`;
+              const when = cpa.minutes >= 0.5 ? ` in ~${Math.round(cpa.minutes)} min` : ' now';
+              showToast(hex, `Look up! ${who} passing ${where}${when}${altText}`);
+            } else if (!visible) {
+              alerted.delete(hex);
             }
           }
 
@@ -240,7 +265,7 @@ export default function FlightMap() {
               planeLayer.removeLayer(marker);
               trailLayer.removeLayer(trail);
               planes.delete(hex);
-              overhead.delete(hex);
+              alerted.delete(hex);
             }
           }
           setCount(aircraft.length);

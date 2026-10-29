@@ -43,7 +43,9 @@ With that, here’s the newest project on my website - a live flight tracker pul
 Other providers offer some pretty great benefits for feeding data. In particular, Flightradar24 offers their premium Business plan for free as long as you feed data! 
 
 <div style="display: flex; justify-content: center;">
-        <iframe src="https://globe.adsbexchange.com/?feed=dzxvAzrTfUSY&hideSidebar&hideButtons&zoom=16&lat=48.415&lon=-114.459" width="800" height="600" frameborder="0" style="border: 0;"></iframe>
+        <a href="/flight-tracker"><img src="/flight-tracker.png" alt="Live flight map from my ADS-B receiver" width="800" style="max-width: 100%; height: auto;" /></a>
 </div>
+
+*Update: ADS-B Exchange no longer allows its map to be embedded on other sites, so I finally built my own. [See it live on the flight tracker page](/flight-tracker).*
 
 Let me know what other projects I should do next or if you have your own ADS-B setup! 

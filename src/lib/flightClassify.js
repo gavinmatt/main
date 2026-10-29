@@ -325,6 +325,16 @@ export const AIRLINE_NAMES = {
   LRQ: "Luxembourg Air Rescue",
   LRT: "Liberty Jet Management",
   LVA: "30 West Jets",
+  LYM: "Key Lime Air",
+  MDC: "airmedic",
+  MMD: "Air Alsie",
+  MVP: "Premier Private Jets",
+  OME: "AirExplore",
+  PEX: "Shell Aviation",
+  PWR: "Quanta Aviation Services",
+  RFS: "Rainier Flight Service",
+  ROT: "TAROM",
+  SRA: "Saudi Royal Flight",
 };
 
 export const COMMON_AIRLINES = new Set([
@@ -512,6 +522,13 @@ export const COMMON_AIRLINES = new Set([
   "L.J. Aviation",
   "Liberty Jet Management",
   "30 West Jets",
+  "Key Lime Air",
+  "airmedic",
+  "Air Alsie",
+  "Premier Private Jets",
+  "Shell Aviation",
+  "Quanta Aviation Services",
+  "Rainier Flight Service",
 ]);
 
 export function airlineFromCallsign(cs) {

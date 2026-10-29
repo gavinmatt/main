@@ -126,16 +126,25 @@ export default async function handler(
     await redis.set(FREQUENT_FLIERS_KEY, JSON.stringify(nextFF));
   }
 
-  /* ---------- ATTACH TRAILS ---------- */
+  /* ---------- ATTACH TRAILS AND LAST KNOWN CALLSIGNS ---------- */
 
   const withHex = aircraft.filter((f: any) => f.hex);
-  const trailPipeline = redis.pipeline();
-  for (const f of withHex) trailPipeline.lrange(`trail:${f.hex}`, 0, -1);
-  const trailResults = (await trailPipeline.exec()) ?? [];
+  const pipeline = redis.pipeline();
+  for (const f of withHex) {
+    pipeline.lrange(`trail:${f.hex}`, 0, -1);
+    pipeline.get(`callsign:${f.hex}`);
+  }
+  const results = (await pipeline.exec()) ?? [];
   withHex.forEach((f: any, i: number) => {
-    const [err, points] = trailResults[i] as [Error | null, string[] | null];
-    if (err || !points?.length) return;
-    f.trail = points.map((p) => p.split(",").map(Number));
+    const [trailErr, points] = results[2 * i] as [Error | null, string[] | null];
+    if (!trailErr && points?.length) {
+      f.trail = points.map((p) => p.split(",").map(Number));
+    }
+    const [csErr, lastCallsign] = results[2 * i + 1] as [Error | null, string | null];
+    const cs = (f.flight || "").trim();
+    if (!csErr && lastCallsign && (!cs || cs === "00000000")) {
+      f.flight = lastCallsign;
+    }
   });
 
   /* ---------- RETURN LIVE DATA ---------- */

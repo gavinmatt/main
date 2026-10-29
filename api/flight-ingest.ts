@@ -202,6 +202,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
   await trailPipeline.exec();
 
+  // --- LAST KNOWN CALLSIGNS ---
+  // Callsigns arrive in separate messages from positions, so some batches omit them.
+  // Remember each plane's last callsign while it stays in range; /api/flights fills gaps.
+  const csPipeline = redis.pipeline();
+  for (const f of payload.aircraft) {
+    if (!f.hex) continue;
+    const cs = (f.flight || "").trim();
+    const key = `callsign:${f.hex}`;
+    if (cs && cs !== "00000000") {
+      csPipeline.set(key, cs, "EX", TRAIL_TTL);
+    } else {
+      csPipeline.expire(key, TRAIL_TTL);
+    }
+  }
+  await csPipeline.exec();
+
   // --- LATEST FLIGHTS ---
   await redis.set(
     "latest-flights",

@@ -43,14 +43,15 @@ const LEGEND = [
   { color: DEFAULT_COLOR, label: 'Other' },
 ];
 
-function flagColor(label: string | undefined) {
-  if (!label) return DEFAULT_COLOR;
-  if (label.includes('TANKER')) return FLAG_COLORS.tanker;
-  if (/^US[AFNM]/.test(label)) return FLAG_COLORS.military;
-  if (label === 'HELI') return FLAG_COLORS.heli;
-  if (label === 'Test Flight') return FLAG_COLORS.test;
-  if (label === 'UNCOMMON') return FLAG_COLORS.uncommon;
-  if (label === 'FAST/HIGH') return FLAG_COLORS.fastHigh;
+// Derived from the table badge class so new flag labels pick up a color automatically.
+function flagColor(cls: string | undefined) {
+  if (!cls) return DEFAULT_COLOR;
+  if (cls.includes('red-200')) return FLAG_COLORS.tanker;
+  if (cls.includes('red')) return FLAG_COLORS.military;
+  if (cls.includes('emerald')) return FLAG_COLORS.heli;
+  if (cls.includes('amber')) return FLAG_COLORS.test;
+  if (cls.includes('blue')) return FLAG_COLORS.uncommon;
+  if (cls.includes('yellow')) return FLAG_COLORS.fastHigh;
   return DEFAULT_COLOR;
 }
 
@@ -128,12 +129,13 @@ export default function FlightMap() {
           for (const f of aircraft) {
             const cs = f.flight?.trim() || 'No callsign';
             const alt = f.alt_baro ?? f.alt_geom ?? '—';
-            const flag = classifyNotability(f)?.label;
+            const note = classifyNotability(f);
+            const flag = note?.label;
             const airline = airlineFromFlight(f);
             const hasAirline = airline !== '—' && airline !== 'Undetermined';
             L.marker([f.lat!, f.lon!], {
               icon: L.divIcon({
-                html: planeSvg(f.track ?? 0, flagColor(flag)),
+                html: planeSvg(f.track ?? 0, flagColor(note?.cls)),
                 className: '',
                 iconSize: [22, 22],
                 iconAnchor: [11, 11],

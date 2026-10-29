@@ -147,6 +147,25 @@ export const AIRLINE_NAMES = {
   NCA: "Nippon Cargo Airlines",
   CAO: "Air China Cargo",
   KFS: "Kalitta Charters",
+  AWI: "Air Wisconsin",
+  BOX: "AeroLogic",
+  CKK: "China Cargo Airlines",
+  CXA: "Xiamen Airlines",
+  EDW: "Edelweiss Air",
+  ABD: "Air Atlanta Icelandic",
+  APZ: "Air Premia",
+  AER: "Alaska Central Express",
+  ANT: "Air North",
+  ADB: "Antonov Airlines",
+  OAE: "Omni Air International",
+  OCN: "Discover Airlines",
+  FDB: "flydubai",
+  THA: "Thai Airways",
+  GLR: "Central Mountain Air",
+  NJE: "NetJets Europe",
+  WUP: "Wheels Up",
+  XSR: "Executive AirShare",
+  PWA: "Priester Aviation",
 };
 
 export const COMMON_AIRLINES = new Set([
@@ -190,6 +209,10 @@ export const COMMON_AIRLINES = new Set([
   "PSA Airlines",
   "Breeze Airways",
   "Pacific Coastal Airlines",
+  "Porter Airlines",
+  "AirSprint",
+  "Flexjet",
+  "Jazz",
 ]);
 
 export function airlineFromCallsign(cs) {
@@ -268,6 +291,12 @@ export function militaryBranch(f) {
   if (/^(NAVY|CNV|VV)/.test(cs)) return "USN";
   if (/^(PAT|ARMY)/.test(cs)) return "USA";
   if (/^(VM|MAR)/.test(cs)) return "USMC";
+  if (/^SAM\d/.test(cs)) return "USAF";
+  if (/^CFC\d/.test(cs)) return "RCAF";
+  if (/^RRR\d/.test(cs)) return "RAF";
+  if (/^GAF\d/.test(cs)) return "GAF";
+  if (/^CTM\d/.test(cs)) return "FR AF";
+  if (/^IAM\d/.test(cs)) return "IT AF";
   return null;
 }
 

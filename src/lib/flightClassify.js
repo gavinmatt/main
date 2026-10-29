@@ -90,7 +90,7 @@ export const AIRLINE_NAMES = {
   KOW: "Baker Aviation",
   RAX: "Royal Air Freight",
   CBC: "SkyShare",
-  RDN: "Red Barn Operations",
+  RDN: "Red Barn Operations (Boeing)",
   TFF: "Talon Air",
   EJM: "Executive Jet Management",
   SYB: "SkyService Business Aviation",
@@ -244,6 +244,7 @@ export const COMMON_AIRLINES = new Set([
   "Emirates",
   "Virgin Atlantic",
   "VistaJet",
+  "Red Barn Operations (Boeing)",
 ]);
 
 export function airlineFromCallsign(cs) {
@@ -298,7 +299,6 @@ export function hexUpper(f) {
 export function airlineFromFlight(f) {
   const cs = callsignRaw(f);
   if (/^BOE\d+/.test(cs)) return "Boeing Test Flight";
-  if (/^RDN\d+/.test(cs)) return "Special Operations";
   if (isPrivateFlight(f)) return "Private";
   if (f.op?.trim()) return f.op.trim();
   if (!cs) return "Undetermined";

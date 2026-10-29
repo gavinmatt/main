@@ -295,6 +295,16 @@ export const AIRLINE_NAMES = {
   FWK: "Flightworks",
   MWT: "Midwest Aviation Division",
   MWJ: "Private",
+  NEW: "NEAJETS",
+  NSH: "Sterling Aviation",
+  QLK: "QantasLink",
+  SCM: "American Jet International",
+  SGX: "Slate Aviation",
+  WDY: "Chicago Jet Group",
+  XLJ: "XCEL JET",
+  ARR: "Avalair Aircraft Management",
+  BBQ: "Eastern Air Express",
+  BHR: "Bighorn Airways",
 };
 
 export const COMMON_AIRLINES = new Set([
@@ -460,6 +470,14 @@ export const COMMON_AIRLINES = new Set([
   "Sky Quest",
   "Flightworks",
   "Midwest Aviation Division",
+  "NEAJETS",
+  "Sterling Aviation",
+  "American Jet International",
+  "Slate Aviation",
+  "Chicago Jet Group",
+  "XCEL JET",
+  "Avalair Aircraft Management",
+  "Eastern Air Express",
 ]);
 
 export function airlineFromCallsign(cs) {

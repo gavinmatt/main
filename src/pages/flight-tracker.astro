@@ -85,20 +85,19 @@ import FlightMap from "../components/FlightMap.tsx";
       </div>
 
       <div class="overflow-x-auto">
-        <table class="w-full border-collapse text-base text-base-content">
+        <table class="w-full border-collapse text-sm text-base-content">
           <thead>
             <tr class="border-b text-base-content/70">
-              <th class="text-left py-2 px-2">Interesting?</th>
-              <th class="text-left py-2 px-2">Airline</th>
-              <th class="text-left py-2 px-2">Callsign</th>
-              <th class="text-left py-2 px-2">Type</th>
-              <th class="text-left py-2 px-2">ICAO</th>
-              <th class="text-right py-2 px-2">Altitude (ft)</th>
-              <th class="text-right py-2 px-2">Speed (kt)</th>
-              <th class="text-right py-2 px-2">Track</th>
-              <th class="text-right py-2 px-2">Squawk</th>
-              <th class="text-right py-2 px-2">Distance (NM)</th>
-              <th class="text-right py-2 px-2">Last Seen (s)</th>
+              <th class="text-left py-2 px-1.5">Interesting?</th>
+              <th class="text-left py-2 px-1.5">Airline</th>
+              <th class="text-left py-2 px-1.5">Callsign</th>
+              <th class="text-left py-2 px-1.5">Type</th>
+              <th class="text-left py-2 px-1.5">ICAO</th>
+              <th class="text-right py-2 px-1.5">Alt (ft)</th>
+              <th class="text-right py-2 px-1.5">Speed (kt)</th>
+              <th class="text-right py-2 px-1.5">Squawk</th>
+              <th class="text-right py-2 px-1.5">Dist (NM)</th>
+              <th class="text-right py-2 px-1.5">Seen (s)</th>
             </tr>
           </thead>
           <tbody id="flightBody" class="text-base-content"></tbody>
@@ -406,7 +405,7 @@ import FlightMap from "../components/FlightMap.tsx";
           const dFlag = d != null ? distanceFlag(d) : null;
           return `
           <tr class="border-b text-base-content">
-            <td class="py-2 px-2 space-x-1 text-base-content/40">
+            <td class="py-2 px-1.5 space-x-1 text-base-content/40">
               ${
                 note || dFlag
                   ? `
@@ -416,16 +415,15 @@ import FlightMap from "../components/FlightMap.tsx";
                   : "—"
               }
             </td>
-            <td class="py-2 px-2">${escapeHtml(airlineFromFlight(f))}</td>
-            <td class="py-2 px-2">${escapeHtml(callsignDisplay(f))}</td>
-            <td class="py-2 px-2">${aircraftType(f)}</td>
-            <td class="py-2 px-2">${escapeHtml(f.hex || "—")}</td>
-            <td class="text-right py-2 px-2">${escapeHtml(f.alt_baro ?? f.alt_geom ?? "—")}</td>
-            <td class="text-right py-2 px-2">${escapeHtml(f.gs ?? "—")}</td>
-            <td class="text-right py-2 px-2">${escapeHtml(f.track ?? "—")}</td>
-            <td class="text-right py-2 px-2 font-mono">${escapeHtml(f.squawk ?? "—")}</td>
-            <td class="text-right py-2 px-2">${d != null ? Math.round(d) : "—"}</td>
-            <td class="text-right py-2 px-2">${secondsSinceSeen(f)}</td>
+            <td class="py-2 px-1.5">${escapeHtml(airlineFromFlight(f))}</td>
+            <td class="py-2 px-1.5">${escapeHtml(callsignDisplay(f))}</td>
+            <td class="py-2 px-1.5">${aircraftType(f)}</td>
+            <td class="py-2 px-1.5">${escapeHtml(f.hex || "—")}</td>
+            <td class="text-right py-2 px-1.5">${escapeHtml(f.alt_baro ?? f.alt_geom ?? "—")}</td>
+            <td class="text-right py-2 px-1.5">${escapeHtml(f.gs ?? "—")}</td>
+            <td class="text-right py-2 px-1.5 font-mono">${escapeHtml(f.squawk ?? "—")}</td>
+            <td class="text-right py-2 px-1.5">${d != null ? Math.round(d) : "—"}</td>
+            <td class="text-right py-2 px-1.5">${secondsSinceSeen(f)}</td>
           </tr>`;
         })
         .join("");

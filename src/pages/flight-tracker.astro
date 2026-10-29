@@ -341,20 +341,25 @@ import FlightMap from "../components/FlightMap.tsx";
       } catch {}
     }
 
+    // ADS-B emitter categories are weight classes, not engine types.
+    const CATEGORY_LABELS = {
+      A1: "Light aircraft", // under 15,500 lb
+      A2: "Small aircraft", // 15,500–75,000 lb
+      A3: "Large aircraft", // 75,000–300,000 lb
+      A4: "Large (757)", // high-vortex large
+      A5: "Heavy aircraft", // over 300,000 lb
+      A6: "High performance",
+      A7: "Helicopter",
+      B1: "Glider",
+      B2: "Balloon/Airship",
+      B4: "Ultralight",
+      B6: "Drone",
+    };
+
     function aircraftType(f) {
       if (f.category === "A7") return "Helicopter";
       if (hexUpper(f).startsWith("AE")) return "Military";
-      switch (f.category) {
-        case "A5":
-          return "Heavy Jet";
-        case "A3":
-          return "Large Jet";
-        case "A2":
-          return "Turboprop";
-        case "A1":
-          return "Light Aircraft";
-      }
-      return "—";
+      return CATEGORY_LABELS[f.category] ?? "—";
     }
 
     function isStale(f) {

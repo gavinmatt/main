@@ -191,8 +191,10 @@ import FlightMap from "../components/FlightMap.tsx";
       airlineFromFlight,
       callsignRaw,
       classifyNotability,
+      escapeHtml,
       hexUpper,
       isUnknownAirline,
+      militaryBranch,
     } from "../lib/flightClassify.js";
 
     /* ---------- TAB SWITCHING ---------- */
@@ -264,10 +266,8 @@ import FlightMap from "../components/FlightMap.tsx";
     }
 
     function notableLabelForFlight(f) {
-      if (hexUpper(f).startsWith("AE")) return "USAF";
-      const cs = callsignRaw(f);
-      if (/^(ENRGY|QID|TEX|GOLD|NACHO|RCH|REACH|AMC)/.test(cs))
-        return "USAF";
+      const branch = militaryBranch(f);
+      if (branch) return branch.replace(" (TANKER)", "");
       return airlineFromFlight(f);
     }
 
@@ -301,9 +301,9 @@ import FlightMap from "../components/FlightMap.tsx";
             <td class="text-center py-2 px-3">
               ${label ? `<span class="px-2 py-0.5 rounded text-xs font-medium ${label.cls}">${label.label}</span>` : "—"}
             </td>
-            <td class="py-2 px-3">${r.airline && r.airline !== "—" ? r.airline : notableLabelForFlight(fakeFlight)}</td>
-            <td class="py-2 px-3">${r.callsign}</td>
-            <td class="text-right py-2 px-3 font-semibold">${r.maxDistance}</td>
+            <td class="py-2 px-3">${escapeHtml(r.airline && r.airline !== "—" ? r.airline : notableLabelForFlight(fakeFlight))}</td>
+            <td class="py-2 px-3">${escapeHtml(r.callsign)}</td>
+            <td class="text-right py-2 px-3 font-semibold">${escapeHtml(r.maxDistance)}</td>
             <td class="text-right py-2 px-3">${new Date(r.lastSeen).toLocaleDateString()}</td>
           </tr>`;
         })
@@ -334,9 +334,9 @@ import FlightMap from "../components/FlightMap.tsx";
           return `
           <tr class="border-b">
             <td class="text-center py-2 px-3 text-xl">${rank}</td>
-            <td class="py-2 px-3">${airlineFromCallsign(r.callsign)}</td>
-            <td class="py-2 px-3 font-mono">${r.callsign}</td>
-            <td class="text-right py-2 px-3 font-semibold">${r.count}</td>
+            <td class="py-2 px-3">${escapeHtml(airlineFromCallsign(r.callsign))}</td>
+            <td class="py-2 px-3 font-mono">${escapeHtml(r.callsign)}</td>
+            <td class="text-right py-2 px-3 font-semibold">${escapeHtml(r.count)}</td>
             <td class="text-right py-2 px-3">${new Date(r.lastSeen).toLocaleDateString()}</td>
           </tr>`;
         })
@@ -425,13 +425,13 @@ import FlightMap from "../components/FlightMap.tsx";
                   : "—"
               }
             </td>
-            <td class="py-2 px-2">${airlineFromFlight(f)}</td>
-            <td class="py-2 px-2">${callsignDisplay(f)}</td>
+            <td class="py-2 px-2">${escapeHtml(airlineFromFlight(f))}</td>
+            <td class="py-2 px-2">${escapeHtml(callsignDisplay(f))}</td>
             <td class="py-2 px-2">${aircraftType(f)}</td>
-            <td class="py-2 px-2">${f.hex || "—"}</td>
-            <td class="text-right py-2 px-2">${f.alt_baro ?? f.alt_geom ?? "—"}</td>
-            <td class="text-right py-2 px-2">${f.gs ?? "—"}</td>
-            <td class="text-right py-2 px-2">${f.track ?? "—"}</td>
+            <td class="py-2 px-2">${escapeHtml(f.hex || "—")}</td>
+            <td class="text-right py-2 px-2">${escapeHtml(f.alt_baro ?? f.alt_geom ?? "—")}</td>
+            <td class="text-right py-2 px-2">${escapeHtml(f.gs ?? "—")}</td>
+            <td class="text-right py-2 px-2">${escapeHtml(f.track ?? "—")}</td>
             <td class="text-right py-2 px-2">${d != null ? Math.round(d) : "—"}</td>
             <td class="text-right py-2 px-2">${secondsSinceSeen(f)}</td>
           </tr>`;

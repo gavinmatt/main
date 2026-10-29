@@ -1,5 +1,10 @@
 // Airline lookup and notability flags shared by the flight table and map.
 
+// Feed values end up in innerHTML, so escape anything that isn't ours.
+export function escapeHtml(v) {
+  return String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+}
+
 export const AIRLINE_NAMES = {
   AAL: "American Airlines",
   DAL: "Delta Air Lines",

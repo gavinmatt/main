@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import type { Map as LeafletMap, LayerGroup } from 'leaflet';
-import { airlineFromFlight, classifyNotability } from '../lib/flightClassify.js';
+import type { Map as LeafletMap, LayerGroup, Marker as LeafletMarker } from 'leaflet';
+import { airlineFromFlight, classifyNotability, escapeHtml } from '../lib/flightClassify.js';
 
 const RX_LAT = 48.415;
 const RX_LON = -114.459;
@@ -63,6 +63,10 @@ function planeSvg(track: number, color: string) {
   </svg>`;
 }
 
+function planeIcon(L: typeof import('leaflet'), html: string) {
+  return L.divIcon({ html, className: '', iconSize: [22, 22], iconAnchor: [11, 11] });
+}
+
 export default function FlightMap() {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<LeafletMap | null>(null);
@@ -115,6 +119,9 @@ export default function FlightMap() {
       const layer = L.layerGroup().addTo(map);
       layerRef.current = layer;
 
+      // Markers are updated in place by ICAO hex so open popups survive refreshes.
+      const markers = new Map<string, { marker: LeafletMarker; iconHtml: string }>();
+
       async function refresh() {
         try {
           const res = await fetch('/api/flights');
@@ -122,30 +129,45 @@ export default function FlightMap() {
           const data = await res.json();
           const aircraft: Aircraft[] = (data.aircraft ?? []).filter(
             (f: Aircraft) =>
-              f.lat != null && f.lon != null && (f.seen ?? 0) <= STALE_AFTER_S
+              f.hex && f.lat != null && f.lon != null && (f.seen ?? 0) <= STALE_AFTER_S
           );
 
-          layer.clearLayers();
+          const current = new Set<string>();
           for (const f of aircraft) {
-            const cs = f.flight?.trim() || 'No callsign';
-            const alt = f.alt_baro ?? f.alt_geom ?? '—';
+            const cs = escapeHtml(f.flight?.trim() || 'No callsign');
+            const alt = escapeHtml(f.alt_baro ?? f.alt_geom ?? '—');
             const note = classifyNotability(f);
             const flag = note?.label;
             const airline = airlineFromFlight(f);
             const hasAirline = airline !== '—' && airline !== 'Undetermined';
-            L.marker([f.lat!, f.lon!], {
-              icon: L.divIcon({
-                html: planeSvg(f.track ?? 0, flagColor(note?.cls)),
-                className: '',
-                iconSize: [22, 22],
-                iconAnchor: [11, 11],
-              }),
-            })
-              .bindTooltip(hasAirline ? `${cs} · ${airline}` : cs, { direction: 'top', offset: [0, -10] })
-              .bindPopup(
-                `<b>${cs}</b>${flag ? ` · ${flag}` : ''}${hasAirline ? `<br>${airline}` : ''}<br>ICAO: ${f.hex ?? '—'}<br>Alt: ${alt} ft<br>Speed: ${f.gs ?? '—'} kt<br>Track: ${f.track ?? '—'}°`
-              )
-              .addTo(layer);
+            const tooltip = hasAirline ? `${cs} · ${escapeHtml(airline)}` : cs;
+            const popup = `<b>${cs}</b>${flag ? ` · ${escapeHtml(flag)}` : ''}${hasAirline ? `<br>${escapeHtml(airline)}` : ''}<br>ICAO: ${escapeHtml(f.hex)}<br>Alt: ${alt} ft<br>Speed: ${escapeHtml(f.gs ?? '—')} kt<br>Track: ${escapeHtml(f.track ?? '—')}°`;
+            const iconHtml = planeSvg(Number(f.track) || 0, flagColor(note?.cls));
+
+            current.add(f.hex!);
+            const existing = markers.get(f.hex!);
+            if (existing) {
+              existing.marker.setLatLng([f.lat!, f.lon!]);
+              existing.marker.setTooltipContent(tooltip);
+              existing.marker.setPopupContent(popup);
+              if (existing.iconHtml !== iconHtml) {
+                existing.marker.setIcon(planeIcon(L, iconHtml));
+                existing.iconHtml = iconHtml;
+              }
+            } else {
+              const marker = L.marker([f.lat!, f.lon!], { icon: planeIcon(L, iconHtml) })
+                .bindTooltip(tooltip, { direction: 'top', offset: [0, -10] })
+                .bindPopup(popup)
+                .addTo(layer);
+              markers.set(f.hex!, { marker, iconHtml });
+            }
+          }
+
+          for (const [hex, { marker }] of markers) {
+            if (!current.has(hex)) {
+              layer.removeLayer(marker);
+              markers.delete(hex);
+            }
           }
           setCount(aircraft.length);
         } catch {}

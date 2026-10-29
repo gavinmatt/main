@@ -452,6 +452,7 @@ export const COMMON_AIRLINES = new Set([
   "Western Aircraft",
   "SkyShare",
   "Canadian North",
+  "Bering Air",
   // Business jet, charter, and utility operators: not airlines, so never "uncommon".
   "Qatar Executive",
   "Fai Airservice",

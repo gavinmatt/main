@@ -8,6 +8,8 @@ import RainYear from './RainYear.jsx';
 import FeelsLike from './FeelsLike.jsx';
 import Humidity from './Humidity.jsx';
 import Pressure from './Pressure.jsx';
+import WetBulb from './WetBulb.jsx';
+import PrecipType from './PrecipType.jsx';
 import WeatherForecast from './WeatherForecast.jsx';
 import CurrentWeather from './CurrentWeather.jsx';
 
@@ -76,6 +78,7 @@ const WeatherDashboard = ({ apiEndpoint }) => {
                 {weatherData && <FeelsLike data={weatherData} />}
                 {weatherData && <Humidity data={weatherData} />}
                 {weatherData && <Pressure data={weatherData} />}
+                {weatherData && <WetBulb data={weatherData} />}
             </div>
 
             <p className="text-center pb-1"><b>Precipitation Totals 🌧</b></p>
@@ -84,6 +87,7 @@ const WeatherDashboard = ({ apiEndpoint }) => {
                 {weatherData && <RainHour data={weatherData} />}
                 {weatherData && <RainDay data={weatherData} />}
                 {weatherData && <RainYear data={weatherData} />}
+                {weatherData && <PrecipType data={weatherData} />}
             </div>
 
     <div>

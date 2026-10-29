@@ -380,6 +380,7 @@ export const AIRLINE_NAMES = {
   VAL: "Voyageur Airways",
   VOK: "Centennial Jets",
   WWF: "Owyhee Air Research",
+  USC: "AirNet II",
 };
 
 export const COMMON_AIRLINES = new Set([
@@ -610,6 +611,7 @@ export const COMMON_AIRLINES = new Set([
   "Voyageur Airways",
   "Centennial Jets",
   "Owyhee Air Research",
+  "AirNet II",
 ]);
 
 export function airlineFromCallsign(cs) {

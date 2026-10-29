@@ -380,6 +380,7 @@ export const AIRLINE_NAMES = {
   VAL: "Voyageur Airways",
   VOK: "Centennial Jets",
   WWF: "Owyhee Air Research",
+  USC: "AirNet II",
 };
 
 export const COMMON_AIRLINES = new Set([
@@ -451,6 +452,7 @@ export const COMMON_AIRLINES = new Set([
   "Western Aircraft",
   "SkyShare",
   "Canadian North",
+  "Bering Air",
   // Business jet, charter, and utility operators: not airlines, so never "uncommon".
   "Qatar Executive",
   "Fai Airservice",
@@ -610,6 +612,7 @@ export const COMMON_AIRLINES = new Set([
   "Voyageur Airways",
   "Centennial Jets",
   "Owyhee Air Research",
+  "AirNet II",
 ]);
 
 export function airlineFromCallsign(cs) {

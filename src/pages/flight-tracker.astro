@@ -95,7 +95,6 @@ import FlightMap from "../components/FlightMap.tsx";
               <th class="text-left py-2 px-2">ICAO</th>
               <th class="text-right py-2 px-2">Altitude (ft)</th>
               <th class="text-right py-2 px-2">Speed (kt)</th>
-              <th class="text-right py-2 px-2">Track</th>
               <th class="text-right py-2 px-2">Squawk</th>
               <th class="text-right py-2 px-2">Distance (NM)</th>
               <th class="text-right py-2 px-2">Last Seen (s)</th>
@@ -422,7 +421,6 @@ import FlightMap from "../components/FlightMap.tsx";
             <td class="py-2 px-2">${escapeHtml(f.hex || "—")}</td>
             <td class="text-right py-2 px-2">${escapeHtml(f.alt_baro ?? f.alt_geom ?? "—")}</td>
             <td class="text-right py-2 px-2">${escapeHtml(f.gs ?? "—")}</td>
-            <td class="text-right py-2 px-2">${escapeHtml(f.track ?? "—")}</td>
             <td class="text-right py-2 px-2 font-mono">${escapeHtml(f.squawk ?? "—")}</td>
             <td class="text-right py-2 px-2">${d != null ? Math.round(d) : "—"}</td>
             <td class="text-right py-2 px-2">${secondsSinceSeen(f)}</td>

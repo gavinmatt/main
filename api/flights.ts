@@ -126,6 +126,18 @@ export default async function handler(
     await redis.set(FREQUENT_FLIERS_KEY, JSON.stringify(nextFF));
   }
 
+  /* ---------- ATTACH TRAILS ---------- */
+
+  const withHex = aircraft.filter((f: any) => f.hex);
+  const trailPipeline = redis.pipeline();
+  for (const f of withHex) trailPipeline.lrange(`trail:${f.hex}`, 0, -1);
+  const trailResults = (await trailPipeline.exec()) ?? [];
+  withHex.forEach((f: any, i: number) => {
+    const [err, points] = trailResults[i] as [Error | null, string[] | null];
+    if (err || !points?.length) return;
+    f.trail = points.map((p) => p.split(",").map(Number));
+  });
+
   /* ---------- RETURN LIVE DATA ---------- */
 
   return res.status(200).json({

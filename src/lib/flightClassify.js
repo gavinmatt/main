@@ -218,6 +218,7 @@ export const AIRLINE_NAMES = {
   STT: "Western Aircraft",
   THT: "Air Tahiti Nui",
   BFF: "Air Nunavut",
+  NVC: "NAV CANADA",
 };
 
 export const COMMON_AIRLINES = new Set([
@@ -313,6 +314,7 @@ export const COMMON_AIRLINES = new Set([
   "Wheels Up",
   "Executive AirShare",
   "Priester Aviation",
+  "NAV CANADA",
 ]);
 
 export function airlineFromCallsign(cs) {

@@ -5,6 +5,43 @@ export function escapeHtml(v) {
   return String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 }
 
+export function distanceNm(lat1, lon1, lat2, lon2) {
+  const R = 3440.065;
+  const toRad = (d) => (d * Math.PI) / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+const EMERGENCY_SQUAWKS = {
+  7500: "Hijack",
+  7600: "Radio failure",
+  7700: "General emergency",
+};
+
+// readsb's emergency field; lifeguard and minfuel are priority, not emergencies.
+const EMERGENCY_STATES = {
+  general: "General emergency",
+  nordo: "Radio failure",
+  unlawful: "Hijack",
+  downed: "Aircraft downed",
+};
+
+export function emergencyReason(f) {
+  return EMERGENCY_SQUAWKS[f.squawk] || EMERGENCY_STATES[f.emergency] || null;
+}
+
+// Aerial firefighting operators, by callsign prefix.
+export const FIREFIGHTING_OPERATORS = new Set(["BGR", "FGD"]);
+
+export function isFirefighting(f) {
+  const prefix = callsignRaw(f).match(/^[A-Z]{3}/)?.[0];
+  return FIREFIGHTING_OPERATORS.has(prefix);
+}
+
 export const AIRLINE_NAMES = {
   AAL: "American Airlines",
   DAL: "Delta Air Lines",
@@ -363,6 +400,10 @@ export function militaryBranch(f) {
 
 export function classifyNotability(f) {
   const cs = callsignRaw(f);
+  if (emergencyReason(f))
+    return { label: "EMERGENCY", cls: "bg-red-600 text-white" };
+  if (isFirefighting(f))
+    return { label: "FIREFIGHTING", cls: "bg-orange-100 text-orange-800" };
   if (f.category === "A7")
     return { label: "HELI", cls: "bg-emerald-100 text-emerald-800" };
   if (/^BOE\d+/.test(cs))

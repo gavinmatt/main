@@ -96,6 +96,7 @@ import FlightMap from "../components/FlightMap.tsx";
               <th class="text-right py-2 px-2">Altitude (ft)</th>
               <th class="text-right py-2 px-2">Speed (kt)</th>
               <th class="text-right py-2 px-2">Track</th>
+              <th class="text-right py-2 px-2">Squawk</th>
               <th class="text-right py-2 px-2">Distance (NM)</th>
               <th class="text-right py-2 px-2">Last Seen (s)</th>
             </tr>
@@ -191,6 +192,7 @@ import FlightMap from "../components/FlightMap.tsx";
       airlineFromFlight,
       callsignRaw,
       classifyNotability,
+      distanceNm,
       escapeHtml,
       hexUpper,
       isUnknownAirline,
@@ -238,17 +240,6 @@ import FlightMap from "../components/FlightMap.tsx";
     const RX_LON = -114.459;
 
     /* ---------- UTILS ---------- */
-
-    function distanceNm(lat1, lon1, lat2, lon2) {
-      const R = 3440.065;
-      const toRad = (d) => (d * Math.PI) / 180;
-      const dLat = toRad(lat2 - lat1);
-      const dLon = toRad(lon2 - lon1);
-      const a =
-        Math.sin(dLat / 2) ** 2 +
-        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
-      return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    }
 
     function aircraftDistance(f) {
       if (f.lat == null || f.lon == null) return null;
@@ -432,6 +423,7 @@ import FlightMap from "../components/FlightMap.tsx";
             <td class="text-right py-2 px-2">${escapeHtml(f.alt_baro ?? f.alt_geom ?? "—")}</td>
             <td class="text-right py-2 px-2">${escapeHtml(f.gs ?? "—")}</td>
             <td class="text-right py-2 px-2">${escapeHtml(f.track ?? "—")}</td>
+            <td class="text-right py-2 px-2 font-mono">${escapeHtml(f.squawk ?? "—")}</td>
             <td class="text-right py-2 px-2">${d != null ? Math.round(d) : "—"}</td>
             <td class="text-right py-2 px-2">${secondsSinceSeen(f)}</td>
           </tr>`;

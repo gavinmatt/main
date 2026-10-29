@@ -372,6 +372,14 @@ export const AIRLINE_NAMES = {
   SBE: "Leviate Air Group",
   SIL: "Argentum Airways",
   SJJ: "SpiritJets",
+  SRY: "Sterling Airways",
+  STY: "Altius Aviation",
+  SWW: "Swiss Private Jet",
+  TBJ: "TAG Aviation Asia",
+  TXG: "7Air Cargo",
+  VAL: "Voyageur Airways",
+  VOK: "Centennial Jets",
+  WWF: "Owyhee Air Research",
 };
 
 export const COMMON_AIRLINES = new Set([
@@ -594,6 +602,14 @@ export const COMMON_AIRLINES = new Set([
   "Leviate Air Group",
   "Argentum Airways",
   "SpiritJets",
+  "Sterling Airways",
+  "Altius Aviation",
+  "Swiss Private Jet",
+  "TAG Aviation Asia",
+  "7Air Cargo",
+  "Voyageur Airways",
+  "Centennial Jets",
+  "Owyhee Air Research",
 ]);
 
 export function airlineFromCallsign(cs) {

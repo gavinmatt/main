@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import FlightMap from "../components/FlightMap.tsx";
 ---
 
 <BaseLayout
@@ -21,12 +22,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   </p>
 
   <!-- RADAR -->
-  <div class="flex justify-center">
-    <iframe
-      src="https://globe.adsbexchange.com/?feed=dzxvAzrTfUSY&hideSidebar&hideButtons&hideStats&zoom=7&lat=48.415&lon=-114.459&rings"
-      width="800"
-      height="600"
-      frameborder="0"></iframe>
+  <div class="flex justify-center px-4">
+    <FlightMap client:only="react" />
   </div>
 
   <!-- TAB NAVIGATION -->

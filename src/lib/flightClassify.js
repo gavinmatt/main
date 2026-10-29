@@ -35,7 +35,7 @@ export function emergencyReason(f) {
 }
 
 // Aerial firefighting operators, by callsign prefix.
-export const FIREFIGHTING_OPERATORS = new Set(["BGR", "FGD", "TKR", "XCN"]);
+export const FIREFIGHTING_OPERATORS = new Set(["BGR", "FGD", "TKR", "XCN", "CUL"]);
 
 export function isFirefighting(f) {
   const prefix = callsignRaw(f).match(/^[A-Z]{3}/)?.[0];
@@ -305,6 +305,16 @@ export const AIRLINE_NAMES = {
   ARR: "Avalair Aircraft Management",
   BBQ: "Eastern Air Express",
   BHR: "Bighorn Airways",
+  BTX: "Volkswagen Air Service",
+  CBE: "JH Transportation",
+  CRR: "Canadian Pacific Railway",
+  CUL: "Coulson Aviation",
+  CWA: "CanWest Air",
+  DSO: "Dassault Falcon Service",
+  ECJ: "East Coast Jets",
+  GGW: "Duke Energy",
+  GJE: "Global Air Charters",
+  GLF: "Gulfstream Aerospace",
 };
 
 export const COMMON_AIRLINES = new Set([
@@ -478,6 +488,14 @@ export const COMMON_AIRLINES = new Set([
   "XCEL JET",
   "Avalair Aircraft Management",
   "Eastern Air Express",
+  "JH Transportation",
+  "Canadian Pacific Railway",
+  "CanWest Air",
+  "Dassault Falcon Service",
+  "East Coast Jets",
+  "Duke Energy",
+  "Global Air Charters",
+  "Gulfstream Aerospace",
 ]);
 
 export function airlineFromCallsign(cs) {

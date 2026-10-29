@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Map as LeafletMap, LayerGroup } from 'leaflet';
-import { classifyNotability } from '../lib/flightClassify.js';
+import { airlineFromFlight, classifyNotability } from '../lib/flightClassify.js';
 
 const RX_LAT = 48.415;
 const RX_LON = -114.459;
@@ -129,6 +129,8 @@ export default function FlightMap() {
             const cs = f.flight?.trim() || 'No callsign';
             const alt = f.alt_baro ?? f.alt_geom ?? '—';
             const flag = classifyNotability(f)?.label;
+            const airline = airlineFromFlight(f);
+            const hasAirline = airline !== '—' && airline !== 'Undetermined';
             L.marker([f.lat!, f.lon!], {
               icon: L.divIcon({
                 html: planeSvg(f.track ?? 0, flagColor(flag)),
@@ -137,9 +139,9 @@ export default function FlightMap() {
                 iconAnchor: [11, 11],
               }),
             })
-              .bindTooltip(cs, { direction: 'top', offset: [0, -10] })
+              .bindTooltip(hasAirline ? `${cs} · ${airline}` : cs, { direction: 'top', offset: [0, -10] })
               .bindPopup(
-                `<b>${cs}</b>${flag ? ` · ${flag}` : ''}<br>ICAO: ${f.hex ?? '—'}<br>Alt: ${alt} ft<br>Speed: ${f.gs ?? '—'} kt<br>Track: ${f.track ?? '—'}°`
+                `<b>${cs}</b>${flag ? ` · ${flag}` : ''}${hasAirline ? `<br>${airline}` : ''}<br>ICAO: ${f.hex ?? '—'}<br>Alt: ${alt} ft<br>Speed: ${f.gs ?? '—'} kt<br>Track: ${f.track ?? '—'}°`
               )
               .addTo(layer);
           }

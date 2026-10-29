@@ -315,6 +315,16 @@ export const AIRLINE_NAMES = {
   GGW: "Duke Energy",
   GJE: "Global Air Charters",
   GLF: "Gulfstream Aerospace",
+  GRP: "Gryphon Air",
+  JNX: "jetNEXA",
+  KAF: "Kenya Air Force",
+  KEW: "Keewatin Air",
+  LFG: "Let's Jett",
+  LGL: "Luxair",
+  LJY: "L.J. Aviation",
+  LRQ: "Luxembourg Air Rescue",
+  LRT: "Liberty Jet Management",
+  LVA: "30 West Jets",
 };
 
 export const COMMON_AIRLINES = new Set([
@@ -496,6 +506,12 @@ export const COMMON_AIRLINES = new Set([
   "Duke Energy",
   "Global Air Charters",
   "Gulfstream Aerospace",
+  "Gryphon Air",
+  "jetNEXA",
+  "Let's Jett",
+  "L.J. Aviation",
+  "Liberty Jet Management",
+  "30 West Jets",
 ]);
 
 export function airlineFromCallsign(cs) {
@@ -579,6 +595,7 @@ export function militaryBranch(f) {
   if (/^GAF\d/.test(cs)) return "GAF";
   if (/^CTM\d/.test(cs)) return "FR AF";
   if (/^IAM\d/.test(cs)) return "IT AF";
+  if (/^KAF\d/.test(cs)) return "KENYA AF";
   return null;
 }
 

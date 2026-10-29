@@ -264,6 +264,16 @@ export const AIRLINE_NAMES = {
   YEL: "Summit Aviation",
   BLK: "Aero",
   WBC: "FTV Aviation",
+  CCK: "Carlisle Air Group",
+  CTP: "CTP Aviation",
+  FLC: "Private",
+  GLH: "Chervon",
+  HTT: "Latitude Air Ambulance",
+  NRL: "Nolinor Aviation",
+  PGR: "Prestige Air Group",
+  SLH: "Silverhawk Aviation",
+  WMN: "Trident Aircraft",
+  XGN: "NextGen Flight Solutions",
 };
 
 export const COMMON_AIRLINES = new Set([
@@ -401,6 +411,15 @@ export const COMMON_AIRLINES = new Set([
   "Summit Aviation",
   "Aero",
   "FTV Aviation",
+  "Carlisle Air Group",
+  "CTP Aviation",
+  "Chervon",
+  "Latitude Air Ambulance",
+  "Nolinor Aviation",
+  "Prestige Air Group",
+  "Silverhawk Aviation",
+  "Trident Aircraft",
+  "NextGen Flight Solutions",
 ]);
 
 export function airlineFromCallsign(cs) {

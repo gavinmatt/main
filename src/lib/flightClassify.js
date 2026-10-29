@@ -254,6 +254,15 @@ export const AIRLINE_NAMES = {
   JBA: "Helijet International",
   KAY: "K5 Aviation",
   KII: "Kalitta Charters II",
+  MCB: "Beaver Air Services",
+  SCJ: "Spring City Jet",
+  SIS: "Silver Air",
+  VNT: "Ventura",
+  VTE: "Contour Aviation",
+  WSN: "Advanced Air",
+  WWI: "Worldwide Jet Charter",
+  YEL: "Summit Aviation",
+  BLK: "Aero",
 };
 
 export const COMMON_AIRLINES = new Set([
@@ -381,6 +390,15 @@ export const COMMON_AIRLINES = new Set([
   "Helijet International",
   "K5 Aviation",
   "Kalitta Charters II",
+  "Beaver Air Services",
+  "Spring City Jet",
+  "Silver Air",
+  "Ventura",
+  "Contour Aviation",
+  "Advanced Air",
+  "Worldwide Jet Charter",
+  "Summit Aviation",
+  "Aero",
 ]);
 
 export function airlineFromCallsign(cs) {

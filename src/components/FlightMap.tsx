@@ -14,7 +14,7 @@ const REFRESH_MS = 10_000;
 const STALE_AFTER_S = 90;
 const RING_NM = [50, 100, 150, 200, 250];
 const NM_TO_M = 1852;
-const TRAIL_POINTS = 30; // ~5 minutes at the refresh rate
+const TRAIL_POINTS = 30; // fallback when the API sends no stored trail
 const OVERHEAD_NM = 3;
 const TOAST_MS = 10_000;
 
@@ -31,6 +31,7 @@ interface Aircraft {
   category?: string;
   squawk?: string;
   emergency?: string;
+  trail?: [number, number][];
 }
 
 interface Toast {
@@ -181,6 +182,12 @@ export default function FlightMap() {
             const squawk = `${escapeHtml(f.squawk ?? '—')}${reason ? ` (${escapeHtml(reason)})` : ''}`;
             const popup = `<b>${cs}</b>${flag ? ` · ${escapeHtml(flag)}` : ''}${hasAirline ? `<br>${escapeHtml(airline)}` : ''}<br>ICAO: ${escapeHtml(hex)}<br>Alt: ${alt} ft<br>Speed: ${escapeHtml(f.gs ?? '—')} kt<br>Track: ${escapeHtml(f.track ?? '—')}°<br>Squawk: ${squawk}`;
             const iconHtml = planeSvg(Number(f.track) || 0, color, !!reason);
+            // Stored trail from ingest, ending at the plane's current position.
+            const stored = f.trail?.length ? [...f.trail] : null;
+            if (stored) {
+              const [lastLat, lastLon] = stored[stored.length - 1];
+              if (lastLat !== pos[0] || lastLon !== pos[1]) stored.push(pos);
+            }
 
             current.add(hex);
             const existing = planes.get(hex);
@@ -192,10 +199,14 @@ export default function FlightMap() {
                 existing.marker.setIcon(planeIcon(L, iconHtml, !!reason));
                 existing.iconHtml = iconHtml;
               }
-              const points = existing.trail.getLatLngs() as LatLng[];
-              const last = points[points.length - 1];
-              if (!last || last.lat !== pos[0] || last.lng !== pos[1]) {
-                existing.trail.setLatLngs([...points, L.latLng(pos)].slice(-TRAIL_POINTS));
+              if (stored) {
+                existing.trail.setLatLngs(stored);
+              } else {
+                const points = existing.trail.getLatLngs() as LatLng[];
+                const last = points[points.length - 1];
+                if (!last || last.lat !== pos[0] || last.lng !== pos[1]) {
+                  existing.trail.setLatLngs([...points, L.latLng(pos)].slice(-TRAIL_POINTS));
+                }
               }
               existing.trail.setStyle({ color });
             } else {
@@ -203,7 +214,7 @@ export default function FlightMap() {
                 .bindTooltip(tooltip, { direction: 'top', offset: [0, -10] })
                 .bindPopup(popup)
                 .addTo(planeLayer);
-              const trail = L.polyline([pos], {
+              const trail = L.polyline(stored ?? [pos], {
                 color,
                 weight: 2,
                 opacity: 0.5,

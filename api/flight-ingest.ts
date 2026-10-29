@@ -13,6 +13,11 @@ const HEATMAP_KEY = "heatmap:v1";
 // 90 days in seconds — when this expires, that callsign can count again in that cell
 const HEATMAP_DEBOUNCE_TTL = 60 * 60 * 24 * 90;
 
+// Per-aircraft position history, recorded at ingest so trails exist whether or not
+// anyone has the map open. A trail expires once its plane stops being received.
+const TRAIL_MAX_POINTS = 120; // ~2 hours at one ingest per minute
+const TRAIL_TTL = 180;
+
 const RX_LAT = 48.415;
 const RX_LON = -114.459;
 
@@ -182,6 +187,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (gridDirty) {
     await redis.set(HEATMAP_KEY, JSON.stringify(grid));
   }
+
+  // --- TRAILS ---
+  const trailPipeline = redis.pipeline();
+  for (const f of payload.aircraft) {
+    if (!f.hex || f.lat == null || f.lon == null) continue;
+    // Stale positions linger in the receiver's list after a plane leaves range;
+    // skipping them lets the trail expire.
+    if (typeof f.seen_pos === "number" && f.seen_pos > 60) continue;
+    const key = `trail:${f.hex}`;
+    trailPipeline.rpush(key, `${f.lat.toFixed(4)},${f.lon.toFixed(4)}`);
+    trailPipeline.ltrim(key, -TRAIL_MAX_POINTS, -1);
+    trailPipeline.expire(key, TRAIL_TTL);
+  }
+  await trailPipeline.exec();
 
   // --- LATEST FLIGHTS ---
   await redis.set(

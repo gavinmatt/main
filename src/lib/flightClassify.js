@@ -263,6 +263,7 @@ export const AIRLINE_NAMES = {
   WWI: "Worldwide Jet Charter",
   YEL: "Summit Aviation",
   BLK: "Aero",
+  WBC: "FTV Aviation",
 };
 
 export const COMMON_AIRLINES = new Set([
@@ -399,6 +400,7 @@ export const COMMON_AIRLINES = new Set([
   "Worldwide Jet Charter",
   "Summit Aviation",
   "Aero",
+  "FTV Aviation",
 ]);
 
 export function airlineFromCallsign(cs) {

@@ -35,7 +35,7 @@ export function emergencyReason(f) {
 }
 
 // Aerial firefighting operators, by callsign prefix.
-export const FIREFIGHTING_OPERATORS = new Set(["BGR", "FGD"]);
+export const FIREFIGHTING_OPERATORS = new Set(["BGR", "FGD", "TKR", "XCN"]);
 
 export function isFirefighting(f) {
   const prefix = callsignRaw(f).match(/^[A-Z]{3}/)?.[0];
@@ -219,6 +219,31 @@ export const AIRLINE_NAMES = {
   THT: "Air Tahiti Nui",
   BFF: "Air Nunavut",
   NVC: "NAV CANADA",
+  DCM: "FltPlan",
+  JCY: "Aerius Management",
+  SUT: "Summit Air",
+  XCN: "US Forest Service",
+  RGY: "Regency Air",
+  CRE: "Jet OUT",
+  PRE: "Precision Aircraft Management",
+  XSN: "AirSF",
+  KNT: "Flightpath Charter Airways",
+  TKR: "Erickson Aero Tanker",
+  TTE: "AvCenter",
+  XEN: "Zenflight",
+  CWG: "Wing Aviation",
+  JWZ: "Paradise Jets",
+  TLK: "Starlink Aviation",
+  XFL: "Executive Fliteways",
+  CTF: "Cutter Aviation",
+  HER: "Hera Flight",
+  LND: "Direct2",
+  MVJ: "Mira Vista Aviation",
+  NTW: "Maxair",
+  SVL: "Alante Air Charter",
+  TOR: "FLYGTA Airlines",
+  UAG: "Union Aviation",
+  VLZ: "Volare Aviation",
 };
 
 export const COMMON_AIRLINES = new Set([
@@ -262,6 +287,8 @@ export const COMMON_AIRLINES = new Set([
   "PSA Airlines",
   "Breeze Airways",
   "Pacific Coastal Airlines",
+  "Summit Air",
+  "AirSF",
   "Porter Airlines",
   "AirSprint",
   "Flexjet",
@@ -315,6 +342,26 @@ export const COMMON_AIRLINES = new Set([
   "Executive AirShare",
   "Priester Aviation",
   "NAV CANADA",
+  "FltPlan",
+  "Aerius Management",
+  "Regency Air",
+  "Jet OUT",
+  "Precision Aircraft Management",
+  "Flightpath Charter Airways",
+  "AvCenter",
+  "Zenflight",
+  "Wing Aviation",
+  "Paradise Jets",
+  "Starlink Aviation",
+  "Executive Fliteways",
+  "Cutter Aviation",
+  "Hera Flight",
+  "Direct2",
+  "Mira Vista Aviation",
+  "Maxair",
+  "Alante Air Charter",
+  "Union Aviation",
+  "Volare Aviation",
 ]);
 
 export function airlineFromCallsign(cs) {

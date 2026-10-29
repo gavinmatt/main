@@ -285,6 +285,15 @@ export const AIRLINE_NAMES = {
   OKC: "Private Jets",
   POD: "Craft Charter",
   STV: "Saturn Aviation",
+  PFT: "Air Cargo Express International",
+  BBA: "Bannert Air",
+  CMB: "Atlas Air",
+  DZR: "Midwest Aviation",
+  GDG: "GoodJET",
+  NSZ: "Norwegian Air Sweden",
+  ERY: "Sky Quest",
+  FWK: "Flightworks",
+  MWT: "Midwest Aviation Division",
 };
 
 export const COMMON_AIRLINES = new Set([
@@ -442,6 +451,14 @@ export const COMMON_AIRLINES = new Set([
   "Private Jets",
   "Craft Charter",
   "Saturn Aviation",
+  "Air Cargo Express International",
+  "Bannert Air",
+  "Midwest Aviation",
+  "GoodJET",
+  "Norwegian Air Sweden",
+  "Sky Quest",
+  "Flightworks",
+  "Midwest Aviation Division",
 ]);
 
 export function airlineFromCallsign(cs) {

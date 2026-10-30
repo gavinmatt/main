@@ -236,6 +236,11 @@ export default function FlightMap() {
                 .bindTooltip(tooltip, { direction: 'top', offset: [0, -10] })
                 .bindPopup(popup)
                 .addTo(planeLayer);
+              // The popup already shows everything the hover label does.
+              marker.on('popupopen', () => marker.closeTooltip());
+              marker.on('tooltipopen', () => {
+                if (marker.isPopupOpen()) marker.closeTooltip();
+              });
               const trail = L.polyline(stored ?? [pos], {
                 color,
                 weight: 2,

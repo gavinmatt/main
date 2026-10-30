@@ -9,6 +9,10 @@ export default defineConfig({
   site: 'https://www.gavmatt.com',
   output: 'server',                                // ⬅️ critical
   adapter: vercel(),                               // ⬅️ critical
+  redirects: {
+    // The post was published under its "copy" filename for a while; keep old links working.
+    '/blog/product-manager-ai-thoughts-copy': '/blog/product-manager-ai-thoughts',
+  },
   integrations: [
     mdx(),
     sitemap({

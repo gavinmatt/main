@@ -78,13 +78,56 @@ function flagColor(cls: string | undefined) {
   return DEFAULT_COLOR;
 }
 
-function planeSvg(track: number, color: string, emergency: boolean) {
-  const size = emergency ? 30 : 22;
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24"
-    style="transform: rotate(${track}deg); transform-origin: 50% 50%;">
-    <path d="M12 2c.6 0 1 .5 1 1.2V9l8 4.5v2l-8-2.4V18l2.5 1.8V21.5L12 20.6l-3.5.9V19.8L11 18v-4.9l-8 2.4v-2L11 9V3.2C11 2.5 11.4 2 12 2z"
-      fill="${color}" stroke="${emergency ? '#fff' : '#1f2937'}" stroke-width="${emergency ? 1.2 : 0.8}"/>
+// Top-down silhouettes on a 24x24 grid, nose up, keyed by ADS-B emitter category.
+// Anything without a confident match (including no category) draws as a plane.
+// `rotate: false` for craft whose heading isn't meaningful to show.
+const SHAPES: Record<string, { label: string; rotate: boolean; svg: string }> = {
+  plane: {
+    label: 'Plane',
+    rotate: true,
+    svg: '<path d="M12 2c.6 0 1 .5 1 1.2V9l8 4.5v2l-8-2.4V18l2.5 1.8V21.5L12 20.6l-3.5.9V19.8L11 18v-4.9l-8 2.4v-2L11 9V3.2C11 2.5 11.4 2 12 2z"/>',
+  },
+  // Helipad-style H: a rotor silhouette turns to mush at map size.
+  A7: {
+    label: 'Helicopter',
+    rotate: false,
+    svg: '<circle cx="12" cy="12" r="10"/>'
+      + '<path fill="#1f2937" stroke="none" d="M7.5 6.5h2.6v4.2h3.8V6.5h2.6v11h-2.6v-4.3h-3.8v4.3H7.5z"/>',
+  },
+  B1: {
+    label: 'Glider',
+    rotate: true,
+    svg: '<path d="M12 3c.8 0 1.2.6 1.2 1.4V8l9.8.5v1.6l-9.8.6v7.8l2.8.2v1.8H9v-1.8l2.8-.2v-7.8L1 10.1V8.5L10.8 8V4.4C10.8 3.6 11.2 3 12 3z"/>',
+  },
+  B2: {
+    label: 'Balloon',
+    rotate: false,
+    svg: '<path d="M12 1.5a7 7 0 0 1 7 7c0 3.6-3.4 6.8-5.3 8.5h-3.4C8.4 15.3 5 12.1 5 8.5a7 7 0 0 1 7-7z"/><rect x="10" y="18.5" width="4" height="3.5" rx=".5"/>',
+  },
+  B6: {
+    label: 'Drone',
+    rotate: true,
+    svg: '<rect x="10.8" y="2" width="2.4" height="20" rx="1.2" transform="rotate(45 12 12)"/>'
+      + '<rect x="10.8" y="2" width="2.4" height="20" rx="1.2" transform="rotate(-45 12 12)"/>'
+      + '<circle cx="5" cy="5" r="3.4"/><circle cx="19" cy="5" r="3.4"/><circle cx="5" cy="19" r="3.4"/><circle cx="19" cy="19" r="3.4"/>'
+      + '<rect x="8.5" y="8.5" width="7" height="7" rx="1.5"/>',
+  },
+};
+
+function shapeFor(category: string | undefined) {
+  return SHAPES[category ?? ''] ?? SHAPES.plane;
+}
+
+function shapeSvg(shape: (typeof SHAPES)[string], size: number, color: string, stroke: string, strokeWidth: number, track = 0) {
+  const rotation = shape.rotate ? `transform: rotate(${track}deg); transform-origin: 50% 50%;` : '';
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" style="${rotation}">
+    <g fill="${color}" stroke="${stroke}" stroke-width="${strokeWidth}">${shape.svg}</g>
   </svg>`;
+}
+
+function planeSvg(f: Aircraft, color: string, emergency: boolean) {
+  const size = emergency ? 30 : 22;
+  const svg = shapeSvg(shapeFor(f.category), size, color, emergency ? '#fff' : '#1f2937', emergency ? 1.2 : 0.8, Number(f.track) || 0);
   return emergency ? `<div class="flightmap-emergency">${svg}</div>` : svg;
 }
 
@@ -203,7 +246,7 @@ export default function FlightMap() {
             const tooltip = hasAirline ? `${cs} · ${escapeHtml(airline)}` : cs;
             const squawk = `${escapeHtml(f.squawk ?? '—')}${reason ? ` (${escapeHtml(reason)})` : ''}`;
             const popup = `<b>${cs}</b>${flag ? ` · ${escapeHtml(flag)}` : ''}${hasAirline ? `<br>${escapeHtml(airline)}` : ''}<br>ICAO: ${escapeHtml(hex)}<br>Alt: ${alt} ft<br>Speed: ${escapeHtml(f.gs ?? '—')} kt<br>Track: ${escapeHtml(f.track ?? '—')}°<br>Squawk: ${squawk}`;
-            const iconHtml = planeSvg(Number(f.track) || 0, color, !!reason);
+            const iconHtml = planeSvg(f, color, !!reason);
             // Stored trail from ingest, ending at the plane's current position.
             const stored = f.trail?.length ? [...f.trail] : null;
             if (stored) {
@@ -309,6 +352,13 @@ export default function FlightMap() {
         {LEGEND.map(({ color, label }) => (
           <span key={label} className="flex items-center gap-1">
             <span className="inline-block w-3 h-3 rounded-full" style={{ background: color }} /> {label}
+          </span>
+        ))}
+      </div>
+      <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-base-content/50 mt-1">
+        {Object.values(SHAPES).map((shape) => (
+          <span key={shape.label} className="flex items-center gap-1">
+            <span dangerouslySetInnerHTML={{ __html: shapeSvg(shape, 14, 'currentColor', 'none', 0) }} /> {shape.label}
           </span>
         ))}
       </div>

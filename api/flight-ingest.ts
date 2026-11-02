@@ -15,7 +15,7 @@ const HEATMAP_DEBOUNCE_TTL = 60 * 60 * 24 * 90;
 
 // Per-aircraft position history, recorded at ingest so trails exist whether or not
 // anyone has the map open. A trail expires once its plane stops being received.
-const TRAIL_MAX_POINTS = 120; // ~2 hours at one ingest per minute
+const TRAIL_MAX_POINTS = 480; // ~2 hours at one ingest every 15 seconds
 const TRAIL_TTL = 180;
 
 const RX_LAT = 48.415;

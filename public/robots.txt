@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://gavmatt.com/sitemap.xml
+Sitemap: https://www.gavmatt.com/sitemap-index.xml

@@ -3,19 +3,18 @@ import WeatherLayout from "../layouts/WeatherLayout.astro";
 import WeatherDashboard from "../components/WeatherDashboard.jsx";
 
 
-const apiEndpoint = '/api/weather';
+const apiEndpoint = '/api/weather-dashboard';
 ---
 
 <WeatherLayout sideBarActiveItemID="weather" customTitle="Whitefish Weather" 
-customDescription="My weather station and ChatGPT combine to give you the weather!" 
+customDescription="Live readings from my home weather station in Whitefish, plus NWS forecasts and alerts." 
 customImage="/whitefish.png">
     <div class="text-5xl font-bold" style="text-align: center">
         Current Weather in Whitefish
     </div>
     <p style="text-align: center;padding-top:20px">
-        This data is captured from my home weather station and the National Weather Service! This is an
-        experiment entirely using ChatGPT to create the components and pull data from
-        Ambient Weather. I have very rough JS knowledge, so I want to see how far I can push it just using GPT-generated code and my own FE skills.
+        Live readings from my Ambient Weather station at home, alongside forecasts and alerts from the
+        National Weather Service. Everything refreshes on its own every couple of minutes.
     </p>
     <div style="padding-top:50px">
         <WeatherDashboard client:visible apiEndpoint={apiEndpoint} />

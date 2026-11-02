@@ -380,6 +380,9 @@ export const AIRLINE_NAMES = {
   VAL: "Voyageur Airways",
   VOK: "Centennial Jets",
   WWF: "Owyhee Air Research",
+  USC: "AirNet II",
+  PJC: "Private Jet Center",
+  WIL: "Aero Air",
 };
 
 export const COMMON_AIRLINES = new Set([
@@ -451,6 +454,7 @@ export const COMMON_AIRLINES = new Set([
   "Western Aircraft",
   "SkyShare",
   "Canadian North",
+  "Bering Air",
   // Business jet, charter, and utility operators: not airlines, so never "uncommon".
   "Qatar Executive",
   "Fai Airservice",
@@ -610,6 +614,9 @@ export const COMMON_AIRLINES = new Set([
   "Voyageur Airways",
   "Centennial Jets",
   "Owyhee Air Research",
+  "AirNet II",
+  "Private Jet Center",
+  "Aero Air",
 ]);
 
 export function airlineFromCallsign(cs) {
@@ -682,8 +689,9 @@ export function militaryBranch(f) {
     }
     return "USAF";
   }
-  if (/^(ENRGY|QID|TEX|GOLD|NACHO|RCH|REACH|AMC)/.test(cs))
-    return "USAF (TANKER)";
+  if (/^(ENRGY|QID|TEX|GOLD|NACHO)/.test(cs)) return "USAF (TANKER)";
+  // Air Mobility Command: mostly airlift (C-17, C-5), not tankers.
+  if (/^(RCH|REACH|AMC)/.test(cs)) return "USAF";
   if (/^(NAVY|CNV|VV)/.test(cs)) return "USN";
   if (/^(PAT|ARMY)/.test(cs)) return "USA";
   if (/^(VM|MAR)/.test(cs)) return "USMC";

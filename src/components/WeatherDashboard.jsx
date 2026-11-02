@@ -5,6 +5,7 @@ import WeatherTrendChart from './WeatherTrendChart.jsx';
 import WindCompass, { compassPoint } from './WindCompass.jsx';
 import { wetBulbF, precipType } from '../lib/wetBulb.js';
 import { sunTimes } from '../lib/sun.js';
+import { pollWhileVisible } from '../lib/poll.js';
 
 const TZ = 'America/Denver';
 const STATION = { lat: 48.43, lon: -114.4755 };
@@ -80,9 +81,7 @@ const WeatherDashboard = ({ apiEndpoint }) => {
                 setError(err);
             }
         };
-        fetchStation();
-        const timer = setInterval(fetchStation, STATION_REFRESH_MS);
-        return () => clearInterval(timer);
+        return pollWhileVisible(fetchStation, STATION_REFRESH_MS);
     }, [apiEndpoint]);
 
     useEffect(() => {
@@ -95,9 +94,7 @@ const WeatherDashboard = ({ apiEndpoint }) => {
                 // The forecast is optional; station data still renders.
             }
         };
-        fetchForecast();
-        const timer = setInterval(fetchForecast, FORECAST_REFRESH_MS);
-        return () => clearInterval(timer);
+        return pollWhileVisible(fetchForecast, FORECAST_REFRESH_MS);
     }, []);
 
     useEffect(() => {

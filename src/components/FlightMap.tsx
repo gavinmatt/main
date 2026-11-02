@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { subscribeFlights } from '../lib/flightFeed.js';
 import type { LatLng, Map as LeafletMap, LayerGroup, Marker as LeafletMarker, Polyline } from 'leaflet';
 import {
   airlineFromFlight,
@@ -9,7 +10,6 @@ import {
 
 const RX_LAT = 48.415;
 const RX_LON = -114.459;
-const REFRESH_MS = 10_000;
 const STALE_AFTER_S = 90;
 const RING_NM = [50, 100, 150, 200, 250];
 const NM_TO_M = 1852;
@@ -165,7 +165,7 @@ export default function FlightMap() {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
   useEffect(() => {
-    let timer: ReturnType<typeof setInterval>;
+    let unsubscribe: (() => void) | undefined;
     let cancelled = false;
     const toastTimers: ReturnType<typeof setTimeout>[] = [];
 
@@ -221,11 +221,8 @@ export default function FlightMap() {
       const planes = new Map<string, { marker: LeafletMarker; iconHtml: string; trail: Polyline }>();
       const alerted = new Set<string>();
 
-      async function refresh() {
+      function refresh(data: { aircraft?: Aircraft[] }) {
         try {
-          const res = await fetch('/api/flights');
-          if (res.status === 204) return;
-          const data = await res.json();
           const aircraft: Aircraft[] = (data.aircraft ?? []).filter(
             (f: Aircraft) =>
               f.hex && f.lat != null && f.lon != null && (f.seen ?? 0) <= STALE_AFTER_S
@@ -320,13 +317,12 @@ export default function FlightMap() {
         } catch {}
       }
 
-      refresh();
-      timer = setInterval(refresh, REFRESH_MS);
+      unsubscribe = subscribeFlights(refresh);
     });
 
     return () => {
       cancelled = true;
-      clearInterval(timer);
+      unsubscribe?.();
       toastTimers.forEach(clearTimeout);
       mapInstance.current?.remove();
       mapInstance.current = null;

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { pollWhileVisible } from '../lib/poll.js';
 
 const ALERTS_URL = 'https://api.weather.gov/alerts/active?point=48.43,-114.4755';
 const REFRESH_MS = 5 * 60 * 1000;
@@ -28,9 +29,7 @@ const WeatherAlerts = () => {
                 // Keep whatever we last showed.
             }
         };
-        fetchAlerts();
-        const timer = setInterval(fetchAlerts, REFRESH_MS);
-        return () => clearInterval(timer);
+        return pollWhileVisible(fetchAlerts, REFRESH_MS);
     }, []);
 
     if (!alerts.length) return null;

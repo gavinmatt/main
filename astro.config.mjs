@@ -3,12 +3,14 @@ import mdx from '@astrojs/mdx'
 import sitemap from '@astrojs/sitemap'
 import tailwind from '@astrojs/tailwind'
 import react from '@astrojs/react'
-import vercel from '@astrojs/vercel'   // ⬅️ add this
+import vercel from '@astrojs/vercel'
 
 export default defineConfig({
   site: 'https://www.gavmatt.com',
-  output: 'server',                                // ⬅️ critical
-  adapter: vercel(),                               // ⬅️ critical
+  // Every page is built ahead of time and served from the CDN; live data comes
+  // from the Vercel functions in api/. A page can opt out with `prerender = false`.
+  output: 'static',
+  adapter: vercel(),
   redirects: {
     // The post was published under its "copy" filename for a while; keep old links working.
     '/blog/product-manager-ai-thoughts-copy': '/blog/product-manager-ai-thoughts',

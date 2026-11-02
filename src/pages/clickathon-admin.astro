@@ -103,7 +103,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     </div>
   </div>
 
-  <script type="module">
+  <script>
+    import { pollWhileVisible } from "../lib/poll.js";
+
     const globalClicksEl = document.getElementById("adminGlobalClicks");
     const globalTimeEl = document.getElementById("adminGlobalTime");
     const concurrentUsersEl = document.getElementById("adminConcurrentUsers");
@@ -193,7 +195,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         renderTable(timeLeaderboardBody, timeLb.entries ?? [], formatDuration);
       } catch {}
     }
-    refresh();
-    setInterval(refresh, 5000);
+    pollWhileVisible(refresh, 5000);
   </script>
 </BaseLayout>

@@ -17,6 +17,9 @@ export default async function handler(
     return res.status(405).send('Method Not Allowed');
   }
 
+  // Ingest updates this once per batch; a minute of CDN cache is plenty.
+  res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=120');
+
   try {
     const raw = await redis.get(NOTABLE_KEY);
 

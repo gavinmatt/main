@@ -197,6 +197,8 @@ import FlightMap from "../components/FlightMap.tsx";
       isUnknownAirline,
       militaryBranch,
     } from "../lib/flightClassify.js";
+    import { subscribeFlights } from "../lib/flightFeed.js";
+    import { pollWhileVisible } from "../lib/poll.js";
 
     /* ---------- TAB SWITCHING ---------- */
 
@@ -434,25 +436,15 @@ import FlightMap from "../components/FlightMap.tsx";
         .join("");
     }
 
-    async function updateFlights() {
-      try {
-        const res = await fetch("/api/flights");
-        if (res.status === 204) return;
-        const data = await res.json();
-        render(data.aircraft ?? []);
-        lastUpdatedEl.textContent =
-          "Last updated " + new Date(data.receivedAt).toLocaleTimeString();
-      } catch {}
-    }
-
-    updateFlights();
-    setInterval(updateFlights, 10000);
-    loadNotables();
-    loadFrequentFliers();
-    loadHeatmap();
-    setInterval(loadNotables, 60000);
-    setInterval(loadFrequentFliers, 60000);
-    setInterval(loadHeatmap, 60000);
+    // Shares the map's /api/flights poll; everything pauses while the tab is hidden.
+    subscribeFlights((data) => {
+      render(data.aircraft ?? []);
+      lastUpdatedEl.textContent =
+        "Last updated " + new Date(data.receivedAt).toLocaleTimeString();
+    });
+    pollWhileVisible(loadNotables, 60000);
+    pollWhileVisible(loadFrequentFliers, 60000);
+    pollWhileVisible(loadHeatmap, 60000);
 
     /* ---------- HEATMAP ---------- */
 

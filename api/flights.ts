@@ -7,6 +7,9 @@ export default async function handler(
   _req: VercelRequest,
   res: VercelResponse
 ) {
+  // New batches land every 15 seconds, so viewers can share a few seconds of CDN cache.
+  res.setHeader('Cache-Control', 's-maxage=5, stale-while-revalidate=10');
+
   const raw = await redis.get('latest-flights');
 
   if (!raw) {

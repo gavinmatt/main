@@ -8,6 +8,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).send("Method Not Allowed");
   }
 
+  // Ingest updates this once per batch; a minute of CDN cache is plenty.
+  res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=120");
+
   const raw = (await redis.get("heatmap:v1")) ?? "null";
   let grid: number[][] | null = null;
   try {

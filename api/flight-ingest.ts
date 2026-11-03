@@ -33,6 +33,14 @@ const NEAR_NM = 15;
 const TRAIL_MAX_POINTS = 480; // ~2 hours at one ingest every 15 seconds
 const TRAIL_TTL = 180;
 
+// Density map: monthly hashes of grid cell -> 15-second samples, read three months at a
+// time. Cells are 0.05° lat × 0.075° lon, about 3 NM square at this latitude.
+const DENSITY_LAT_STEP = 0.05;
+const DENSITY_LON_STEP = 0.075;
+const DENSITY_MONTH_TTL = 60 * 60 * 24 * 100;
+// Only positions fixed since the last batch, so a plane isn't counted twice in place.
+const DENSITY_MAX_SEEN_POS = 15;
+
 const RX_LAT = 48.415;
 const RX_LON = -114.459;
 
@@ -227,6 +235,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     trailPipeline.expire(key, TRAIL_TTL);
   }
   await trailPipeline.exec();
+
+  // --- DENSITY ---
+  const densityKey = `pd:${day.slice(0, 7)}`;
+  const densityPipeline = redis.pipeline();
+  let sampled = false;
+  for (const f of payload.aircraft) {
+    if (trustedDistance(f) == null) continue;
+    if (typeof f.seen_pos === "number" && f.seen_pos > DENSITY_MAX_SEEN_POS) continue;
+    const cell = `${Math.floor(f.lat / DENSITY_LAT_STEP)},${Math.floor(f.lon / DENSITY_LON_STEP)}`;
+    densityPipeline.hincrby(densityKey, cell, 1);
+    sampled = true;
+  }
+  if (sampled) {
+    densityPipeline.expire(densityKey, DENSITY_MONTH_TTL);
+    densityPipeline.set("pd:since", day, "NX");
+    await densityPipeline.exec();
+  }
 
   // --- LAST KNOWN CALLSIGNS ---
   // Callsigns arrive in separate messages from positions, so some batches omit them.

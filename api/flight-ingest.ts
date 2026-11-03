@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from "./_vercel.js";
 import { Redis } from "ioredis";
+import { airlineFromFlight, heatmapTypes } from "../src/lib/flightClassify.js";
 
 const redis = new Redis(process.env.REDIS_URL!);
 
@@ -9,9 +10,16 @@ const MAX_NOTABLES = 10;
 const FREQUENT_FLIERS_KEY = "frequent-fliers:v2";
 const MAX_FREQUENT_FLIERS_STORED = 500;
 
-const HEATMAP_KEY = "heatmap:v1";
-// 90 days in seconds — when this expires, that callsign can count again in that cell
-const HEATMAP_DEBOUNCE_TTL = 60 * 60 * 24 * 90;
+// One marker per callsign per weekday/hour cell, kept 90 days. Nothing reads these on
+// the site any more; they're the record of which callsigns we've seen, for auditing
+// airline codes in Redis.
+const SIGHTING_TTL = 60 * 60 * 24 * 90;
+
+// Heatmap: per-day hashes of hourly counts, summed over the last 90 days when read.
+const HEATMAP_DAY_TTL = 60 * 60 * 24 * 91;
+// Sets of the planes already counted in the current hour, per type and scope.
+const HEATMAP_HOUR_TTL = 60 * 60 * 2;
+const NEAR_NM = 15;
 
 // Per-aircraft position history, recorded at ingest so trails exist whether or not
 // anyone has the map open. A trail expires once its plane stops being received.
@@ -141,53 +149,57 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   await redis.set(FREQUENT_FLIERS_KEY, JSON.stringify(nextFF));
 
-  // --- HEATMAP ---
-  // grid[weekday][hour] = count of unique callsigns seen in that cell (rolling 90d).
-  // Uniqueness enforced by per-callsign+cell keys with 90-day TTL. When TTL expires,
-  // that callsign can count again — giving us a natural rolling window for free.
-
-  const hmRaw = (await redis.get(HEATMAP_KEY)) ?? "null";
-  let grid: number[][] | null = null;
-  try {
-    grid = JSON.parse(hmRaw);
-  } catch {
-    grid = null;
-  }
-
-  if (!grid || !Array.isArray(grid) || grid.length !== 7) {
-    grid = Array.from({ length: 7 }, () => new Array(24).fill(0));
-  }
-
-  // Deduplicate by callsign if present, fall back to ICAO hex — catches all traffic
-  const callsignsThisBatch = new Set<string>();
+  // --- SIGHTINGS ---
+  const sightingPipeline = redis.pipeline();
   for (const f of payload.aircraft) {
     const cs = (f.flight || "").trim();
-    const id = (cs && cs !== "00000000") ? cs : f.hex;
-    if (!id) continue;
-    callsignsThisBatch.add(id);
+    const id = cs && cs !== "00000000" ? cs : f.hex;
+    if (id) sightingPipeline.set(`hm:${id}:${weekday}:${hour}`, "1", "EX", SIGHTING_TTL, "NX");
   }
+  await sightingPipeline.exec();
 
-  const csArray = [...callsignsThisBatch];
-
-  // SET NX (only if not exists) with TTL — pipeline all at once
-  const pipeline = redis.pipeline();
-  for (const cs of csArray) {
-    pipeline.set(`hm:${cs}:${weekday}:${hour}`, "1", "EX", HEATMAP_DEBOUNCE_TTL, "NX");
-  }
-  const results = await pipeline.exec();
-
-  // "OK" means key was newly set = first time we've seen this callsign in this cell
-  let gridDirty = false;
-  for (let i = 0; i < csArray.length; i++) {
-    const [err, val] = results![i] as [Error | null, string | null];
-    if (!err && val === "OK") {
-      grid[weekday][hour] += 1;
-      gridDirty = true;
+  // --- HEATMAP ---
+  // Each plane counts once per hour in "all" and in its type, and again in the "near"
+  // scope if it comes within NEAR_NM. Counting by hex means a plane whose callsign shows
+  // up partway through the hour is added to its type then, without being double counted.
+  const day = `${mtDate.getFullYear()}-${String(mtDate.getMonth() + 1).padStart(2, "0")}-${String(mtDate.getDate()).padStart(2, "0")}`;
+  const fields: string[] = [];
+  const setKeys = new Set<string>();
+  const addPipeline = redis.pipeline();
+  for (const f of payload.aircraft) {
+    if (!f.hex) continue;
+    const lat = f.lat ?? f.lat_baro;
+    const lon = f.lon ?? f.lon_baro;
+    const near = lat != null && lon != null && distanceNm(RX_LAT, RX_LON, lat, lon) <= NEAR_NM;
+    const types = heatmapTypes(f);
+    const planeFields = types.flatMap((type) =>
+      (near ? ["any", "near"] : ["any"]).map((scope) => `${hour}|${type}|${scope}`)
+    );
+    // Per-airline counts, for each cell's most common airline.
+    if (types.includes("airline")) planeFields.push(`${hour}|op:${airlineFromFlight(f)}`);
+    for (const field of planeFields) {
+      const key = `hmh:${day}:${field}`;
+      addPipeline.sadd(key, f.hex);
+      fields.push(field);
+      setKeys.add(key);
     }
   }
+  for (const key of setKeys) addPipeline.expire(key, HEATMAP_HOUR_TTL);
+  const added = (await addPipeline.exec()) ?? [];
 
-  if (gridDirty) {
-    await redis.set(HEATMAP_KEY, JSON.stringify(grid));
+  const dayKey = `hmd:${day}`;
+  const countPipeline = redis.pipeline();
+  let counted = false;
+  fields.forEach((field, i) => {
+    const [err, val] = added[i] as [Error | null, number];
+    if (!err && val === 1) {
+      countPipeline.hincrby(dayKey, field, 1);
+      counted = true;
+    }
+  });
+  if (counted) {
+    countPipeline.expire(dayKey, HEATMAP_DAY_TTL);
+    await countPipeline.exec();
   }
 
   // --- TRAILS ---

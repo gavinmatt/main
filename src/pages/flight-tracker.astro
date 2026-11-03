@@ -9,6 +9,7 @@ import FlightMap from "../components/FlightMap.tsx";
   description="Live ADS-B aircraft tracking from a personal antenna in northwest Montana. View current overhead flights and the furthest-away aircraft ever received."
   canonical="https://www.gavmatt.com/flight-tracker"
   ogImage="https://www.gavmatt.com/flight-tracker.jpg"
+  wide
 >
   <!-- HEADER -->
   <div class="text-5xl font-bold text-center mt-6">
@@ -26,184 +27,170 @@ import FlightMap from "../components/FlightMap.tsx";
     <FlightMap client:only="react" />
   </div>
 
-  <!-- TAB NAVIGATION -->
-  <div
-    class="mt-12"
-    style="width: 100%; max-width: 1280px; margin-left: auto; margin-right: auto; padding-left: 1rem; padding-right: 1rem;"
-  >
-    <div class="flex border-b border-base-300 gap-1 w-full">
-      <button
-        id="tab-overhead"
-        class="tab-btn px-5 py-2.5 text-base font-bold border-b-2 border-base-content text-base-content -mb-px"
-        onclick="switchTab('overhead')"
-      >
-        What's overhead?
-      </button>
-      <button
-        id="tab-distant"
-        class="tab-btn px-5 py-2.5 text-base font-bold border-b-2 border-transparent text-base-content/50 -mb-px hover:text-base-content"
-        onclick="switchTab('distant')"
-      >
-        Distant pings
-      </button>
-      <button
-        id="tab-frequent"
-        class="tab-btn px-5 py-2.5 text-base font-bold border-b-2 border-transparent text-base-content/50 -mb-px hover:text-base-content"
-        onclick="switchTab('frequent')"
-      >
-        Frequent fliers
-      </button>
-      <button
-        id="tab-heatmap"
-        class="tab-btn px-5 py-2.5 text-base font-bold border-b-2 border-transparent text-base-content/50 -mb-px hover:text-base-content"
-        onclick="switchTab('heatmap')"
-      >
-        Traffic heatmap
-      </button>
-    </div>
-
-    <!-- TAB: OVERHEAD -->
-    <div id="panel-overhead" class="tab-panel pt-6 w-full" style="width:100%">
-      <p class="text-base-content mb-3 text-base">
-        Data about the planes currently flying in reach of my antenna. "—" and
-        missing values are expected - not all planes send data and data is lost
-        at range. The table will also flag interesting or uncommon flights.
+  <!-- DASHBOARD -->
+  <div class="dash-grid w-full mt-12">
+    <!-- CARD: OVERHEAD -->
+    <section class="dash-card dash-wide">
+      <div class="dash-head">
+        <h2 class="dash-title">What's overhead?</h2>
+        <span id="overheadCount" class="text-sm font-semibold text-base-content/70"></span>
+      </div>
+      <p class="dash-note">
+        Planes in reach of my antenna right now, furthest first. "—" means the
+        plane didn't send that value, which is common at range.
+        <span id="lastUpdated" class="text-base-content/50"></span>
       </p>
-      <p id="lastUpdated" class="text-base text-base-content/50 mb-4"></p>
 
       <div
         id="emptyState"
-        class="hidden mt-4 mb-4 text-center border border-dashed rounded-lg py-10 px-6 text-base-content/50"
+        class="hidden my-2 text-center border border-dashed border-base-300 rounded-lg py-10 px-6 text-base-content/50"
       >
-        <div class="text-xl font-semibold mb-2">
-          No aircraft currently in range
-        </div>
+        <div class="text-lg font-semibold mb-2">No aircraft currently in range</div>
         <p class="text-sm">
           My receiver is online and listening, but there are no aircraft
           transmitting decodable ADS-B data within range right now.
         </p>
       </div>
 
-      <div class="overflow-x-auto">
+      <div class="overflow-auto md:max-h-[34rem]">
         <table class="w-full border-collapse text-sm text-base-content">
-          <thead>
-            <tr class="border-b text-base-content/70">
+          <thead class="sticky top-0 bg-base-100 z-[1]">
+            <tr class="border-b border-base-300 text-base-content/70">
               <th class="text-left py-2 px-1.5">Interesting?</th>
               <th class="text-left py-2 px-1.5">Airline</th>
-              <th class="text-left py-2 px-1.5">Callsign</th>
-              <th class="text-left py-2 px-1.5">Type</th>
-              <th class="text-left py-2 px-1.5">ICAO</th>
+              <th class="text-left py-2 px-1.5 hidden sm:table-cell">Callsign</th>
+              <th class="text-left py-2 px-1.5 hidden md:table-cell">Type</th>
+              <th class="text-left py-2 px-1.5 hidden lg:table-cell">ICAO</th>
               <th class="text-right py-2 px-1.5">Alt (ft)</th>
-              <th class="text-right py-2 px-1.5">Speed (kt)</th>
-              <th class="text-right py-2 px-1.5">Squawk</th>
+              <th class="text-right py-2 px-1.5 hidden md:table-cell">Speed (kt)</th>
+              <th class="text-right py-2 px-1.5 hidden lg:table-cell">Squawk</th>
               <th class="text-right py-2 px-1.5">Dist (NM)</th>
-              <th class="text-right py-2 px-1.5">Seen (s)</th>
+              <th class="text-right py-2 px-1.5 hidden md:table-cell">Seen (s)</th>
             </tr>
           </thead>
           <tbody id="flightBody" class="text-base-content"></tbody>
         </table>
       </div>
-    </div>
+    </section>
 
-    <!-- TAB: DISTANT PINGS -->
-    <div
-      id="panel-distant"
-      class="tab-panel pt-6 hidden w-full"
-      style="width:100%"
-    >
-      <p class="text-base-content mb-1 text-base">
-        Furthest away aircraft I've tracked. 1 NM = ~1.15 miles.
-      </p>
-      <p class="text-base-content/50 mb-4 text-sm" id="notableScale">
+    <!-- CARD: DISTANT PINGS -->
+    <section class="dash-card">
+      <div class="dash-head">
+        <h2 class="dash-title">Distant pings</h2>
+      </div>
+      <p class="dash-note">Furthest away aircraft I've tracked. 1 NM = ~1.15 miles.</p>
+      <p class="dash-subnote" id="notableScale">
         Ratings compare each ping with my receiver's recent days.
       </p>
 
       <div class="overflow-x-auto">
-        <table class="min-w-full border-collapse text-base text-base-content">
+        <table class="w-full border-collapse text-sm text-base-content">
           <thead>
-            <tr class="border-b text-base-content/70">
-              <th class="text-center py-2 px-3">Ranking</th>
-              <th class="text-center py-2 px-3">Distance Rating</th>
-              <th class="text-left py-2 px-3">Airline</th>
-              <th class="text-left py-2 px-3">Callsign</th>
-              <th class="text-right py-2 px-3">Max Distance (NM)</th>
-              <th class="text-right py-2 px-3">Date</th>
+            <tr class="border-b border-base-300 text-base-content/70">
+              <th class="text-center py-2 px-1.5 w-8"><span class="sr-only">Ranking</span></th>
+              <th class="text-left py-2 px-1.5">Rating</th>
+              <th class="text-left py-2 px-1.5">Airline</th>
+              <th class="text-left py-2 px-1.5 hidden sm:table-cell">Callsign</th>
+              <th class="text-right py-2 px-1.5">NM</th>
+              <th class="text-right py-2 px-1.5">Date</th>
             </tr>
           </thead>
           <tbody id="notableBody"></tbody>
         </table>
       </div>
-    </div>
+    </section>
 
-    <!-- TAB: FREQUENT FLIERS -->
-    <div
-      id="panel-frequent"
-      class="tab-panel pt-6 hidden w-full"
-      style="width:100%"
-    >
-      <p class="text-base-content mb-1 text-base">
-        Callsigns I've seen most often over the last 90 days. Route callsigns
-        repeat daily, so this is effectively a ranking of the busiest routes
-        over my antenna.
+    <!-- CARD: FREQUENT FLIERS -->
+    <section class="dash-card">
+      <div class="dash-head">
+        <h2 class="dash-title">Frequent fliers</h2>
+      </div>
+      <p class="dash-note">
+        Callsigns I've seen most often over the last 90 days, effectively the
+        busiest routes over my antenna.
       </p>
-      <p class="text-base-content/50 mb-4 text-sm">
+      <p class="dash-subnote">
         Each callsign counts once for every hour it's in range.
         <span id="frequentSince"></span>
       </p>
 
       <div class="overflow-x-auto">
-        <table class="min-w-full border-collapse text-base text-base-content">
+        <table class="w-full border-collapse text-sm text-base-content">
           <thead>
-            <tr class="border-b text-base-content/70">
-              <th class="text-center py-2 px-3">Ranking</th>
-              <th class="text-left py-2 px-3">Airline</th>
-              <th class="text-left py-2 px-3">Callsign</th>
-              <th class="text-right py-2 px-3">Hours Seen</th>
-              <th class="text-right py-2 px-3">Last Seen</th>
+            <tr class="border-b border-base-300 text-base-content/70">
+              <th class="text-center py-2 px-1.5 w-8"><span class="sr-only">Ranking</span></th>
+              <th class="text-left py-2 px-1.5">Airline</th>
+              <th class="text-left py-2 px-1.5 hidden sm:table-cell">Callsign</th>
+              <th class="text-right py-2 px-1.5">Hours</th>
+              <th class="text-right py-2 px-1.5">Last seen</th>
             </tr>
           </thead>
           <tbody id="frequentFliersBody"></tbody>
         </table>
       </div>
-    </div>
+    </section>
 
-    <!-- TAB: HEATMAP -->
-    <div
-      id="panel-heatmap"
-      class="tab-panel pt-6 hidden w-full"
-      style="width:100%"
-    >
-      <p class="text-base-content mb-1 text-base">
+    <!-- CARD: HEATMAP -->
+    <section class="dash-card dash-wide">
+      <div class="dash-head">
+        <h2 class="dash-title">Traffic heatmap</h2>
+      </div>
+      <p class="dash-note">
         Average number of planes in range each hour, by day of week (Mountain
         Time, last 90 days).
       </p>
-      <p class="text-base-content/50 mb-4 text-sm">
-        Each plane counts once per hour, however long it stays. Hover a cell for
-        its most common airline. The outlined cell is now.
+      <p class="dash-subnote">
+        Each plane counts once per hour, however long it stays. Hover or tap a
+        cell for its most common airline. The outlined cell is now.
         <span id="heatmapSince"></span>
       </p>
 
-      <div class="flex flex-wrap gap-3 mb-5">
-        <div class="join" id="heatmapTypes">
-          <button class="join-item btn btn-sm" data-type="all">All</button>
-          <button class="join-item btn btn-sm" data-type="airline">Commercial</button>
-          <button class="join-item btn btn-sm" data-type="private">Private</button>
-          <button class="join-item btn btn-sm" data-type="military">Military</button>
-          <button class="join-item btn btn-sm" data-type="heli">Helicopters</button>
-          <button class="join-item btn btn-sm" data-type="skydive">Skydiving</button>
-          <button class="join-item btn btn-sm" data-type="other">Other</button>
+      <div class="flex flex-wrap gap-x-4 gap-y-2 mb-4">
+        <div class="flex flex-wrap gap-1" id="heatmapTypes">
+          <button class="btn btn-xs sm:btn-sm" data-type="all">All</button>
+          <button class="btn btn-xs sm:btn-sm" data-type="airline">Commercial</button>
+          <button class="btn btn-xs sm:btn-sm" data-type="private">Private</button>
+          <button class="btn btn-xs sm:btn-sm" data-type="military">Military</button>
+          <button class="btn btn-xs sm:btn-sm" data-type="heli">Helicopters</button>
+          <button class="btn btn-xs sm:btn-sm" data-type="skydive">Skydiving</button>
+          <button class="btn btn-xs sm:btn-sm" data-type="other">Other</button>
         </div>
-        <div class="join" id="heatmapScopes">
-          <button class="join-item btn btn-sm" data-scope="any">Everything in range</button>
-          <button class="join-item btn btn-sm" data-scope="near">Within 15 NM</button>
+        <div class="flex flex-wrap gap-1" id="heatmapScopes">
+          <button class="btn btn-xs sm:btn-sm" data-scope="any">Everything in range</button>
+          <button class="btn btn-xs sm:btn-sm" data-scope="near">Within 15 NM</button>
         </div>
       </div>
 
-      <div id="heatmapContainer" class="overflow-x-auto">
-        <div id="heatmapGrid"></div>
-      </div>
-    </div>
+      <div id="heatmapGrid"></div>
+    </section>
   </div>
+
+  <style>
+    /* Two columns only when the content area can really fit two 30rem cards. */
+    .dash-grid {
+      display: grid;
+      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 30rem), 1fr));
+    }
+    .dash-wide {
+      grid-column: 1 / -1;
+    }
+    .dash-card {
+      @apply min-w-0 rounded-lg border border-base-300 bg-base-100 p-3 sm:p-5;
+    }
+    .dash-head {
+      @apply flex items-baseline justify-between gap-3 mb-1;
+    }
+    .dash-title {
+      @apply text-xl font-bold;
+    }
+    .dash-note {
+      @apply text-sm text-base-content/80 mb-1;
+    }
+    .dash-subnote {
+      @apply text-xs text-base-content/50 mb-3;
+    }
+  </style>
 
   <!-- SCRIPT -->
   <script>
@@ -221,41 +208,12 @@ import FlightMap from "../components/FlightMap.tsx";
     import { subscribeFlights } from "../lib/flightFeed.js";
     import { pollWhileVisible } from "../lib/poll.js";
 
-    /* ---------- TAB SWITCHING ---------- */
-
-    window.switchTab = function (name) {
-      document.querySelectorAll(".tab-panel").forEach((p) => {
-        p.style.height = "0";
-        p.style.overflow = "hidden";
-        p.style.paddingTop = "0";
-      });
-      document.querySelectorAll(".tab-btn").forEach((b) => {
-        b.classList.remove("border-base-content", "text-base-content");
-        b.classList.add("border-transparent", "text-base-content/50");
-      });
-      const panel = document.getElementById("panel-" + name);
-      panel.style.height = "auto";
-      panel.style.overflow = "visible";
-      panel.style.paddingTop = "1.5rem";
-      const btn = document.getElementById("tab-" + name);
-      btn.classList.remove("border-transparent", "text-base-content/50");
-      btn.classList.add("border-base-content", "text-base-content");
-    };
-
-    // Init: collapse non-overhead panels
-    ["panel-distant", "panel-frequent", "panel-heatmap"].forEach((id) => {
-      const p = document.getElementById(id);
-      p.classList.remove("hidden");
-      p.style.height = "0";
-      p.style.overflow = "hidden";
-      p.style.paddingTop = "0";
-    });
-
     /* ---------- CONSTANTS ---------- */
 
     const tbody = document.getElementById("flightBody");
     const emptyStateEl = document.getElementById("emptyState");
     const lastUpdatedEl = document.getElementById("lastUpdated");
+    const overheadCountEl = document.getElementById("overheadCount");
     const STALE_AFTER_MS = 90_000;
 
     const RX_LAT = 48.415;
@@ -313,6 +271,10 @@ import FlightMap from "../components/FlightMap.tsx";
       el.textContent = `${basis}: good = ${t.median}+ NM (a typical day's furthest plane), great = ${t.p90}+ NM (better than 90% of days), amazing = ${t.best}+ NM (a new 30-day best). Click a date to see that flight's track.`;
     }
 
+    // Phones fold the callsign column under the airline to save a column.
+    const phoneCallsign = (cs) =>
+      `<div class="sm:hidden text-xs text-base-content/50">${escapeHtml(cs)}</div>`;
+
     /* ---------- NOTABLES ---------- */
 
     function renderNotables(rows, range) {
@@ -334,15 +296,15 @@ import FlightMap from "../components/FlightMap.tsx";
           // ADS-B Exchange keeps every plane's track by UTC date.
           const trace = `https://globe.adsbexchange.com/?icao=${encodeURIComponent(r.hex)}&showTrace=${date.toISOString().slice(0, 10)}`;
           return `
-          <tr class="border-b">
-            <td class="text-center py-2 px-3 text-xl">${rank}</td>
-            <td class="text-center py-2 px-3">
+          <tr class="border-b border-base-300">
+            <td class="text-center py-2 px-1.5 text-lg">${rank}</td>
+            <td class="py-2 px-1.5">
               ${label ? `<span class="px-2 py-0.5 rounded text-xs font-medium ${label.cls}">${label.label}</span>` : "—"}
             </td>
-            <td class="py-2 px-3">${escapeHtml(r.airline && r.airline !== "—" ? r.airline : notableLabelForFlight(fakeFlight))}</td>
-            <td class="py-2 px-3 ${noCallsign ? "text-base-content/50" : ""}">${noCallsign ? "No callsign" : escapeHtml(r.callsign)}</td>
-            <td class="text-right py-2 px-3 font-semibold">${escapeHtml(r.maxDistance)}</td>
-            <td class="text-right py-2 px-3"><a class="link" href="${trace}" target="_blank" rel="noopener">${date.toLocaleDateString()}</a></td>
+            <td class="py-2 px-1.5 whitespace-nowrap">${escapeHtml(r.airline && r.airline !== "—" ? r.airline : notableLabelForFlight(fakeFlight))}${phoneCallsign(noCallsign ? "No callsign" : r.callsign)}</td>
+            <td class="py-2 px-1.5 whitespace-nowrap hidden sm:table-cell ${noCallsign ? "text-base-content/50" : ""}">${noCallsign ? "No callsign" : escapeHtml(r.callsign)}</td>
+            <td class="text-right py-2 px-1.5 font-semibold">${escapeHtml(r.maxDistance)}</td>
+            <td class="text-right py-2 px-1.5 whitespace-nowrap"><a class="link" href="${trace}" target="_blank" rel="noopener">${date.toLocaleDateString(undefined, { month: "short", day: "numeric" })}</a></td>
           </tr>`;
         })
         .join("");
@@ -370,12 +332,12 @@ import FlightMap from "../components/FlightMap.tsx";
         .map((r, i) => {
           const rank = medals[i] ?? "";
           return `
-          <tr class="border-b">
-            <td class="text-center py-2 px-3 text-xl">${rank}</td>
-            <td class="py-2 px-3">${escapeHtml(airlineFromCallsign(r.callsign))}</td>
-            <td class="py-2 px-3 font-mono">${escapeHtml(r.callsign)}</td>
-            <td class="text-right py-2 px-3 font-semibold">${escapeHtml(r.count)}</td>
-            <td class="text-right py-2 px-3">${new Date(`${r.lastDay}T12:00:00`).toLocaleDateString()}</td>
+          <tr class="border-b border-base-300">
+            <td class="text-center py-2 px-1.5 text-lg">${rank}</td>
+            <td class="py-2 px-1.5 whitespace-nowrap">${escapeHtml(airlineFromCallsign(r.callsign))}${phoneCallsign(r.callsign)}</td>
+            <td class="py-2 px-1.5 font-mono hidden sm:table-cell">${escapeHtml(r.callsign)}</td>
+            <td class="text-right py-2 px-1.5 font-semibold">${escapeHtml(r.count)}</td>
+            <td class="text-right py-2 px-1.5 whitespace-nowrap">${new Date(`${r.lastDay}T12:00:00`).toLocaleDateString(undefined, { month: "short", day: "numeric" })}</td>
           </tr>`;
         })
         .join("");
@@ -439,6 +401,9 @@ import FlightMap from "../components/FlightMap.tsx";
           (a, b) => (aircraftDistance(b) ?? 0) - (aircraftDistance(a) ?? 0)
         );
 
+      overheadCountEl.textContent = activeFlights.length
+        ? `${activeFlights.length} in range`
+        : "";
       if (!activeFlights.length) {
         tbody.innerHTML = "";
         emptyStateEl.classList.remove("hidden");
@@ -463,8 +428,8 @@ import FlightMap from "../components/FlightMap.tsx";
           const d = aircraftDistance(f);
           const dFlag = d != null ? distanceFlag(d) : null;
           return `
-          <tr class="border-b text-base-content">
-            <td class="py-2 px-1.5 space-x-1 text-base-content/40">
+          <tr class="border-b border-base-300 text-base-content">
+            <td class="py-2 px-1.5 text-base-content/40"><div class="flex flex-wrap gap-1">
               ${
                 note || dFlag
                   ? `
@@ -473,16 +438,16 @@ import FlightMap from "../components/FlightMap.tsx";
               `
                   : "—"
               }
-            </td>
-            <td class="py-2 px-1.5">${escapeHtml(airlineFromFlight(f))}</td>
-            <td class="py-2 px-1.5">${escapeHtml(callsignDisplay(f))}</td>
-            <td class="py-2 px-1.5">${aircraftType(f)}</td>
-            <td class="py-2 px-1.5">${escapeHtml(f.hex || "—")}</td>
+            </div></td>
+            <td class="py-2 px-1.5 whitespace-nowrap">${escapeHtml(airlineFromFlight(f))}${phoneCallsign(callsignDisplay(f))}</td>
+            <td class="py-2 px-1.5 whitespace-nowrap hidden sm:table-cell">${escapeHtml(callsignDisplay(f))}</td>
+            <td class="py-2 px-1.5 hidden md:table-cell whitespace-nowrap">${aircraftType(f)}</td>
+            <td class="py-2 px-1.5 hidden lg:table-cell">${escapeHtml(f.hex || "—")}</td>
             <td class="text-right py-2 px-1.5">${escapeHtml(f.alt_baro ?? f.alt_geom ?? "—")}</td>
-            <td class="text-right py-2 px-1.5">${escapeHtml(f.gs ?? "—")}</td>
-            <td class="text-right py-2 px-1.5 font-mono">${escapeHtml(f.squawk ?? "—")}</td>
+            <td class="text-right py-2 px-1.5 hidden md:table-cell">${escapeHtml(f.gs ?? "—")}</td>
+            <td class="text-right py-2 px-1.5 font-mono hidden lg:table-cell">${escapeHtml(f.squawk ?? "—")}</td>
             <td class="text-right py-2 px-1.5">${d != null ? Math.round(d) : "—"}</td>
-            <td class="text-right py-2 px-1.5">${secondsSinceSeen(f)}</td>
+            <td class="text-right py-2 px-1.5 hidden md:table-cell">${secondsSinceSeen(f)}</td>
           </tr>`;
         })
         .join("");
@@ -492,7 +457,7 @@ import FlightMap from "../components/FlightMap.tsx";
     subscribeFlights((data) => {
       render(data.aircraft ?? []);
       lastUpdatedEl.textContent =
-        "Last updated " + new Date(data.receivedAt).toLocaleTimeString();
+        " Updated " + new Date(data.receivedAt).toLocaleTimeString();
     });
     pollWhileVisible(loadNotables, 60000);
     pollWhileVisible(loadFrequentFliers, 300000);
@@ -514,6 +479,8 @@ import FlightMap from "../components/FlightMap.tsx";
     let heatmapData = null;
     let heatmapType = "all";
     let heatmapScope = "any";
+    let heatmapTall = false;
+    const HEATMAP_FLIP_WIDTH = 640;
 
     const heatmapRamp = () =>
       HEATMAP_RAMPS[document.documentElement.getAttribute("data-theme") === "lofi-dark" ? "dark" : "light"];
@@ -552,7 +519,9 @@ import FlightMap from "../components/FlightMap.tsx";
       // Square root so quiet hours still show some shade next to the busiest one.
       const max = Math.sqrt(Math.max(...grid.flat()));
       const now = mountainNow();
-      const cellSize = "36px";
+      // Narrow cards (phones) flip the grid: days across the top, hours down the side.
+      const tall = container.clientWidth < HEATMAP_FLIP_WIDTH;
+      heatmapTall = tall;
 
       const since = document.getElementById("heatmapSince");
       const days = heatmapData.daysPerWeekday.reduce((a, b) => a + b, 0);
@@ -562,37 +531,40 @@ import FlightMap from "../components/FlightMap.tsx";
           : "";
       }
 
-      let html = `<table style="border-collapse:separate; border-spacing:3px; font-size:12px;">`;
-      html += `<thead><tr><th style="width:36px"></th>`;
-      for (const h of HOURS) {
-        html += `<th style="width:${cellSize}; text-align:center; color:${ramp.label}; font-weight:500; padding-bottom:4px;">${h}</th>`;
+      function cell(d, h) {
+        const val = grid[d][h];
+        const intensity = max ? Math.sqrt(val) / max : 0;
+        const bg = val ? heatmapColor(intensity, ramp) : ramp.empty;
+        const textColor = (intensity > 0.55) !== dark ? "#fff" : dark ? "#0b1220" : "#374151";
+        // Whole numbers as-is; one decimal only when it says something (4.3, not 4.0).
+        const shown = val >= 10 || Number.isInteger(val) ? String(Math.round(val)) : val.toFixed(1);
+        const top = heatmapType === "all" || heatmapType === "airline" ? heatmapData.topAirline[d][h] : null;
+        // Lines for the hover tooltip: when, how many, most common airline.
+        const tip = [
+          `${DAYS[d]} ${HOURS[h]}`,
+          `${shown} plane${val === 1 ? "" : "s"} on average`,
+          top ? `Most common: ${top}` : "",
+        ].filter(Boolean).join("\n");
+        const isNow = d === now.weekday && h === now.hour;
+        const outline = isNow ? `outline:2px solid ${ramp.label}; outline-offset:1px;` : "";
+        return `<td data-tip="${escapeHtml(tip)}" style="height:${tall ? 26 : 34}px; background:${bg}; ${outline} border-radius:3px; text-align:center; vertical-align:middle; color:${textColor}; cursor:default; font-size:10px;">`
+          + `<span${val ? "" : ` style="color:${ramp.label};"`}>${shown}</span></td>`;
       }
-      html += `</tr></thead><tbody>`;
 
-      for (let d = 0; d < 7; d++) {
-        html += `<tr><td style="text-align:right; padding-right:8px; color:${ramp.label}; font-weight:500; white-space:nowrap;">${DAYS[d]}</td>`;
-        for (let h = 0; h < 24; h++) {
-          const val = grid[d][h];
-          const intensity = max ? Math.sqrt(val) / max : 0;
-          const bg = val ? heatmapColor(intensity, ramp) : ramp.empty;
-          const textColor = (intensity > 0.55) !== dark ? "#fff" : dark ? "#0b1220" : "#374151";
-          // Whole numbers as-is; one decimal only when it says something (4.3, not 4.0).
-          const shown = val >= 10 || Number.isInteger(val) ? String(Math.round(val)) : val.toFixed(1);
-          const top = heatmapType === "all" || heatmapType === "airline" ? heatmapData.topAirline[d][h] : null;
-          // Lines for the hover tooltip: when, how many, most common airline.
-          const tip = [
-            `${DAYS[d]} ${HOURS[h]}`,
-            `${shown} plane${val === 1 ? "" : "s"} on average`,
-            top ? `Most common: ${top}` : "",
-          ].filter(Boolean).join("\n");
-          const isNow = d === now.weekday && h === now.hour;
-          const outline = isNow ? `outline:2px solid ${ramp.label}; outline-offset:1px;` : "";
-          html += `<td data-tip="${escapeHtml(tip)}" style="width:${cellSize}; height:${cellSize}; background:${bg}; ${outline} border-radius:3px; text-align:center; vertical-align:middle; color:${textColor}; cursor:default;">`;
-          html += `<span style="font-size:10px;${val ? "" : ` color:${ramp.label};`}">${shown}</span>`;
-          html += `</td>`;
-        }
+      const labelStyle = `color:${ramp.label}; font-weight:500; white-space:nowrap;`;
+      const cols = tall ? DAYS : HOURS;
+      const rows = tall ? HOURS : DAYS;
+      // Fixed layout so the cells share the card's width instead of setting it.
+      let html = `<table style="width:100%; table-layout:fixed; border-collapse:separate; border-spacing:3px; font-size:11px;">`;
+      html += `<colgroup><col style="width:36px">${cols.map(() => "<col>").join("")}</colgroup>`;
+      html += `<thead><tr><th></th>`;
+      for (const c of cols) html += `<th style="${labelStyle} text-align:center; padding-bottom:4px;">${c}</th>`;
+      html += `</tr></thead><tbody>`;
+      rows.forEach((r, i) => {
+        html += `<tr><td style="${labelStyle} text-align:right; padding-right:6px;">${r}</td>`;
+        for (let j = 0; j < cols.length; j++) html += tall ? cell(j, i) : cell(i, j);
         html += `</tr>`;
-      }
+      });
       html += `</tbody></table>`;
 
       html += `<div style="margin-top:12px; display:flex; align-items:center; gap:6px; font-size:12px; color:${ramp.label};">`;
@@ -614,6 +586,10 @@ import FlightMap from "../components/FlightMap.tsx";
       if (scope) { heatmapScope = scope; renderHeatmap(); }
     });
     window.addEventListener("themechange", renderHeatmap);
+    // Re-render only when the card crosses the width where the grid flips.
+    new ResizeObserver(([entry]) => {
+      if (heatmapData && (entry.contentRect.width < HEATMAP_FLIP_WIDTH) !== heatmapTall) renderHeatmap();
+    }).observe(document.getElementById("heatmapGrid"));
 
     // Custom tooltip: the browser's title tooltip is slow and never shows on touch.
     const heatmapTip = document.createElement("div");

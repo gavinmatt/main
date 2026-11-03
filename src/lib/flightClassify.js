@@ -735,10 +735,9 @@ export function militaryBranch(f) {
   if (/^CTM\d/.test(cs)) return "FR AF";
   if (/^IAM\d/.test(cs)) return "IT AF";
   if (/^KAF\d/.test(cs)) return "KENYA AF";
-  // Any other US military airframe; callsigns above name the branch first.
-  if (hexUpper(f).startsWith("AE")) {
-    return (f.alt_baro ?? 0) > 30000 && (f.gs ?? 0) < 500 ? "USAF (TANKER)" : "USAF";
-  }
+  // Any other US military airframe. Tactical callsigns (GHOST, WOLF...) don't say
+  // which branch, or what kind of plane, so don't guess.
+  if (hexUpper(f).startsWith("AE")) return "US MIL";
   return null;
 }
 

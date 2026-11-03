@@ -736,7 +736,7 @@ export function classifyNotability(f) {
     return { label: "HELI", cls: "bg-emerald-100 text-emerald-800" };
   if (/^BOE\d+/.test(cs))
     return { label: "Test Flight", cls: "bg-amber-100 text-amber-800" };
-  if (isJanet(f)) return { label: "JANET", cls: "bg-violet-700 text-white" };
+  if (isJanet(f)) return { label: "JANET", cls: "bg-lime-400 text-lime-950" };
   if (isSkydiving(f))
     return { label: "SKYDIVE", cls: "bg-pink-100 text-pink-800" };
   const branch = militaryBranch(f);

@@ -52,7 +52,7 @@ const FLAG_COLORS = {
   test: '#f59e0b',
   uncommon: '#3b82f6',
   fastHigh: '#facc15',
-  janet: '#a78bfa',
+  janet: '#7fff00',
   skydive: '#ec4899',
 };
 
@@ -81,7 +81,7 @@ function flagColor(cls: string | undefined) {
   if (cls.includes('blue')) return FLAG_COLORS.uncommon;
   if (cls.includes('yellow')) return FLAG_COLORS.fastHigh;
   if (cls.includes('pink')) return FLAG_COLORS.skydive;
-  if (cls.includes('violet')) return FLAG_COLORS.janet;
+  if (cls.includes('lime')) return FLAG_COLORS.janet;
   return DEFAULT_COLOR;
 }
 

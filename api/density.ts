@@ -29,8 +29,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader("Cache-Control", "s-maxage=900, stale-while-revalidate=1800");
 
   const pipeline = redis.pipeline();
-  for (const month of mtMonths(MONTHS)) pipeline.hgetall(`pd:${month}`);
-  pipeline.get("pd:since");
+  for (const month of mtMonths(MONTHS)) pipeline.hgetall(`pdp:${month}`);
+  pipeline.get("pdp:since");
   const results = (await pipeline.exec()) ?? [];
 
   const sums = new Map<string, number>();
@@ -39,7 +39,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       sums.set(cell, (sums.get(cell) ?? 0) + Number(n));
     }
   }
-  // [lat index, lon index, samples]; the cell's south-west corner is index × step.
+  // [lat index, lon index, planes]; the cell's south-west corner is index × step.
   const cells = [...sums].map(([cell, n]) => {
     const [lat, lon] = cell.split(",").map(Number);
     return [lat, lon, n];

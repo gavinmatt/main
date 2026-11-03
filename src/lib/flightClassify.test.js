@@ -25,6 +25,8 @@ test("airline codes need a flight number after them", () => {
     AB3187: "ABX Air",
     QX2104: "Horizon Air",
     XAA1154: "American Airlines",
+    // Word callsigns for operators that don't fly under their code.
+    FENIX27: "Phoenix Air",
     // Word callsigns that only start with an airline's code.
     TORO01: "—",
   };

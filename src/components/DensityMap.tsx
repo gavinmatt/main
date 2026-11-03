@@ -1,12 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Coords, Map as LeafletMap } from 'leaflet';
 
-const RX_LAT = 48.43;
-const RX_LON = -114.4755;
+const RX_LAT = 48.41;
+const RX_LON = -114.444;
 const RING_NM = [50, 100, 150, 200, 250];
 const NM_TO_M = 1852;
-// Ingest records one sample per plane every 15 seconds.
-const SAMPLES_PER_MINUTE = 4;
 
 // One hue, dim and see-through for rarely flown cells up to near-white for the busiest,
 // so airways glow over the dark base map.
@@ -25,10 +23,8 @@ function rampColor(t: number) {
   return `rgba(${Math.round(r)},${Math.round(g)},${Math.round(b)},${a.toFixed(2)})`;
 }
 
-function minutesLabel(samples: number) {
-  const minutes = samples / SAMPLES_PER_MINUTE;
-  if (minutes >= 120) return `${Math.round(minutes / 60).toLocaleString()} aircraft-hours`;
-  return `${Math.max(1, Math.round(minutes))} aircraft-minute${Math.round(minutes) === 1 ? '' : 's'}`;
+function passesLabel(planes: number) {
+  return `${planes.toLocaleString()} plane${planes === 1 ? '' : 's'} passed through`;
 }
 
 export default function DensityMap() {
@@ -68,7 +64,7 @@ export default function DensityMap() {
           counts.set(`${lat},${lon}`, n);
           max = Math.max(max, n);
         }
-        // Log scale: the busiest airway has thousands of samples, a stray GA flight a few.
+        // Log scale: the busiest airway sees thousands of planes, a quiet valley a few.
         const logMax = Math.log1p(max);
 
         const DensityLayer = L.GridLayer.extend({
@@ -120,7 +116,7 @@ export default function DensityMap() {
         map.on('mousemove', (e) => {
           const key = `${Math.floor(e.latlng.lat / data.latStep)},${Math.floor(e.latlng.lng / data.lonStep)}`;
           const n = counts.get(key);
-          setHover(n ? `${minutesLabel(n)} in this square` : 'No traffic recorded in this square');
+          setHover(n ? `${passesLabel(n)} this square` : 'No planes recorded in this square');
         });
         map.on('mouseout', () => setHover(null));
         map.on('click', (e) => map.fire('mousemove', e));

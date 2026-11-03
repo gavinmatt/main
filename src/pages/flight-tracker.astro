@@ -137,13 +137,13 @@ import DensityMap from "../components/DensityMap.tsx";
         <h2 class="dash-title">Where planes fly</h2>
       </div>
       <p class="dash-note">
-        Every position my antenna has received over the last three months,
-        binned into ~3 NM squares. The bright lines are the airways overhead.
+        Every plane my antenna has heard over the last three months, mapped
+        onto ~3 NM squares. The bright lines are the airways overhead.
       </p>
       <p class="dash-subnote">
-        Brighter squares are where aircraft spend more time. Only clean ADS-B
-        positions count, and the edge of the coverage shows my antenna's
-        real range in each direction.
+        Brighter squares are where more planes pass. Each plane counts once
+        per square per hour, so one plane circling overhead can't pass for an
+        airway. Only clean ADS-B positions count.
       </p>
       <DensityMap client:only="react" />
     </section>
@@ -263,8 +263,8 @@ import DensityMap from "../components/DensityMap.tsx";
     const overheadCountEl = document.getElementById("overheadCount");
     const STALE_AFTER_MS = 90_000;
 
-    const RX_LAT = 48.43;
-    const RX_LON = -114.4755;
+    const RX_LAT = 48.41;
+    const RX_LON = -114.444;
 
     /* ---------- UTILS ---------- */
 

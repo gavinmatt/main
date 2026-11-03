@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import FlightMap from "../components/FlightMap.tsx";
+import DensityMap from "../components/DensityMap.tsx";
 ---
 
 <BaseLayout
@@ -128,6 +129,23 @@ import FlightMap from "../components/FlightMap.tsx";
           <tbody id="frequentFliersBody"></tbody>
         </table>
       </div>
+    </section>
+
+    <!-- CARD: DENSITY MAP -->
+    <section class="dash-card dash-wide">
+      <div class="dash-head">
+        <h2 class="dash-title">Where planes fly</h2>
+      </div>
+      <p class="dash-note">
+        Every position my antenna has received over the last three months,
+        binned into ~3 NM squares. The bright lines are the airways overhead.
+      </p>
+      <p class="dash-subnote">
+        Brighter squares are where aircraft spend more time. Only clean ADS-B
+        positions count, and the edge of the coverage shows my antenna's
+        real range in each direction.
+      </p>
+      <DensityMap client:only="react" />
     </section>
 
     <!-- CARD: HEATMAP -->

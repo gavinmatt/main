@@ -44,6 +44,7 @@ export function isFirefighting(f) {
 
 export const AIRLINE_NAMES = {
   AAL: "American Airlines",
+  XAA: "American Airlines", // seen as XAA plus an AA flight number
   DAL: "Delta Air Lines",
   UAL: "United Airlines",
   UA: "United Airlines", // IATA code
@@ -58,6 +59,7 @@ export const AIRLINE_NAMES = {
   AC: "Air Canada", // IATA code, sent by some aircraft instead of ACA
   ROU: "Air Canada Rouge",
   WJA: "WestJet",
+  WJ: "WestJet",
   WEN: "WestJet Encore",
   TSC: "Air Transat",
   SWG: "Sunwing",
@@ -648,6 +650,7 @@ const PRIVATE_CALLSIGNS = [
   /^HI\d{3,4}$/, // Dominican Republic
   /^(OE|PH|EC|EI|OO|OY|SE|LN|OH|LX|VH|ZS|P[PRST]|X[ABC]|V[PQ]|CS|SP|OK|HZ|HS|ZK|A6|A7|9H|TC)-?[A-Z]{3}$/,
   /^LN\d{1,5}[A-Z]{1,2}$/, // "L" plus a US tail number, e.g. LN233TJ for N233TJ
+  /^T\d{1,4}[A-Z]{1,2}$/, // "T" in place of the N, e.g. T755J
   /^NCJ\d+/,
   /^MAVEN\d/,
 ];

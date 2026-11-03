@@ -170,13 +170,29 @@ import FlightMap from "../components/FlightMap.tsx";
       style="width:100%"
     >
       <p class="text-base-content mb-1 text-base">
-        Unique flights overhead by hour and day of week (Mountain Time, rolling
-        90 days).
+        Average number of planes in range each hour, by day of week (Mountain
+        Time, last 90 days).
       </p>
-      <p class="text-base-content/50 mb-6 text-sm">
-        Darker = more traffic. Each cell counts distinct ICAO codes — a flight
-        seen multiple times in the same hour only counts once.
+      <p class="text-base-content/50 mb-4 text-sm">
+        Each plane counts once per hour, however long it stays. Hover a cell for
+        its most common airline. The outlined cell is now.
+        <span id="heatmapSince"></span>
       </p>
+
+      <div class="flex flex-wrap gap-3 mb-5">
+        <div class="join" id="heatmapTypes">
+          <button class="join-item btn btn-sm" data-type="all">All</button>
+          <button class="join-item btn btn-sm" data-type="airline">Commercial</button>
+          <button class="join-item btn btn-sm" data-type="private">Private</button>
+          <button class="join-item btn btn-sm" data-type="military">Military</button>
+          <button class="join-item btn btn-sm" data-type="heli">Helicopters</button>
+          <button class="join-item btn btn-sm" data-type="skydive">Skydiving</button>
+        </div>
+        <div class="join" id="heatmapScopes">
+          <button class="join-item btn btn-sm" data-scope="any">Everything in range</button>
+          <button class="join-item btn btn-sm" data-scope="near">Within 15 NM</button>
+        </div>
+      </div>
 
       <div id="heatmapContainer" class="overflow-x-auto">
         <div id="heatmapGrid"></div>
@@ -444,7 +460,7 @@ import FlightMap from "../components/FlightMap.tsx";
     });
     pollWhileVisible(loadNotables, 60000);
     pollWhileVisible(loadFrequentFliers, 60000);
-    pollWhileVisible(loadHeatmap, 60000);
+    pollWhileVisible(loadHeatmap, 300000);
 
     /* ---------- HEATMAP ---------- */
 
@@ -453,64 +469,115 @@ import FlightMap from "../components/FlightMap.tsx";
       i === 0 ? "12a" : i < 12 ? `${i}a` : i === 12 ? "12p" : `${i - 12}p`
     );
 
-    function heatmapColor(value, max) {
-      if (max === 0 || value === 0) return "#f3f4f6";
-      const intensity = value / max;
-      const r = Math.round(239 - intensity * 210);
-      const g = Math.round(246 - intensity * 200);
-      const b = Math.round(255 - intensity * 100);
-      return `rgb(${r},${g},${b})`;
+    // One hue, light to dark (light theme) or dark to bright (dark theme).
+    const HEATMAP_RAMPS = {
+      light: { empty: "#f1f3f5", from: [232, 240, 250], to: [18, 64, 125], label: "#6b7280" },
+      dark: { empty: "#272b31", from: [30, 42, 58], to: [140, 192, 255], label: "#9ca3af" },
+    };
+
+    let heatmapData = null;
+    let heatmapType = "all";
+    let heatmapScope = "any";
+
+    const heatmapRamp = () =>
+      HEATMAP_RAMPS[document.documentElement.getAttribute("data-theme") === "lofi-dark" ? "dark" : "light"];
+
+    function heatmapColor(intensity, ramp) {
+      const mix = ramp.from.map((c, i) => Math.round(c + (ramp.to[i] - c) * intensity));
+      return `rgb(${mix.join(",")})`;
     }
 
-    function renderHeatmap(grid) {
+    function mountainNow() {
+      const parts = Object.fromEntries(
+        new Intl.DateTimeFormat("en-US", { timeZone: "America/Denver", weekday: "short", hour: "numeric", hourCycle: "h23" })
+          .formatToParts(new Date())
+          .map((p) => [p.type, p.value])
+      );
+      return { weekday: DAYS.indexOf(parts.weekday), hour: Number(parts.hour) % 24 };
+    }
+
+    function syncHeatmapButtons() {
+      document.querySelectorAll("#heatmapTypes [data-type]").forEach((b) =>
+        b.classList.toggle("btn-active", b.dataset.type === heatmapType)
+      );
+      document.querySelectorAll("#heatmapScopes [data-scope]").forEach((b) =>
+        b.classList.toggle("btn-active", b.dataset.scope === heatmapScope)
+      );
+    }
+
+    function renderHeatmap() {
       const container = document.getElementById("heatmapGrid");
-      if (!container) return;
+      if (!container || !heatmapData) return;
+      syncHeatmapButtons();
 
-      const max = Math.max(...grid.flatMap((row) => row));
-
+      const grid = heatmapData.grids[`${heatmapType}|${heatmapScope}`];
+      const ramp = heatmapRamp();
+      const dark = ramp === HEATMAP_RAMPS.dark;
+      // Square root so quiet hours still show some shade next to the busiest one.
+      const max = Math.sqrt(Math.max(...grid.flat()));
+      const now = mountainNow();
       const cellSize = "36px";
 
-      let html = `<table style="border-collapse:separate; border-spacing:3px; font-size:12px;">`;
+      const since = document.getElementById("heatmapSince");
+      const days = heatmapData.daysPerWeekday.reduce((a, b) => a + b, 0);
+      if (since) {
+        since.textContent = heatmapData.since && days < 90
+          ? ` Collecting since ${new Date(`${heatmapData.since}T12:00:00`).toLocaleDateString(undefined, { month: "short", day: "numeric" })}, so averages will settle over the coming weeks.`
+          : "";
+      }
 
+      let html = `<table style="border-collapse:separate; border-spacing:3px; font-size:12px;">`;
       html += `<thead><tr><th style="width:36px"></th>`;
       for (const h of HOURS) {
-        html += `<th style="width:${cellSize}; text-align:center; color:#6b7280; font-weight:500; padding-bottom:4px;">${h}</th>`;
+        html += `<th style="width:${cellSize}; text-align:center; color:${ramp.label}; font-weight:500; padding-bottom:4px;">${h}</th>`;
       }
       html += `</tr></thead><tbody>`;
 
       for (let d = 0; d < 7; d++) {
-        html += `<tr>`;
-        html += `<td style="text-align:right; padding-right:8px; color:#6b7280; font-weight:500; white-space:nowrap;">${DAYS[d]}</td>`;
+        html += `<tr><td style="text-align:right; padding-right:8px; color:${ramp.label}; font-weight:500; white-space:nowrap;">${DAYS[d]}</td>`;
         for (let h = 0; h < 24; h++) {
           const val = grid[d][h];
-          const bg = heatmapColor(val, max);
-          const textColor = val / max > 0.5 ? "#fff" : "#374151";
-          const title = `${DAYS[d]} ${HOURS[h]}: ${val} flight${val !== 1 ? "s" : ""}`;
-          html += `<td title="${title}" style="width:${cellSize}; height:${cellSize}; background:${bg}; border-radius:3px; text-align:center; vertical-align:middle; color:${textColor}; cursor:default;">`;
-          if (val > 0) html += `<span style="font-size:10px;">${val}</span>`;
+          const intensity = max ? Math.sqrt(val) / max : 0;
+          const bg = val ? heatmapColor(intensity, ramp) : ramp.empty;
+          const textColor = (intensity > 0.55) !== dark ? "#fff" : dark ? "#0b1220" : "#374151";
+          const shown = val >= 10 ? Math.round(val) : val.toFixed(1);
+          const top = heatmapType === "all" || heatmapType === "airline" ? heatmapData.topAirline[d][h] : null;
+          const title = `${DAYS[d]} ${HOURS[h]}: ${val ? shown : "no"} plane${val === 1 ? "" : "s"} on average${top ? ` · most common airline: ${top}` : ""}`;
+          const isNow = d === now.weekday && h === now.hour;
+          const outline = isNow ? `outline:2px solid ${ramp.label}; outline-offset:1px;` : "";
+          html += `<td title="${escapeHtml(title)}" style="width:${cellSize}; height:${cellSize}; background:${bg}; ${outline} border-radius:3px; text-align:center; vertical-align:middle; color:${textColor}; cursor:default;">`;
+          if (val > 0) html += `<span style="font-size:10px;">${shown}</span>`;
           html += `</td>`;
         }
         html += `</tr>`;
       }
-
       html += `</tbody></table>`;
 
-      html += `<div style="margin-top:12px; display:flex; align-items:center; gap:6px; font-size:12px; color:#6b7280;">`;
+      html += `<div style="margin-top:12px; display:flex; align-items:center; gap:6px; font-size:12px; color:${ramp.label};">`;
       html += `<span>Less</span>`;
       for (let i = 0; i <= 8; i++) {
-        const bg = heatmapColor(i, 8);
-        html += `<div style="width:18px; height:18px; background:${bg}; border-radius:2px; border:1px solid #e5e7eb;"></div>`;
+        html += `<div style="width:18px; height:18px; background:${heatmapColor(i / 8, ramp)}; border-radius:2px;"></div>`;
       }
       html += `<span>More</span></div>`;
 
       container.innerHTML = html;
     }
 
+    document.getElementById("heatmapTypes")?.addEventListener("click", (e) => {
+      const type = e.target.closest("[data-type]")?.dataset.type;
+      if (type) { heatmapType = type; renderHeatmap(); }
+    });
+    document.getElementById("heatmapScopes")?.addEventListener("click", (e) => {
+      const scope = e.target.closest("[data-scope]")?.dataset.scope;
+      if (scope) { heatmapScope = scope; renderHeatmap(); }
+    });
+    window.addEventListener("themechange", renderHeatmap);
+
     async function loadHeatmap() {
       try {
         const res = await fetch("/api/heatmap");
-        const data = await res.json();
-        renderHeatmap(data.grid);
+        heatmapData = await res.json();
+        renderHeatmap();
       } catch {}
     }
   </script>

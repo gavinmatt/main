@@ -780,8 +780,9 @@ export function classifyNotability(f) {
   return null;
 }
 
-// Heatmap buckets a plane counts in: "all", plus exactly one type ("other" when the
-// plane can't be identified, e.g. no callsign), so the types add up to "all".
+// Heatmap buckets. Ingest stores "all" plus the plane's type when it has one; "other"
+// isn't stored but worked out on read as all minus the typed counts, because a plane
+// can start an hour unidentified (no callsign yet) and be identified later.
 export const HEATMAP_TYPES = ["all", "airline", "private", "military", "heli", "skydive", "other"];
 
 export function heatmapTypes(f) {
@@ -791,6 +792,6 @@ export function heatmapTypes(f) {
     : militaryBranch(f) ? "military"
     : isPrivateFlight(f) ? "private"
     : isAirlineFlight(f) && !["—", "Private"].includes(airlineFromFlight(f)) ? "airline"
-    : "other";
-  return ["all", type];
+    : null;
+  return type ? ["all", type] : ["all"];
 }

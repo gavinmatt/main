@@ -664,9 +664,17 @@ export function airlineFromCallsign(cs) {
   return AIRLINE_NAMES[prefix] || "—";
 }
 
+// A callsign with no letters, or a single character ("0", "N", "1018"), is a corrupt
+// decode rather than anything a plane would file.
+export function isGarbledCallsign(cs) {
+  const s = (cs || "").trim().toUpperCase();
+  if (!s || s === "00000000") return false;
+  return s.length < 2 || !/[A-Z]/.test(s);
+}
+
 export function callsignRaw(f) {
   const cs = (f.flight || f.callsign || "").trim().toUpperCase();
-  if (!cs || cs === "00000000") return "";
+  if (!cs || cs === "00000000" || isGarbledCallsign(cs)) return "";
   return cs;
 }
 

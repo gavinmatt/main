@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from "./_vercel.js";
 import { Redis } from "ioredis";
-import { airlineFromFlight, heatmapTypes } from "../src/lib/flightClassify.js";
+import { airlineFromFlight, heatmapTypes, isGarbledCallsign } from "../src/lib/flightClassify.js";
+import { bearingDeg, isImpossibleJump, maxHearableNm } from "../src/lib/positionChecks.js";
 
 const redis = new Redis(process.env.REDIS_URL!);
 
@@ -41,8 +42,15 @@ const DENSITY_MONTH_TTL = 60 * 60 * 24 * 100;
 // Only positions fixed since the last batch, so a plane isn't counted twice in place.
 const DENSITY_MAX_SEEN_POS = 15;
 
-const RX_LAT = 48.415;
-const RX_LON = -114.459;
+// Coverage rose: per-day sorted sets of compass sector -> furthest trusted distance.
+const COVERAGE_SECTOR_DEG = 10;
+const COVERAGE_DAY_TTL = 60 * 60 * 24 * 91;
+
+// Each plane's last accepted position fix, for spotting impossible jumps.
+const FIX_TTL = 180;
+
+const RX_LAT = 48.43;
+const RX_LON = -114.4755;
 
 // Mountain Time calendar date as YYYY-MM-DD.
 function mtDayString(date: Date) {
@@ -101,6 +109,32 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const weekday = mtDate.getDay();
   const day = mtDayString(nowDate);
 
+  // --- CLEAN INPUT ---
+  // Drop corrupt callsigns and impossible positions up front, so nothing below (records,
+  // trails, density, the live map) ever sees them.
+  const fixPipeline = redis.pipeline();
+  const located = payload.aircraft.filter((f: any) => f.hex && f.lat != null && f.lon != null);
+  for (const f of located) fixPipeline.get(`fix:${f.hex}`);
+  const prevFixes = (await fixPipeline.exec()) ?? [];
+  const savePipeline = redis.pipeline();
+  located.forEach((f: any, i: number) => {
+    const fix = { lat: f.lat, lon: f.lon, t: now - (f.seen_pos ?? 0) * 1000 };
+    const [lat, lon, t] = ((prevFixes[i]?.[1] as string | null) ?? "").split(",").map(Number);
+    const prev = Number.isFinite(t) ? { lat, lon, t } : null;
+    const tooFar = distanceNm(RX_LAT, RX_LON, f.lat, f.lon) > maxHearableNm(f.alt_geom ?? f.alt_baro);
+    if (tooFar || isImpossibleJump(prev, fix)) {
+      // The last good fix is kept, so a single bad decode doesn't also reject the next one.
+      delete f.lat;
+      delete f.lon;
+      return;
+    }
+    if (!prev || fix.t > prev.t) savePipeline.set(`fix:${f.hex}`, `${fix.lat},${fix.lon},${fix.t}`, "EX", FIX_TTL);
+  });
+  await savePipeline.exec();
+  for (const f of payload.aircraft) {
+    if (isGarbledCallsign(f.flight)) delete f.flight;
+  }
+
   // --- NOTABLE PINGS ---
   const raw = (await redis.get(NOTABLE_KEY)) ?? "[]";
   let notables: any[];
@@ -115,10 +149,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   );
 
   let batchMax = 0;
+  const sectorMax = new Map<number, number>();
   for (const f of payload.aircraft) {
     const d = trustedDistance(f);
     if (d == null) continue;
     batchMax = Math.max(batchMax, d);
+    const sector = Math.floor(bearingDeg(RX_LAT, RX_LON, f.lat, f.lon) / COVERAGE_SECTOR_DEG);
+    sectorMax.set(sector, Math.max(sectorMax.get(sector) ?? 0, d));
     const prev = byHex.get(f.hex);
     if (!prev || d > prev.maxDistance) {
       byHex.set(f.hex, {
@@ -143,6 +180,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     await redis.zadd(DAILY_RANGE_KEY, "GT", batchMax, day);
     // Drop the day that just aged past 60.
     await redis.zrem(DAILY_RANGE_KEY, mtDayString(new Date(now - 61 * 86400000)));
+  }
+
+  // --- COVERAGE ---
+  if (sectorMax.size) {
+    const coverageKey = `cov:${day}`;
+    const coveragePipeline = redis.pipeline();
+    for (const [sector, d] of sectorMax) coveragePipeline.zadd(coverageKey, "GT", d, String(sector));
+    coveragePipeline.expire(coverageKey, COVERAGE_DAY_TTL);
+    await coveragePipeline.exec();
   }
 
   // --- FREQUENT FLIERS ---

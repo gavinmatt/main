@@ -1,10 +1,10 @@
 import type { VercelRequest, VercelResponse } from "./_vercel.js";
 import { Redis } from "ioredis";
+import { HEATMAP_TYPES as TYPES } from "../src/lib/flightClassify.js";
 
 const redis = new Redis(process.env.REDIS_URL!);
 
 const WINDOW_DAYS = 90;
-const TYPES = ["all", "airline", "private", "military", "heli", "skydive"];
 const SCOPES = ["any", "near"];
 
 const zeroGrid = () => Array.from({ length: 7 }, () => new Array(24).fill(0));

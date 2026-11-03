@@ -780,8 +780,9 @@ export function classifyNotability(f) {
   return null;
 }
 
-// Heatmap buckets a plane counts in: always "all", plus at most one type.
-export const HEATMAP_TYPES = ["all", "airline", "private", "military", "heli", "skydive"];
+// Heatmap buckets a plane counts in: "all", plus exactly one type ("other" when the
+// plane can't be identified, e.g. no callsign), so the types add up to "all".
+export const HEATMAP_TYPES = ["all", "airline", "private", "military", "heli", "skydive", "other"];
 
 export function heatmapTypes(f) {
   const type =
@@ -790,6 +791,6 @@ export function heatmapTypes(f) {
     : militaryBranch(f) ? "military"
     : isPrivateFlight(f) ? "private"
     : isAirlineFlight(f) && !["—", "Private"].includes(airlineFromFlight(f)) ? "airline"
-    : null;
-  return type ? ["all", type] : ["all"];
+    : "other";
+  return ["all", type];
 }

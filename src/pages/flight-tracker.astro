@@ -115,7 +115,7 @@ import FlightMap from "../components/FlightMap.tsx";
         Furthest away aircraft I've tracked. 1 NM = ~1.15 miles.
       </p>
       <p class="text-base-content/50 mb-4 text-sm" id="notableScale">
-        Ratings compare each ping with my receiver's typical range.
+        Ratings compare each ping with my receiver's recent days.
       </p>
 
       <div class="overflow-x-auto">
@@ -284,32 +284,39 @@ import FlightMap from "../components/FlightMap.tsx";
       return airlineFromFlight(f);
     }
 
-    // Ratings scale with the receiver's typical range (median daily max, last 30
-    // days), so they stay meaningful as the antenna improves.
+    // Ratings come from the receiver's own recent days (each day's furthest plane, last
+    // 30 days), so they stay meaningful as the antenna improves. Fixed thresholds until
+    // there's a week of data.
+    const MIN_RANGE_DAYS = 7;
+    const FALLBACK_RANGE = { median: 170, p90: 205, best: 250 };
     const NOTABLE_TIERS = [
-      { factor: 1.4, label: "AMAZING", cls: "bg-purple-100 text-purple-800" },
-      { factor: 1.2, label: "GREAT", cls: "bg-indigo-100 text-indigo-800" },
-      { factor: 1.0, label: "GOOD", cls: "bg-blue-100 text-blue-800" },
+      { key: "best", label: "AMAZING", cls: "bg-purple-100 text-purple-800" },
+      { key: "p90", label: "GREAT", cls: "bg-indigo-100 text-indigo-800" },
+      { key: "median", label: "GOOD", cls: "bg-blue-100 text-blue-800" },
     ];
-    const FALLBACK_TYPICAL_NM = 170;
 
-    function notableDistanceLabel(d, typical) {
-      const base = typical || FALLBACK_TYPICAL_NM;
-      return NOTABLE_TIERS.find((t) => d >= Math.round(base * t.factor)) ?? null;
+    const rangeThresholds = (range) =>
+      range && range.days >= MIN_RANGE_DAYS ? range : FALLBACK_RANGE;
+
+    function notableDistanceLabel(d, range) {
+      const t = rangeThresholds(range);
+      return NOTABLE_TIERS.find((tier) => d >= t[tier.key]) ?? null;
     }
 
-    function renderNotableScale(typical) {
+    function renderNotableScale(range) {
       const el = document.getElementById("notableScale");
       if (!el) return;
-      const base = typical || FALLBACK_TYPICAL_NM;
-      const [amazing, great, good] = NOTABLE_TIERS.map((t) => Math.round(base * t.factor));
-      el.textContent = `Ratings compare each ping with my receiver's typical range: the median of each day's furthest plane over the last 30 days${typical ? `, currently ${typical} NM` : ""}. Good = ${good}+ NM, great = ${great}+ NM, amazing = ${amazing}+ NM. Click a date to see that flight's track.`;
+      const t = rangeThresholds(range);
+      const basis = t === FALLBACK_RANGE
+        ? `Ratings use fixed thresholds until there's a week of range data`
+        : `Ratings compare each ping with my receiver's last ${range.days} days`;
+      el.textContent = `${basis}: good = ${t.median}+ NM (a typical day's furthest plane), great = ${t.p90}+ NM (better than 90% of days), amazing = ${t.best}+ NM (a new 30-day best). Click a date to see that flight's track.`;
     }
 
     /* ---------- NOTABLES ---------- */
 
-    function renderNotables(rows, typical) {
-      renderNotableScale(typical);
+    function renderNotables(rows, range) {
+      renderNotableScale(range);
       const notableBody = document.getElementById("notableBody");
       if (!notableBody) return;
       if (!rows || !rows.length) {
@@ -322,7 +329,7 @@ import FlightMap from "../components/FlightMap.tsx";
           const noCallsign = /^no callsign$/i.test(r.callsign ?? "");
           const fakeFlight = { flight: noCallsign ? "" : r.callsign, hex: r.hex };
           const rank = medals[i] ?? "";
-          const label = notableDistanceLabel(r.maxDistance, typical);
+          const label = notableDistanceLabel(r.maxDistance, range);
           const date = new Date(r.lastSeen);
           // ADS-B Exchange keeps every plane's track by UTC date.
           const trace = `https://globe.adsbexchange.com/?icao=${encodeURIComponent(r.hex)}&showTrace=${date.toISOString().slice(0, 10)}`;
@@ -345,7 +352,7 @@ import FlightMap from "../components/FlightMap.tsx";
       try {
         const res = await fetch("/api/notable-pings");
         const data = await res.json();
-        renderNotables(data.rows ?? [], data.typicalRange);
+        renderNotables(data.rows ?? [], data.range);
       } catch {}
     }
 

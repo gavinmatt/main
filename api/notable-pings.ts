@@ -11,21 +11,22 @@ const NOTABLE_KEY = 'notable-pings:v1';
 const DAILY_RANGE_KEY = 'range:daily'; // must match flight-ingest.ts
 const RANGE_WINDOW_DAYS = 30;
 
-// The receiver's typical reach: the median of each day's longest reception over the
-// last 30 days, leaving out today while it's still partial. Tracks antenna changes.
-async function typicalRange() {
+// How far the receiver reaches on its recent days: each day's longest valid reception
+// over the last 30 days, leaving out today while it's still partial. Tracks antenna
+// changes, so the ratings stay meaningful after a move.
+async function rangeStats() {
   const raw = await redis.zrange(DAILY_RANGE_KEY, 0, -1, 'WITHSCORES');
   const mtDay = (ms: number) => new Date(ms).toLocaleDateString('en-CA', { timeZone: 'America/Denver' });
   const today = mtDay(Date.now());
   const cutoff = mtDay(Date.now() - RANGE_WINDOW_DAYS * 86400000);
-  const days: { day: string; nm: number }[] = [];
-  for (let i = 0; i < raw.length; i += 2) days.push({ day: raw[i], nm: Number(raw[i + 1]) });
-  const recent = days.filter((d) => d.day >= cutoff);
-  const complete = recent.filter((d) => d.day !== today);
-  const pool = (complete.length ? complete : recent).map((d) => d.nm).sort((a, b) => a - b);
-  if (!pool.length) return null;
-  const mid = Math.floor(pool.length / 2);
-  return Math.round(pool.length % 2 ? pool[mid] : (pool[mid - 1] + pool[mid]) / 2);
+  const maxes: number[] = [];
+  for (let i = 0; i < raw.length; i += 2) {
+    if (raw[i] >= cutoff && raw[i] !== today) maxes.push(Number(raw[i + 1]));
+  }
+  maxes.sort((a, b) => a - b);
+  if (!maxes.length) return { days: 0 };
+  const pct = (p: number) => maxes[Math.min(maxes.length - 1, Math.floor(p * maxes.length))];
+  return { days: maxes.length, median: pct(0.5), p90: pct(0.9), best: maxes[maxes.length - 1] };
 }
 
 export default async function handler(
@@ -40,9 +41,9 @@ export default async function handler(
   res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=120');
 
   try {
-    const [raw, typical] = await Promise.all([redis.get(NOTABLE_KEY), typicalRange()]);
+    const [raw, range] = await Promise.all([redis.get(NOTABLE_KEY), rangeStats()]);
     const rows = raw ? JSON.parse(raw) : [];
-    return res.status(200).json({ rows, typicalRange: typical });
+    return res.status(200).json({ rows, range });
   } catch (err) {
     console.error('notable-pings read failed', err);
     return res.status(500).json({

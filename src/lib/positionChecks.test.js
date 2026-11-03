@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { bearingDeg, isImpossibleJump, maxHearableNm } from "./positionChecks.js";
 
-const RX = [48.415, -114.459];
+const RX = [48.41, -114.444];
 
 test("radio horizon grows with altitude", () => {
   assert.ok(maxHearableNm(0) < 40);

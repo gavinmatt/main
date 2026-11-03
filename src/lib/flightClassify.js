@@ -682,6 +682,10 @@ export function isJanet(f) {
   return /^JANET\d/.test(callsignRaw(f));
 }
 
+export function isResearch(f) {
+  return /^(NASA|NOAA)\d/.test(callsignRaw(f));
+}
+
 export function isPrivateFlight(f) {
   const cs = callsignRaw(f);
   if (!cs) return false;
@@ -753,6 +757,8 @@ export function classifyNotability(f) {
         : "bg-red-100 text-red-800",
     };
   }
+  if (isResearch(f))
+    return { label: "RESEARCH", cls: "bg-cyan-100 text-cyan-800" };
   const airline = airlineFromFlight(f);
   if (
     isAirlineFlight(f) &&

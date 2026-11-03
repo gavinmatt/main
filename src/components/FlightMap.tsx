@@ -53,6 +53,7 @@ const FLAG_COLORS = {
   uncommon: '#3b82f6',
   fastHigh: '#facc15',
   janet: '#7fff00',
+  research: '#06b6d4',
   skydive: '#ec4899',
 };
 
@@ -66,6 +67,7 @@ const LEGEND = [
   { color: FLAG_COLORS.fastHigh, label: 'Fast/high' },
   { color: FLAG_COLORS.skydive, label: 'Skydiving' },
   { color: FLAG_COLORS.janet, label: 'Janet' },
+  { color: FLAG_COLORS.research, label: 'Research' },
   { color: DEFAULT_COLOR, label: 'Other' },
 ];
 
@@ -82,6 +84,7 @@ function flagColor(cls: string | undefined) {
   if (cls.includes('yellow')) return FLAG_COLORS.fastHigh;
   if (cls.includes('pink')) return FLAG_COLORS.skydive;
   if (cls.includes('lime')) return FLAG_COLORS.janet;
+  if (cls.includes('cyan')) return FLAG_COLORS.research;
   return DEFAULT_COLOR;
 }
 

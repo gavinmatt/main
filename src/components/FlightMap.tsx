@@ -9,8 +9,8 @@ import {
   escapeHtml,
 } from '../lib/flightClassify.js';
 
-const RX_LAT = 48.43;
-const RX_LON = -114.4755;
+const RX_LAT = 48.41;
+const RX_LON = -114.444;
 const STALE_AFTER_S = 90;
 const RING_NM = [50, 100, 150, 200, 250];
 const NM_TO_M = 1852;

@@ -34,13 +34,15 @@ const NEAR_NM = 15;
 const TRAIL_MAX_POINTS = 480; // ~2 hours at one ingest every 15 seconds
 const TRAIL_TTL = 180;
 
-// Density map: monthly hashes of grid cell -> 15-second samples, read three months at a
-// time. Cells are 0.05° lat × 0.075° lon, about 3 NM square at this latitude.
+// Density map: monthly hashes of grid cell -> planes that passed through, read three
+// months at a time. Cells are 0.05° lat × 0.075° lon, about 3 NM square at this
+// latitude. Each plane counts once per cell per clock hour, so one plane circling for an
+// afternoon adds a few passes rather than outshining an airway.
 const DENSITY_LAT_STEP = 0.05;
 const DENSITY_LON_STEP = 0.075;
 const DENSITY_MONTH_TTL = 60 * 60 * 24 * 100;
-// Only positions fixed since the last batch, so a plane isn't counted twice in place.
-const DENSITY_MAX_SEEN_POS = 15;
+// Sets of hex|cell pairs already counted in the current hour.
+const DENSITY_HOUR_TTL = 60 * 60 * 2;
 
 // Coverage rose: per-day sorted sets of compass sector -> furthest trusted distance.
 const COVERAGE_SECTOR_DEG = 10;
@@ -49,8 +51,8 @@ const COVERAGE_DAY_TTL = 60 * 60 * 24 * 91;
 // Each plane's last accepted position fix, for spotting impossible jumps.
 const FIX_TTL = 180;
 
-const RX_LAT = 48.43;
-const RX_LON = -114.4755;
+const RX_LAT = 48.41;
+const RX_LON = -114.444;
 
 // Mountain Time calendar date as YYYY-MM-DD.
 function mtDayString(date: Date) {
@@ -283,20 +285,32 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   await trailPipeline.exec();
 
   // --- DENSITY ---
-  const densityKey = `pd:${day.slice(0, 7)}`;
-  const densityPipeline = redis.pipeline();
-  let sampled = false;
+  const cells: string[] = [];
+  const passHourKey = `pdh:${day}:${hour}`;
+  const passPipeline = redis.pipeline();
   for (const f of payload.aircraft) {
     if (trustedDistance(f) == null) continue;
-    if (typeof f.seen_pos === "number" && f.seen_pos > DENSITY_MAX_SEEN_POS) continue;
     const cell = `${Math.floor(f.lat / DENSITY_LAT_STEP)},${Math.floor(f.lon / DENSITY_LON_STEP)}`;
-    densityPipeline.hincrby(densityKey, cell, 1);
-    sampled = true;
+    passPipeline.sadd(passHourKey, `${f.hex}|${cell}`);
+    cells.push(cell);
   }
-  if (sampled) {
-    densityPipeline.expire(densityKey, DENSITY_MONTH_TTL);
-    densityPipeline.set("pd:since", day, "NX");
-    await densityPipeline.exec();
+  if (cells.length) {
+    passPipeline.expire(passHourKey, DENSITY_HOUR_TTL);
+    const passed = (await passPipeline.exec()) ?? [];
+    const densityKey = `pdp:${day.slice(0, 7)}`;
+    const densityPipeline = redis.pipeline();
+    let counted = false;
+    cells.forEach((cell, i) => {
+      if (passed[i]?.[1] === 1) {
+        densityPipeline.hincrby(densityKey, cell, 1);
+        counted = true;
+      }
+    });
+    if (counted) {
+      densityPipeline.expire(densityKey, DENSITY_MONTH_TTL);
+      densityPipeline.set("pdp:since", day, "NX");
+      await densityPipeline.exec();
+    }
   }
 
   // --- LAST KNOWN CALLSIGNS ---

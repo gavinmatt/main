@@ -634,7 +634,7 @@ export const COMMON_AIRLINES = new Set([
 const PRIVATE_CALLSIGNS = [
   /^N\d{1,5}[A-Z]{0,2}$/,
   /^\d{1,4}[A-Z]{2}$/, // a US tail number sent without the N, e.g. 110AX
-  /^C-?[FG][A-Z]{3}$/,
+  /^C-?[FG][A-Z]{3}\d?$/, // Canadian tail, sometimes sent with a stray digit, e.g. CFPCX0
   /^G-?[A-Z]{4}$/,
   /^D-?[A-Z]{4}$/,
   /^HB-?[A-Z]{3}$/,

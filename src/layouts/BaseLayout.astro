@@ -17,7 +17,9 @@ const {
   image,
   imageWidth,
   imageHeight,
-  noindex
+  noindex,
+  // Dashboard pages opt into a wider content column than the 900px reading width.
+  wide = false
 } = Astro.props;
 
 const resolvedTitle = customTitle ?? title ?? SITE_TITLE;
@@ -72,7 +74,7 @@ const metaImage = ogImage ?? image;
         <Header title={SITE_TITLE} />
 
         <div class="md:flex md:justify-center">
-          <main class="p-6 pt-10 lg:max-w-[900px] max-w-[100vw]">
+          <main class:list={["p-6 pt-10 max-w-[100vw]", wide ? "w-full lg:max-w-[1440px]" : "lg:max-w-[900px]"]}>
             <slot />
           </main>
         </div>

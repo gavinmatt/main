@@ -542,10 +542,15 @@ import FlightMap from "../components/FlightMap.tsx";
           const textColor = (intensity > 0.55) !== dark ? "#fff" : dark ? "#0b1220" : "#374151";
           const shown = val >= 10 ? Math.round(val) : val.toFixed(1);
           const top = heatmapType === "all" || heatmapType === "airline" ? heatmapData.topAirline[d][h] : null;
-          const title = `${DAYS[d]} ${HOURS[h]}: ${val ? shown : "no"} plane${val === 1 ? "" : "s"} on average${top ? ` · most common airline: ${top}` : ""}`;
+          // Lines for the hover tooltip: when, how many, most common airline.
+          const tip = [
+            `${DAYS[d]} ${HOURS[h]}`,
+            `${val ? shown : "No"} plane${val === 1 ? "" : "s"} on average`,
+            top ? `Most common: ${top}` : "",
+          ].filter(Boolean).join("\n");
           const isNow = d === now.weekday && h === now.hour;
           const outline = isNow ? `outline:2px solid ${ramp.label}; outline-offset:1px;` : "";
-          html += `<td title="${escapeHtml(title)}" style="width:${cellSize}; height:${cellSize}; background:${bg}; ${outline} border-radius:3px; text-align:center; vertical-align:middle; color:${textColor}; cursor:default;">`;
+          html += `<td data-tip="${escapeHtml(tip)}" style="width:${cellSize}; height:${cellSize}; background:${bg}; ${outline} border-radius:3px; text-align:center; vertical-align:middle; color:${textColor}; cursor:default;">`;
           if (val > 0) html += `<span style="font-size:10px;">${shown}</span>`;
           html += `</td>`;
         }
@@ -572,6 +577,46 @@ import FlightMap from "../components/FlightMap.tsx";
       if (scope) { heatmapScope = scope; renderHeatmap(); }
     });
     window.addEventListener("themechange", renderHeatmap);
+
+    // Custom tooltip: the browser's title tooltip is slow and never shows on touch.
+    const heatmapTip = document.createElement("div");
+    heatmapTip.className =
+      "fixed z-50 pointer-events-none hidden rounded-md border border-base-300 bg-base-100 text-base-content shadow-lg px-3 py-2 text-xs leading-5";
+    document.body.appendChild(heatmapTip);
+
+    function showHeatmapTip(cell, x, y) {
+      const [first, ...rest] = cell.dataset.tip.split("\n");
+      heatmapTip.replaceChildren();
+      const head = document.createElement("div");
+      head.className = "font-semibold";
+      head.textContent = first;
+      heatmapTip.append(head, ...rest.map((line) => Object.assign(document.createElement("div"), { textContent: line })));
+      heatmapTip.classList.remove("hidden");
+      // Keep it on screen near the pointer.
+      const { width, height } = heatmapTip.getBoundingClientRect();
+      const left = Math.min(x + 14, window.innerWidth - width - 8);
+      const top = y + 14 + height > window.innerHeight ? y - height - 10 : y + 14;
+      heatmapTip.style.left = `${Math.max(8, left)}px`;
+      heatmapTip.style.top = `${Math.max(8, top)}px`;
+    }
+
+    const heatmapGridEl = document.getElementById("heatmapGrid");
+    heatmapGridEl?.addEventListener("pointermove", (e) => {
+      const cell = e.target.closest("td[data-tip]");
+      if (cell && e.pointerType === "mouse") showHeatmapTip(cell, e.clientX, e.clientY);
+      else if (e.pointerType === "mouse") heatmapTip.classList.add("hidden");
+    });
+    heatmapGridEl?.addEventListener("pointerleave", (e) => {
+      if (e.pointerType === "mouse") heatmapTip.classList.add("hidden");
+    });
+    // Touch: tap a cell to show its tooltip, tap anywhere else to hide it.
+    document.addEventListener("click", (e) => {
+      const cell = e.target.closest?.("#heatmapGrid td[data-tip]");
+      if (!cell) return heatmapTip.classList.add("hidden");
+      const r = cell.getBoundingClientRect();
+      showHeatmapTip(cell, r.left + r.width / 2, r.bottom);
+    });
+    window.addEventListener("scroll", () => heatmapTip.classList.add("hidden"), { passive: true });
 
     async function loadHeatmap() {
       try {

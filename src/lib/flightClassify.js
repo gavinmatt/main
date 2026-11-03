@@ -536,6 +536,7 @@ export const COMMON_AIRLINES = new Set([
   "CTP Aviation",
   "Chervon",
   "Latitude Air Ambulance",
+  "Phoenix Air",
   "Nolinor Aviation",
   "Prestige Air Group",
   "Silverhawk Aviation",

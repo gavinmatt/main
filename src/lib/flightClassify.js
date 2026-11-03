@@ -655,13 +655,25 @@ const PRIVATE_CALLSIGNS = [
   /^MAVEN\d/,
 ];
 
-export function airlineFromCallsign(cs) {
-  if (!cs) return "—";
-  if (PRIVATE_CALLSIGNS.some((re) => re.test(cs))) return "Private";
+// Operators that fly under a spoken-style word instead of their three-letter code.
+const WORD_CALLSIGNS = {
+  FENIX: "Phoenix Air", // air ambulance
+};
+
+// The operator a callsign's code or word names, if it's one we know.
+function operatorFromCallsign(cs) {
   // The code must be followed by the flight number, so a word callsign like TORO01 or
   // SPAR19 isn't read as the airline whose code starts it (TOR, SPA).
   const prefix = cs.match(/^[A-Z]{2,3}(?=\d)/)?.[0];
-  return AIRLINE_NAMES[prefix] || "—";
+  if (AIRLINE_NAMES[prefix]) return AIRLINE_NAMES[prefix];
+  const word = cs.match(/^[A-Z]{4,6}(?=\d)/)?.[0];
+  return WORD_CALLSIGNS[word] ?? null;
+}
+
+export function airlineFromCallsign(cs) {
+  if (!cs) return "—";
+  if (PRIVATE_CALLSIGNS.some((re) => re.test(cs))) return "Private";
+  return operatorFromCallsign(cs) || "—";
 }
 
 // A callsign with no letters, or a single character ("0", "N", "1018"), is a corrupt
@@ -708,7 +720,7 @@ export function isPrivateFlight(f) {
 
 export function isAirlineFlight(f) {
   const cs = callsignRaw(f);
-  return /^[A-Z]{2,3}\d/.test(cs);
+  return /^[A-Z]{2,3}\d/.test(cs) || Boolean(cs && operatorFromCallsign(cs));
 }
 
 export function hexUpper(f) {
@@ -724,8 +736,7 @@ export function airlineFromFlight(f) {
   if (isPrivateFlight(f)) return "Private";
   if (f.op?.trim()) return f.op.trim();
   if (!cs) return "Undetermined";
-  const prefix = cs.match(/^[A-Z]{2,3}(?=\d)/)?.[0];
-  return AIRLINE_NAMES[prefix] || "—";
+  return operatorFromCallsign(cs) || "—";
 }
 
 export function militaryBranch(f) {

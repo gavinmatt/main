@@ -576,7 +576,8 @@ import FlightMap from "../components/FlightMap.tsx";
           const intensity = max ? Math.sqrt(val) / max : 0;
           const bg = val ? heatmapColor(intensity, ramp) : ramp.empty;
           const textColor = (intensity > 0.55) !== dark ? "#fff" : dark ? "#0b1220" : "#374151";
-          const shown = !val ? "0" : val >= 10 ? Math.round(val) : val.toFixed(1);
+          // Whole numbers as-is; one decimal only when it says something (4.3, not 4.0).
+          const shown = val >= 10 || Number.isInteger(val) ? String(Math.round(val)) : val.toFixed(1);
           const top = heatmapType === "all" || heatmapType === "airline" ? heatmapData.topAirline[d][h] : null;
           // Lines for the hover tooltip: when, how many, most common airline.
           const tip = [

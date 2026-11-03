@@ -133,8 +133,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
   }
 
+  // Ties go to the most recent, so once the list is full a new callsign displaces the
+  // stalest one-timer instead of always being the one cut.
   const nextFF = [...byCallsign.values()]
-    .sort((a, b) => b.count - a.count)
+    .sort((a, b) => b.count - a.count || b.lastSeen - a.lastSeen)
     .slice(0, MAX_FREQUENT_FLIERS_STORED);
 
   await redis.set(FREQUENT_FLIERS_KEY, JSON.stringify(nextFF));

@@ -52,11 +52,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const cell = airlines[weekday][hour];
         const name = kind.slice(3);
         cell.set(name, (cell.get(name) ?? 0) + n);
-      } else if (sums[`${kind}|${scope}`]) {
+      } else if (kind !== "other" && sums[`${kind}|${scope}`]) {
+        // "other" was briefly stored at ingest; it's derived below instead.
         sums[`${kind}|${scope}`][weekday][hour] += n;
       }
     }
   });
+
+  // Other = planes never identified that hour, so the types always add up to All.
+  const typed = TYPES.filter((t) => t !== "all" && t !== "other");
+  for (const scope of SCOPES) {
+    sums[`other|${scope}`] = sums[`all|${scope}`].map((row, d) =>
+      row.map((v, h) => Math.max(0, v - typed.reduce((n, t) => n + sums[`${t}|${scope}`][d][h], 0)))
+    );
+  }
 
   // Average per day, so a weekday with fewer days of data isn't drawn lighter.
   const grids: Record<string, number[][]> = {};

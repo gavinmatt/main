@@ -53,12 +53,14 @@ export const AIRLINE_NAMES = {
   FFT: "Frontier Airlines",
   SKW: "SkyWest Airlines",
   ACA: "Air Canada",
+  AC: "Air Canada", // IATA code, sent by some aircraft instead of ACA
   ROU: "Air Canada Rouge",
   WJA: "WestJet",
   WEN: "WestJet Encore",
   TSC: "Air Transat",
   SWG: "Sunwing",
   FLE: "Flair Airlines",
+  FL: "Flair Airlines", // IATA-style variant
   QXE: "Horizon Air",
   JZA: "Jazz",
   AKT: "Canadian North",
@@ -70,6 +72,7 @@ export const AIRLINE_NAMES = {
   GTI: "Atlas Air",
   CKS: "Kalitta Air",
   ABX: "ABX Air",
+  AB: "ABX Air", // Airborne Express, IATA-style variant
   POE: "Porter Airlines",
   PAC: "Polar Air Cargo",
   CLX: "Cargolux",
@@ -634,6 +637,7 @@ const PRIVATE_CALLSIGNS = [
   // New Zealand, UAE, Qatar, Malta).
   /^[FIM]-?[A-Z]{4}$/,
   /^2-?[A-Z]{4}$/,
+  /^B-?\d{4}$/, // China/Taiwan; airliners send airline callsigns instead
   /^(OE|PH|EC|EI|OO|OY|SE|LN|OH|LX|VH|ZS|P[PRST]|X[ABC]|V[PQ]|CS|SP|OK|HZ|HS|ZK|A6|A7|9H)-?[A-Z]{3}$/,
   /^LN\d{1,5}[A-Z]{1,2}$/, // "L" plus a US tail number, e.g. LN233TJ for N233TJ
   /^NCJ\d+/,
@@ -696,7 +700,7 @@ export function militaryBranch(f) {
   if (/^(PAT|ARMY)/.test(cs)) return "USA";
   if (/^(VM|MAR)/.test(cs)) return "USMC";
   if (/^(SAM|SPAR)\d/.test(cs)) return "USAF"; // VIP airlift
-  if (/^CFC\d/.test(cs)) return "RCAF";
+  if (/^CFCO?\d/.test(cs)) return "RCAF";
   if (/^RRR\d/.test(cs)) return "RAF";
   if (/^GAF\d/.test(cs)) return "GAF";
   if (/^CTM\d/.test(cs)) return "FR AF";

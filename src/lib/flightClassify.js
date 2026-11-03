@@ -627,6 +627,14 @@ const PRIVATE_CALLSIGNS = [
   /^D-?[A-Z]{4}$/,
   /^HB-?[A-Z]{3}$/,
   /^T7-?[A-Z]{3,5}$/, // San Marino
+  // Other countries' registrations common on business jets: France, Italy, Isle of Man,
+  // Guernsey, then three-letter marks (Austria, Netherlands, Spain, Ireland, Belgium,
+  // Denmark, Sweden, Norway, Finland, Luxembourg, Australia, South Africa, Brazil,
+  // Mexico, Bermuda/Cayman, Portugal, Poland, Czechia, Saudi Arabia, Thailand,
+  // New Zealand, UAE, Qatar, Malta).
+  /^[FIM]-?[A-Z]{4}$/,
+  /^2-?[A-Z]{4}$/,
+  /^(OE|PH|EC|EI|OO|OY|SE|LN|OH|LX|VH|ZS|P[PRST]|X[ABC]|V[PQ]|CS|SP|OK|HZ|HS|ZK|A6|A7|9H)-?[A-Z]{3}$/,
   /^LN\d{1,5}[A-Z]{1,2}$/, // "L" plus a US tail number, e.g. LN233TJ for N233TJ
   /^NCJ\d+/,
   /^MAVEN\d/,
@@ -687,7 +695,7 @@ export function militaryBranch(f) {
   if (/^(NAVY|CNV|VV|MAXX)/.test(cs)) return "USN";
   if (/^(PAT|ARMY)/.test(cs)) return "USA";
   if (/^(VM|MAR)/.test(cs)) return "USMC";
-  if (/^SAM\d/.test(cs)) return "USAF";
+  if (/^(SAM|SPAR)\d/.test(cs)) return "USAF"; // VIP airlift
   if (/^CFC\d/.test(cs)) return "RCAF";
   if (/^RRR\d/.test(cs)) return "RAF";
   if (/^GAF\d/.test(cs)) return "GAF";

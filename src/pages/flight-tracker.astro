@@ -114,8 +114,8 @@ import FlightMap from "../components/FlightMap.tsx";
       <p class="text-base-content mb-1 text-base">
         Furthest away aircraft I've tracked. 1 NM = ~1.15 miles.
       </p>
-      <p class="text-base-content mb-4 text-base">
-        Good = 120–180 NM, great = 180–250 NM, amazing = 250+ NM for my setup.
+      <p class="text-base-content/50 mb-4 text-sm" id="notableScale">
+        Ratings compare each ping with my receiver's typical range.
       </p>
 
       <div class="overflow-x-auto">
@@ -127,7 +127,7 @@ import FlightMap from "../components/FlightMap.tsx";
               <th class="text-left py-2 px-3">Airline</th>
               <th class="text-left py-2 px-3">Callsign</th>
               <th class="text-right py-2 px-3">Max Distance (NM)</th>
-              <th class="text-right py-2 px-3">Last Seen</th>
+              <th class="text-right py-2 px-3">Date</th>
             </tr>
           </thead>
           <tbody id="notableBody"></tbody>
@@ -141,10 +141,14 @@ import FlightMap from "../components/FlightMap.tsx";
       class="tab-panel pt-6 hidden w-full"
       style="width:100%"
     >
-      <p class="text-base-content mb-4 text-base">
-        Callsigns I've seen pass through most often. Route callsigns repeat
-        daily, so this is effectively a ranking of the busiest routes over my
-        antenna.
+      <p class="text-base-content mb-1 text-base">
+        Callsigns I've seen most often over the last 90 days. Route callsigns
+        repeat daily, so this is effectively a ranking of the busiest routes
+        over my antenna.
+      </p>
+      <p class="text-base-content/50 mb-4 text-sm">
+        Each callsign counts once for every hour it's in range.
+        <span id="frequentSince"></span>
       </p>
 
       <div class="overflow-x-auto">
@@ -154,7 +158,7 @@ import FlightMap from "../components/FlightMap.tsx";
               <th class="text-center py-2 px-3">Ranking</th>
               <th class="text-left py-2 px-3">Airline</th>
               <th class="text-left py-2 px-3">Callsign</th>
-              <th class="text-right py-2 px-3">Times Seen</th>
+              <th class="text-right py-2 px-3">Hours Seen</th>
               <th class="text-right py-2 px-3">Last Seen</th>
             </tr>
           </thead>
@@ -187,6 +191,7 @@ import FlightMap from "../components/FlightMap.tsx";
           <button class="join-item btn btn-sm" data-type="military">Military</button>
           <button class="join-item btn btn-sm" data-type="heli">Helicopters</button>
           <button class="join-item btn btn-sm" data-type="skydive">Skydiving</button>
+          <button class="join-item btn btn-sm" data-type="other">Other</button>
         </div>
         <div class="join" id="heatmapScopes">
           <button class="join-item btn btn-sm" data-scope="any">Everything in range</button>
@@ -279,18 +284,32 @@ import FlightMap from "../components/FlightMap.tsx";
       return airlineFromFlight(f);
     }
 
-    function notableDistanceLabel(d) {
-      if (d >= 250)
-        return { label: "AMAZING", cls: "bg-purple-100 text-purple-800" };
-      if (d >= 180)
-        return { label: "GREAT", cls: "bg-indigo-100 text-indigo-800" };
-      if (d >= 120) return { label: "GOOD", cls: "bg-blue-100 text-blue-800" };
-      return null;
+    // Ratings scale with the receiver's typical range (median daily max, last 30
+    // days), so they stay meaningful as the antenna improves.
+    const NOTABLE_TIERS = [
+      { factor: 1.4, label: "AMAZING", cls: "bg-purple-100 text-purple-800" },
+      { factor: 1.2, label: "GREAT", cls: "bg-indigo-100 text-indigo-800" },
+      { factor: 1.0, label: "GOOD", cls: "bg-blue-100 text-blue-800" },
+    ];
+    const FALLBACK_TYPICAL_NM = 170;
+
+    function notableDistanceLabel(d, typical) {
+      const base = typical || FALLBACK_TYPICAL_NM;
+      return NOTABLE_TIERS.find((t) => d >= Math.round(base * t.factor)) ?? null;
+    }
+
+    function renderNotableScale(typical) {
+      const el = document.getElementById("notableScale");
+      if (!el) return;
+      const base = typical || FALLBACK_TYPICAL_NM;
+      const [amazing, great, good] = NOTABLE_TIERS.map((t) => Math.round(base * t.factor));
+      el.textContent = `Ratings compare each ping with my receiver's typical range: the median of each day's furthest plane over the last 30 days${typical ? `, currently ${typical} NM` : ""}. Good = ${good}+ NM, great = ${great}+ NM, amazing = ${amazing}+ NM. Click a date to see that flight's track.`;
     }
 
     /* ---------- NOTABLES ---------- */
 
-    function renderNotables(rows) {
+    function renderNotables(rows, typical) {
+      renderNotableScale(typical);
       const notableBody = document.getElementById("notableBody");
       if (!notableBody) return;
       if (!rows || !rows.length) {
@@ -300,9 +319,13 @@ import FlightMap from "../components/FlightMap.tsx";
       const medals = ["🥇", "🥈", "🥉"];
       notableBody.innerHTML = rows
         .map((r, i) => {
-          const fakeFlight = { flight: r.callsign };
+          const noCallsign = /^no callsign$/i.test(r.callsign ?? "");
+          const fakeFlight = { flight: noCallsign ? "" : r.callsign, hex: r.hex };
           const rank = medals[i] ?? "";
-          const label = notableDistanceLabel(r.maxDistance);
+          const label = notableDistanceLabel(r.maxDistance, typical);
+          const date = new Date(r.lastSeen);
+          // ADS-B Exchange keeps every plane's track by UTC date.
+          const trace = `https://globe.adsbexchange.com/?icao=${encodeURIComponent(r.hex)}&showTrace=${date.toISOString().slice(0, 10)}`;
           return `
           <tr class="border-b">
             <td class="text-center py-2 px-3 text-xl">${rank}</td>
@@ -310,9 +333,9 @@ import FlightMap from "../components/FlightMap.tsx";
               ${label ? `<span class="px-2 py-0.5 rounded text-xs font-medium ${label.cls}">${label.label}</span>` : "—"}
             </td>
             <td class="py-2 px-3">${escapeHtml(r.airline && r.airline !== "—" ? r.airline : notableLabelForFlight(fakeFlight))}</td>
-            <td class="py-2 px-3">${escapeHtml(r.callsign)}</td>
+            <td class="py-2 px-3 ${noCallsign ? "text-base-content/50" : ""}">${noCallsign ? "No callsign" : escapeHtml(r.callsign)}</td>
             <td class="text-right py-2 px-3 font-semibold">${escapeHtml(r.maxDistance)}</td>
-            <td class="text-right py-2 px-3">${new Date(r.lastSeen).toLocaleDateString()}</td>
+            <td class="text-right py-2 px-3"><a class="link" href="${trace}" target="_blank" rel="noopener">${date.toLocaleDateString()}</a></td>
           </tr>`;
         })
         .join("");
@@ -322,7 +345,7 @@ import FlightMap from "../components/FlightMap.tsx";
       try {
         const res = await fetch("/api/notable-pings");
         const data = await res.json();
-        renderNotables(data.rows ?? []);
+        renderNotables(data.rows ?? [], data.typicalRange);
       } catch {}
     }
 
@@ -345,7 +368,7 @@ import FlightMap from "../components/FlightMap.tsx";
             <td class="py-2 px-3">${escapeHtml(airlineFromCallsign(r.callsign))}</td>
             <td class="py-2 px-3 font-mono">${escapeHtml(r.callsign)}</td>
             <td class="text-right py-2 px-3 font-semibold">${escapeHtml(r.count)}</td>
-            <td class="text-right py-2 px-3">${new Date(r.lastSeen).toLocaleDateString()}</td>
+            <td class="text-right py-2 px-3">${new Date(`${r.lastDay}T12:00:00`).toLocaleDateString()}</td>
           </tr>`;
         })
         .join("");
@@ -355,6 +378,12 @@ import FlightMap from "../components/FlightMap.tsx";
       try {
         const res = await fetch("/api/frequent-fliers");
         const data = await res.json();
+        const since = document.getElementById("frequentSince");
+        const sinceDate = data.since && new Date(`${data.since}T12:00:00`);
+        if (since)
+          since.textContent = sinceDate && Date.now() - sinceDate < 89 * 86400000
+            ? ` Counting since ${sinceDate.toLocaleDateString(undefined, { month: "short", day: "numeric" })}.`
+            : "";
         renderFrequentFliers(data.rows ?? []);
       } catch {}
     }
@@ -459,7 +488,7 @@ import FlightMap from "../components/FlightMap.tsx";
         "Last updated " + new Date(data.receivedAt).toLocaleTimeString();
     });
     pollWhileVisible(loadNotables, 60000);
-    pollWhileVisible(loadFrequentFliers, 60000);
+    pollWhileVisible(loadFrequentFliers, 300000);
     pollWhileVisible(loadHeatmap, 300000);
 
     /* ---------- HEATMAP ---------- */

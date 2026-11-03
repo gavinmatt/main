@@ -6,9 +6,16 @@ const redis = new Redis(process.env.REDIS_URL!);
 
 const NOTABLE_KEY = "notable-pings:v1";
 const MAX_NOTABLES = 10;
+// Beyond line of sight for any antenna this receiver could have; anything farther is a
+// bad position decode, and would otherwise hold the record forever.
+const MAX_PLAUSIBLE_NM = 300;
 
-const FREQUENT_FLIERS_KEY = "frequent-fliers:v2";
-const MAX_FREQUENT_FLIERS_STORED = 500;
+// Each day's longest valid reception, scored by distance, for judging how good a
+// distant ping is against this receiver's own recent range.
+const DAILY_RANGE_KEY = "range:daily";
+
+// Frequent fliers: per-day hashes of callsign -> hours seen that day, kept 90 days.
+const FLIERS_DAY_TTL = 60 * 60 * 24 * 91;
 
 // One marker per callsign per weekday/hour cell, kept 90 days. Nothing reads these on
 // the site any more; they're the record of which callsigns we've seen, for auditing
@@ -28,6 +35,21 @@ const TRAIL_TTL = 180;
 
 const RX_LAT = 48.415;
 const RX_LON = -114.459;
+
+// Mountain Time calendar date as YYYY-MM-DD.
+function mtDayString(date: Date) {
+  return date.toLocaleDateString("en-CA", { timeZone: "America/Denver" });
+}
+
+// Distance to a plane, only when its position is one to trust for a range record: a
+// fresh ADS-B fix (not MLAT or TIS-B, which can be miles off) within line of sight.
+function trustedDistance(f: any) {
+  if (!f.hex || f.lat == null || f.lon == null) return null;
+  if (f.type && !/^(adsb|adsr)/.test(f.type)) return null;
+  if (typeof f.seen_pos === "number" && f.seen_pos > 30) return null;
+  const d = Math.round(distanceNm(RX_LAT, RX_LON, f.lat, f.lon));
+  return d <= MAX_PLAUSIBLE_NM ? d : null;
+}
 
 function distanceNm(lat1: number, lon1: number, lat2: number, lon2: number) {
   const R = 3440.065;
@@ -69,6 +91,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const mtDate = new Date(nowDate.toLocaleString("en-US", { timeZone: "America/Denver" }));
   const hour = mtDate.getHours();
   const weekday = mtDate.getDay();
+  const day = mtDayString(nowDate);
 
   // --- NOTABLE PINGS ---
   const raw = (await redis.get(NOTABLE_KEY)) ?? "[]";
@@ -79,19 +102,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     notables = [];
   }
 
-  const byHex = new Map<string, any>(notables.map((n) => [n.hex, n]));
+  const byHex = new Map<string, any>(
+    notables.filter((n) => n.maxDistance <= MAX_PLAUSIBLE_NM).map((n) => [n.hex, n])
+  );
 
+  let batchMax = 0;
   for (const f of payload.aircraft) {
-    const lat = f.lat ?? f.lat_baro;
-    const lon = f.lon ?? f.lon_baro;
-    if (!f.hex || lat == null || lon == null) continue;
-    const d = Math.round(distanceNm(RX_LAT, RX_LON, lat, lon));
+    const d = trustedDistance(f);
+    if (d == null) continue;
+    batchMax = Math.max(batchMax, d);
     const prev = byHex.get(f.hex);
     if (!prev || d > prev.maxDistance) {
       byHex.set(f.hex, {
         hex: f.hex,
         airline: f.op || "—",
-        callsign: (f.flight || "").trim() || "NO CALLSIGN",
+        callsign: (f.flight || "").trim() || "No callsign",
         maxDistance: d,
         lastSeen: now,
       });
@@ -104,50 +129,38 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   await redis.set(NOTABLE_KEY, JSON.stringify(next));
 
-  // --- FREQUENT FLIERS ---
-  const DEBOUNCE_MS = 60 * 60 * 1000;
-
-  const ffRaw = (await redis.get(FREQUENT_FLIERS_KEY)) ?? "[]";
-  let frequentFliers: any[];
-  try {
-    frequentFliers = JSON.parse(ffRaw);
-  } catch {
-    frequentFliers = [];
+  // --- DAILY RANGE ---
+  if (batchMax > 0) {
+    // GT only ever raises a day's score.
+    await redis.zadd(DAILY_RANGE_KEY, "GT", batchMax, day);
+    // Drop the day that just aged past 60.
+    await redis.zrem(DAILY_RANGE_KEY, mtDayString(new Date(now - 61 * 86400000)));
   }
 
-  const byCallsign = new Map<string, any>(
-    frequentFliers.map((f) => [f.callsign, f])
-  );
-
-  for (const f of payload.aircraft) {
-    const cs = (f.flight || "").trim();
-    if (!cs || cs === "00000000") continue;
-    const prev = byCallsign.get(cs);
-    if (prev) {
-      if (now - prev.lastCountedAt > DEBOUNCE_MS) {
-        prev.count += 1;
-        prev.lastCountedAt = now;
-        prev.lastSeen = now;
-        prev.airline = f.op || prev.airline || "—";
-      }
-    } else {
-      byCallsign.set(cs, {
-        callsign: cs,
-        airline: f.op || "—",
-        count: 1,
-        lastCountedAt: now,
-        lastSeen: now,
-      });
+  // --- FREQUENT FLIERS ---
+  // Each callsign counts once per clock hour it's seen; the API sums the last 90 days.
+  const callsigns = [
+    ...new Set(
+      payload.aircraft
+        .map((f: any) => (f.flight || "").trim())
+        .filter((cs: string) => cs && cs !== "00000000")
+    ),
+  ] as string[];
+  if (callsigns.length) {
+    const hourKey = `ffh:${day}:${hour}`;
+    const seenPipeline = redis.pipeline();
+    for (const cs of callsigns) seenPipeline.sadd(hourKey, cs);
+    seenPipeline.expire(hourKey, 60 * 60 * 2);
+    const seen = (await seenPipeline.exec()) ?? [];
+    const fresh = callsigns.filter((_, i) => seen[i]?.[1] === 1);
+    if (fresh.length) {
+      const dayKey = `ffd:${day}`;
+      const ffPipeline = redis.pipeline();
+      for (const cs of fresh) ffPipeline.hincrby(dayKey, cs, 1);
+      ffPipeline.expire(dayKey, FLIERS_DAY_TTL);
+      await ffPipeline.exec();
     }
   }
-
-  // Ties go to the most recent, so once the list is full a new callsign displaces the
-  // stalest one-timer instead of always being the one cut.
-  const nextFF = [...byCallsign.values()]
-    .sort((a, b) => b.count - a.count || b.lastSeen - a.lastSeen)
-    .slice(0, MAX_FREQUENT_FLIERS_STORED);
-
-  await redis.set(FREQUENT_FLIERS_KEY, JSON.stringify(nextFF));
 
   // --- SIGHTINGS ---
   const sightingPipeline = redis.pipeline();
@@ -162,7 +175,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Each plane counts once per hour in "all" and in its type, and again in the "near"
   // scope if it comes within NEAR_NM. Counting by hex means a plane whose callsign shows
   // up partway through the hour is added to its type then, without being double counted.
-  const day = `${mtDate.getFullYear()}-${String(mtDate.getMonth() + 1).padStart(2, "0")}-${String(mtDate.getDate()).padStart(2, "0")}`;
   const fields: string[] = [];
   const setKeys = new Set<string>();
   const addPipeline = redis.pipeline();

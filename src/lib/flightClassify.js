@@ -53,6 +53,8 @@ export const AIRLINE_NAMES = {
   FFT: "Frontier Airlines",
   SKW: "SkyWest Airlines",
   ACA: "Air Canada",
+  NAS: "NASA",
+  NOA: "NOAA",
   JA: "JetSMART", // IATA code
   AC: "Air Canada", // IATA code, sent by some aircraft instead of ACA
   ROU: "Air Canada Rouge",
@@ -63,6 +65,7 @@ export const AIRLINE_NAMES = {
   FLE: "Flair Airlines",
   FL: "Flair Airlines", // IATA-style variant
   QXE: "Horizon Air",
+  QX: "Horizon Air", // IATA code
   JZA: "Jazz",
   AKT: "Canadian North",
   CNK: "Sunwest Aviation",
@@ -75,7 +78,9 @@ export const AIRLINE_NAMES = {
   ABX: "ABX Air",
   AB: "ABX Air", // Airborne Express, IATA-style variant
   POE: "Porter Airlines",
+  PD: "Porter Airlines", // IATA code
   PAC: "Polar Air Cargo",
+  PO: "Polar Air Cargo", // IATA code
   CLX: "Cargolux",
   MNB: "MNG Airlines",
   TAY: "ASL Airlines Belgium",

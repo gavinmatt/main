@@ -49,8 +49,8 @@ const COVERAGE_DAY_TTL = 60 * 60 * 24 * 91;
 // Each plane's last accepted position fix, for spotting impossible jumps.
 const FIX_TTL = 180;
 
-const RX_LAT = 48.41;
-const RX_LON = -114.444;
+const RX_LAT = 48.43;
+const RX_LON = -114.4755;
 
 // Mountain Time calendar date as YYYY-MM-DD.
 function mtDayString(date: Date) {

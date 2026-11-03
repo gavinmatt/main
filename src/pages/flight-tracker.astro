@@ -148,6 +148,35 @@ import DensityMap from "../components/DensityMap.tsx";
       <DensityMap client:only="react" />
     </section>
 
+    <!-- CARD: COVERAGE ROSE -->
+    <section class="dash-card dash-wide">
+      <div class="dash-head">
+        <h2 class="dash-title">Coverage by direction</h2>
+      </div>
+      <p class="dash-note">
+        How far my antenna hears in each direction, in 10° slices. Mountains,
+        buildings and the antenna's own placement all show up as short slices.
+      </p>
+      <p class="dash-subnote">
+        Dark wedges are a typical day's furthest plane in that direction (the
+        median day); the faint wedges behind are the single best ping. Rings
+        every 50 NM. Directions with no flights to hear stay empty.
+      </p>
+
+      <div class="grid gap-6 md:grid-cols-[minmax(0,26rem)_1fr] items-start">
+        <div id="coverageRose" class="w-full max-w-[26rem] mx-auto aspect-square"></div>
+        <div>
+          <div class="flex flex-wrap gap-1 mb-4" id="coverageWindows">
+            <button class="btn btn-xs sm:btn-sm" data-window="7">Last 7 days</button>
+            <button class="btn btn-xs sm:btn-sm" data-window="30">Last 30 days</button>
+            <button class="btn btn-xs sm:btn-sm" data-window="90">Last 90 days</button>
+          </div>
+          <dl id="coverageStats" class="grid grid-cols-2 gap-x-4 gap-y-3 text-sm"></dl>
+          <p id="coverageSince" class="text-xs text-base-content/50 mt-4"></p>
+        </div>
+      </div>
+    </section>
+
     <!-- CARD: HEATMAP -->
     <section class="dash-card dash-wide">
       <div class="dash-head">
@@ -480,6 +509,7 @@ import DensityMap from "../components/DensityMap.tsx";
     pollWhileVisible(loadNotables, 60000);
     pollWhileVisible(loadFrequentFliers, 300000);
     pollWhileVisible(loadHeatmap, 300000);
+    pollWhileVisible(loadCoverage, 300000);
 
     /* ---------- HEATMAP ---------- */
 
@@ -631,21 +661,24 @@ import DensityMap from "../components/DensityMap.tsx";
       heatmapTip.style.top = `${Math.max(8, top)}px`;
     }
 
-    const heatmapGridEl = document.getElementById("heatmapGrid");
-    heatmapGridEl?.addEventListener("pointermove", (e) => {
-      const cell = e.target.closest("td[data-tip]");
-      if (cell && e.pointerType === "mouse") showHeatmapTip(cell, e.clientX, e.clientY);
-      else if (e.pointerType === "mouse") heatmapTip.classList.add("hidden");
-    });
-    heatmapGridEl?.addEventListener("pointerleave", (e) => {
-      if (e.pointerType === "mouse") heatmapTip.classList.add("hidden");
-    });
-    // Touch: tap a cell to show its tooltip, tap anywhere else to hide it.
+    const TIP_TARGETS = "#heatmapGrid td[data-tip], #coverageRose [data-tip]";
+    for (const el of [document.getElementById("heatmapGrid"), document.getElementById("coverageRose")]) {
+      el?.addEventListener("pointermove", (e) => {
+        if (e.pointerType !== "mouse") return;
+        const target = e.target.closest(TIP_TARGETS);
+        if (target) showHeatmapTip(target, e.clientX, e.clientY);
+        else heatmapTip.classList.add("hidden");
+      });
+      el?.addEventListener("pointerleave", (e) => {
+        if (e.pointerType === "mouse") heatmapTip.classList.add("hidden");
+      });
+    }
+    // Touch: tap a cell or wedge to show its tooltip, tap anywhere else to hide it.
     document.addEventListener("click", (e) => {
-      const cell = e.target.closest?.("#heatmapGrid td[data-tip]");
-      if (!cell) return heatmapTip.classList.add("hidden");
-      const r = cell.getBoundingClientRect();
-      showHeatmapTip(cell, r.left + r.width / 2, r.bottom);
+      const target = e.target.closest?.(TIP_TARGETS);
+      if (!target) return heatmapTip.classList.add("hidden");
+      const r = target.getBoundingClientRect();
+      showHeatmapTip(target, e.clientX || r.left + r.width / 2, e.clientY || r.bottom);
     });
     window.addEventListener("scroll", () => heatmapTip.classList.add("hidden"), { passive: true });
 
@@ -654,6 +687,124 @@ import DensityMap from "../components/DensityMap.tsx";
         const res = await fetch("/api/heatmap");
         heatmapData = await res.json();
         renderHeatmap();
+      } catch {}
+    }
+
+    /* ---------- COVERAGE ROSE ---------- */
+
+    const COMPASS = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
+    const ROSE_COLORS = {
+      light: { typical: "rgba(30,78,160,0.85)", best: "rgba(59,130,246,0.22)", grid: "#d1d5db", label: "#6b7280", halo: "#ffffff" },
+      dark: { typical: "rgba(140,192,255,0.85)", best: "rgba(140,192,255,0.2)", grid: "#3a3d44", label: "#9ca3af", halo: "#17181b" },
+    };
+
+    let coverageData = null;
+    let coverageWindow = "30";
+
+    const compassName = (deg) => COMPASS[Math.round(deg / 22.5) % 16];
+
+    function rosePoint(deg, r) {
+      const rad = (deg * Math.PI) / 180;
+      return `${(r * Math.sin(rad)).toFixed(2)},${(-r * Math.cos(rad)).toFixed(2)}`;
+    }
+
+    // A pie slice from the centre, with a sliver of gap so neighbours stay distinct.
+    function wedge(from, to, r) {
+      if (r <= 0) return "";
+      const a = from + 0.6;
+      const b = to - 0.6;
+      return `M0,0 L${rosePoint(a, r)} A${r},${r} 0 0 1 ${rosePoint(b, r)} Z`;
+    }
+
+    function renderCoverage() {
+      const el = document.getElementById("coverageRose");
+      const statsEl = document.getElementById("coverageStats");
+      if (!el || !coverageData) return;
+      document.querySelectorAll("#coverageWindows [data-window]").forEach((b) =>
+        b.classList.toggle("btn-active", b.dataset.window === coverageWindow)
+      );
+
+      const { sectorDeg } = coverageData;
+      const { typical, best, days } = coverageData.windows[coverageWindow];
+      const colors = ROSE_COLORS[heatmapRamp() === HEATMAP_RAMPS.dark ? "dark" : "light"];
+      const ringMax = Math.max(100, Math.ceil(Math.max(...best) / 50) * 50);
+      const R = 100;
+      const scale = (nm) => (nm / ringMax) * R;
+
+      let svg = `<svg viewBox="-118 -118 236 236" width="100%" height="100%" role="img" aria-label="Reception range by compass direction" style="overflow:visible">`;
+      for (let nm = 50; nm <= ringMax; nm += 50) {
+        svg += `<circle r="${scale(nm)}" fill="none" stroke="${colors.grid}" stroke-width="0.5"/>`;
+      }
+      for (const deg of [0, 90, 180, 270]) {
+        svg += `<line x1="0" y1="0" x2="${rosePoint(deg, R).split(",")[0]}" y2="${rosePoint(deg, R).split(",")[1]}" stroke="${colors.grid}" stroke-width="0.5"/>`;
+      }
+      typical.forEach((_, s) => {
+        svg += `<path d="${wedge(s * sectorDeg, (s + 1) * sectorDeg, scale(best[s]))}" fill="${colors.best}"/>`;
+      });
+      typical.forEach((t, s) => {
+        svg += `<path d="${wedge(s * sectorDeg, (s + 1) * sectorDeg, scale(t))}" fill="${colors.typical}"/>`;
+      });
+      // Ring distances over the wedges, with a halo so they read on any fill.
+      for (let nm = 50; nm <= ringMax; nm += 50) {
+        svg += `<text x="${(scale(nm) * 0.707 + 1.5).toFixed(1)}" y="${(-scale(nm) * 0.707 - 1.5).toFixed(1)}" font-size="6" fill="${colors.label}" stroke="${colors.halo}" stroke-width="2" paint-order="stroke">${nm}</text>`;
+      }
+      // Full-radius transparent slices on top, so every direction has a hover target.
+      typical.forEach((t, s) => {
+        const from = s * sectorDeg;
+        const tip = [
+          `${compassName(from + sectorDeg / 2)} (${from}°–${from + sectorDeg}°)`,
+          t ? `Typical day: ${t} NM` : "No flights heard this way",
+          best[s] ? `Best ping: ${best[s]} NM` : "",
+        ].filter(Boolean).join("\n");
+        svg += `<path d="${wedge(from - 0.6, from + sectorDeg + 0.6, R)}" fill="transparent" data-tip="${escapeHtml(tip)}"/>`;
+      });
+      for (const [label, deg] of [["N", 0], ["E", 90], ["S", 180], ["W", 270]]) {
+        const [x, y] = rosePoint(deg, R + 10).split(",");
+        svg += `<text x="${x}" y="${y}" font-size="8" font-weight="600" fill="${colors.label}" text-anchor="middle" dominant-baseline="central">${label}</text>`;
+      }
+      svg += `<circle r="2" fill="#ef4444" stroke="#fff" stroke-width="0.8"/>`;
+      svg += `</svg>`;
+      el.innerHTML = svg;
+
+      // Summary: furthest and weakest directions, ignoring directions with no traffic.
+      const heard = typical.map((t, s) => ({ s, t, b: best[s] })).filter((x) => x.t > 0);
+      const dirName = (s) => compassName(s * sectorDeg + sectorDeg / 2);
+      const stat = (label, value, note) =>
+        `<div><dt class="text-base-content/50 text-xs">${label}</dt><dd class="text-lg font-semibold">${value}</dd>${note ? `<dd class="text-xs text-base-content/50">${note}</dd>` : ""}</div>`;
+      if (!heard.length) {
+        statsEl.innerHTML = `<p class="col-span-2 text-base-content/50">No range data for this period yet.</p>`;
+      } else {
+        const furthest = heard.reduce((a, b) => (b.b > a.b ? b : a));
+        const strongest = heard.reduce((a, b) => (b.t > a.t ? b : a));
+        const weakest = heard.reduce((a, b) => (b.t < a.t ? b : a));
+        const avg = Math.round(heard.reduce((n, x) => n + x.t, 0) / heard.length);
+        statsEl.innerHTML =
+          stat("Best ping", `${furthest.b} NM`, `to the ${dirName(furthest.s)}`) +
+          stat("Typical reach", `${avg} NM`, "average across directions") +
+          stat("Strongest direction", dirName(strongest.s), `${strongest.t} NM on a typical day`) +
+          stat("Weakest direction", dirName(weakest.s), `${weakest.t} NM on a typical day`);
+      }
+
+      const sinceEl = document.getElementById("coverageSince");
+      if (sinceEl) {
+        const since = coverageData.since && new Date(`${coverageData.since}T12:00:00`);
+        sinceEl.textContent = since && days < Number(coverageWindow)
+          ? `Based on ${days} day${days === 1 ? "" : "s"} of data, collecting since ${since.toLocaleDateString(undefined, { month: "short", day: "numeric" })}.`
+          : `Based on ${days} days of data.`;
+      }
+    }
+
+    document.getElementById("coverageWindows")?.addEventListener("click", (e) => {
+      const w = e.target.closest("[data-window]")?.dataset.window;
+      if (w) { coverageWindow = w; renderCoverage(); }
+    });
+    window.addEventListener("themechange", renderCoverage);
+
+    async function loadCoverage() {
+      try {
+        const res = await fetch("/api/coverage");
+        coverageData = await res.json();
+        renderCoverage();
       } catch {}
     }
   </script>

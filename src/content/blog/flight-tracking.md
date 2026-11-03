@@ -36,16 +36,14 @@ One very annoying nag with some SDR dongles is that they use a crazy niche conne
 
 Now to the fun part, the data. I feed data to Flightradar24, Flightaware, and most importantly, ADS-B Exchange. These are all services that consume this data and use it to make pretty flight maps. Beyond that, they also provide tools to airports and aviators to help them stay safe and plan traffic. The more ADS-B coverage around the world, the more accurate and timely the map! 
 
-ADS-B Exchange is crucial for two reasons - it promotes open data and it allows you to embed your map of data wherever you want. Unless you feel like dealing with concepts as threatening as “reverse proxy,” “Flask server,” and “cross-site scripting,” ADS-B’s map is pretty damn good. I eventually want to create my own, but for now, it’ll do just fine.
+ADS-B Exchange is my favorite because it promotes open data. It also used to let you embed its map wherever you wanted, which is how the first version of my tracker worked. Unless you feel like dealing with concepts as threatening as “reverse proxy,” “Flask server,” and “cross-site scripting,” that was pretty damn appealing.
 
-With that, here’s the newest project on my website - a live flight tracker pulling my real data! You can load the tracker on its own [here](https://www.gavmatt.com/flight-tracker), but I’ll also embed it below. This is insanely easy to setup - you just iframe in the ADS-B Exchange map with a few URL parameters to filter to your feeder, set the map center and zoom, and control the map UI. The map updates in realtime as new data is collected by my antenna setup. They even have a [leaderboard](https://globe.adsbexchange.com/leaderboard/) so that you can become king of the nerds!
+With that, here’s the newest project on my website - a live flight tracker pulling my real data! It started as an ADS-B Exchange iframe, but they stopped allowing embeds, so I finally built my own. My Pi now sends everything it hears to my site every 15 seconds, and the [flight tracker](/flight-tracker) draws it on a live map. Below the map is a dashboard: what’s overhead right now, the furthest planes I’ve heard, the busiest routes, a traffic heatmap, where planes fly, and how far my antenna reaches in each direction. ADS-B Exchange even has a [leaderboard](https://globe.adsbexchange.com/leaderboard/) so that you can become king of the nerds!
 
 Other providers offer some pretty great benefits for feeding data. In particular, Flightradar24 offers their premium Business plan for free as long as you feed data! 
 
 <div style="display: flex; justify-content: center;">
         <a href="/flight-tracker"><img src="/flight-tracker.jpg" alt="Live flight map from my ADS-B receiver" width="800" style="max-width: 100%; height: auto;" /></a>
 </div>
-
-*Update: ADS-B Exchange no longer allows its map to be embedded on other sites, so I finally built my own. [See it live on the flight tracker page](/flight-tracker).*
 
 Let me know what other projects I should do next or if you have your own ADS-B setup! 

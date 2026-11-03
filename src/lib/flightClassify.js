@@ -46,6 +46,7 @@ export const AIRLINE_NAMES = {
   AAL: "American Airlines",
   DAL: "Delta Air Lines",
   UAL: "United Airlines",
+  UA: "United Airlines", // IATA code
   ASA: "Alaska Airlines",
   SWA: "Southwest Airlines",
   JBU: "JetBlue Airways",
@@ -53,8 +54,6 @@ export const AIRLINE_NAMES = {
   FFT: "Frontier Airlines",
   SKW: "SkyWest Airlines",
   ACA: "Air Canada",
-  NAS: "NASA",
-  NOA: "NOAA",
   JA: "JetSMART", // IATA code
   AC: "Air Canada", // IATA code, sent by some aircraft instead of ACA
   ROU: "Air Canada Rouge",
@@ -120,6 +119,7 @@ export const AIRLINE_NAMES = {
   ETD: "Etihad Airways",
   SVA: "Saudia",
   THY: "Turkish Airlines",
+  TK: "Turkish Airlines", // IATA code
   IFA: "Fai Airservice",
   HRT: "Chartright Air",
   ETH: "Ethiopian Airlines",
@@ -631,6 +631,7 @@ export const COMMON_AIRLINES = new Set([
 // Registrations and custom callsigns flown by private aircraft.
 const PRIVATE_CALLSIGNS = [
   /^N\d{1,5}[A-Z]{0,2}$/,
+  /^\d{1,4}[A-Z]{2}$/, // a US tail number sent without the N, e.g. 110AX
   /^C-?[FG][A-Z]{3}$/,
   /^G-?[A-Z]{4}$/,
   /^D-?[A-Z]{4}$/,
@@ -640,12 +641,12 @@ const PRIVATE_CALLSIGNS = [
   // Guernsey, then three-letter marks (Austria, Netherlands, Spain, Ireland, Belgium,
   // Denmark, Sweden, Norway, Finland, Luxembourg, Australia, South Africa, Brazil,
   // Mexico, Bermuda/Cayman, Portugal, Poland, Czechia, Saudi Arabia, Thailand,
-  // New Zealand, UAE, Qatar, Malta).
+  // New Zealand, UAE, Qatar, Malta, Turkey).
   /^[FIM]-?[A-Z]{4}$/,
   /^2-?[A-Z]{4}$/,
   /^B-?\d{4}$/, // China/Taiwan; airliners send airline callsigns instead
   /^HI\d{3,4}$/, // Dominican Republic
-  /^(OE|PH|EC|EI|OO|OY|SE|LN|OH|LX|VH|ZS|P[PRST]|X[ABC]|V[PQ]|CS|SP|OK|HZ|HS|ZK|A6|A7|9H)-?[A-Z]{3}$/,
+  /^(OE|PH|EC|EI|OO|OY|SE|LN|OH|LX|VH|ZS|P[PRST]|X[ABC]|V[PQ]|CS|SP|OK|HZ|HS|ZK|A6|A7|9H|TC)-?[A-Z]{3}$/,
   /^LN\d{1,5}[A-Z]{1,2}$/, // "L" plus a US tail number, e.g. LN233TJ for N233TJ
   /^NCJ\d+/,
   /^MAVEN\d/,
@@ -654,7 +655,9 @@ const PRIVATE_CALLSIGNS = [
 export function airlineFromCallsign(cs) {
   if (!cs) return "—";
   if (PRIVATE_CALLSIGNS.some((re) => re.test(cs))) return "Private";
-  const prefix = cs.match(/^[A-Z]{2,3}/)?.[0];
+  // The code must be followed by the flight number, so a word callsign like TORO01 or
+  // SPAR19 isn't read as the airline whose code starts it (TOR, SPA).
+  const prefix = cs.match(/^[A-Z]{2,3}(?=\d)/)?.[0];
   return AIRLINE_NAMES[prefix] || "—";
 }
 
@@ -706,10 +709,11 @@ export function airlineFromFlight(f) {
   if (/^BOE\d+/.test(cs)) return "Boeing Test Flight";
   if (isJanet(f)) return "Janet";
   if (isSkydiving(f)) return "Skydiving";
+  if (isResearch(f)) return cs.slice(0, 4); // NASA or NOAA
   if (isPrivateFlight(f)) return "Private";
   if (f.op?.trim()) return f.op.trim();
   if (!cs) return "Undetermined";
-  const prefix = cs.match(/^[A-Z]{2,3}/)?.[0];
+  const prefix = cs.match(/^[A-Z]{2,3}(?=\d)/)?.[0];
   return AIRLINE_NAMES[prefix] || "—";
 }
 
@@ -722,7 +726,7 @@ export function militaryBranch(f) {
   if (/^(PAT|ARMY)/.test(cs)) return "USA";
   if (/^(VM|MAR)/.test(cs)) return "USMC";
   if (/^(SAM|SPAR)\d/.test(cs)) return "USAF"; // VIP airlift
-  if (/^CFCO?\d/.test(cs)) return "RCAF";
+  if (/^(CFCO?|SNBD)\d/.test(cs)) return "RCAF"; // SNBD: Snowbirds
   if (/^RRR\d/.test(cs)) return "RAF";
   if (/^GAF\d/.test(cs)) return "GAF";
   if (/^CTM\d/.test(cs)) return "FR AF";

@@ -5,6 +5,7 @@ import {
   airlineFromFlight,
   classifyNotability,
   emergencyReason,
+  isSkydiving,
   escapeHtml,
 } from '../lib/flightClassify.js';
 
@@ -51,6 +52,8 @@ const FLAG_COLORS = {
   test: '#f59e0b',
   uncommon: '#3b82f6',
   fastHigh: '#facc15',
+  janet: '#a78bfa',
+  skydive: '#ec4899',
 };
 
 const LEGEND = [
@@ -61,6 +64,8 @@ const LEGEND = [
   { color: FLAG_COLORS.test, label: 'Test flight' },
   { color: FLAG_COLORS.uncommon, label: 'Uncommon airline' },
   { color: FLAG_COLORS.fastHigh, label: 'Fast/high' },
+  { color: FLAG_COLORS.skydive, label: 'Skydiving' },
+  { color: FLAG_COLORS.janet, label: 'Janet' },
   { color: DEFAULT_COLOR, label: 'Other' },
 ];
 
@@ -75,6 +80,8 @@ function flagColor(cls: string | undefined) {
   if (cls.includes('amber')) return FLAG_COLORS.test;
   if (cls.includes('blue')) return FLAG_COLORS.uncommon;
   if (cls.includes('yellow')) return FLAG_COLORS.fastHigh;
+  if (cls.includes('pink')) return FLAG_COLORS.skydive;
+  if (cls.includes('violet')) return FLAG_COLORS.janet;
   return DEFAULT_COLOR;
 }
 
@@ -112,6 +119,14 @@ const SHAPES: Record<string, { label: string; rotate: boolean; svg: string }> = 
       + '<circle cx="5" cy="5" r="3.4"/><circle cx="19" cy="5" r="3.4"/><circle cx="5" cy="19" r="3.4"/><circle cx="19" cy="19" r="3.4"/>'
       + '<rect x="8.5" y="8.5" width="7" height="7" rx="1.5"/>',
   },
+  // Picked by callsign (jump planes), not ADS-B category.
+  skydive: {
+    label: 'Skydiving',
+    rotate: false,
+    svg: '<path d="M2 10.5a10 8.5 0 0 1 20 0c-1.6-1.2-3.4-1.2-5 0-1.6-1.2-3.4-1.2-5 0-1.6-1.2-3.4-1.2-5 0-1.6-1.2-3.4-1.2-5 0z"/>'
+      + '<path fill="none" d="M2.5 10.5l8 8M21.5 10.5l-8 8M9.5 10.5l1.8 8M14.5 10.5l-1.8 8"/>'
+      + '<circle cx="12" cy="19.8" r="2.2"/>',
+  },
 };
 
 function shapeFor(category: string | undefined) {
@@ -127,7 +142,7 @@ function shapeSvg(shape: (typeof SHAPES)[string], size: number, color: string, s
 
 function planeSvg(f: Aircraft, color: string, emergency: boolean) {
   const size = emergency ? 30 : 22;
-  const svg = shapeSvg(shapeFor(f.category), size, color, emergency ? '#fff' : '#1f2937', emergency ? 1.2 : 0.8, Number(f.track) || 0);
+  const svg = shapeSvg(isSkydiving(f) ? SHAPES.skydive : shapeFor(f.category), size, color, emergency ? '#fff' : '#1f2937', emergency ? 1.2 : 0.8, Number(f.track) || 0);
   return emergency ? `<div class="flightmap-emergency">${svg}</div>` : svg;
 }
 

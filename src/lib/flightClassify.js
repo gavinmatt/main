@@ -53,6 +53,7 @@ export const AIRLINE_NAMES = {
   FFT: "Frontier Airlines",
   SKW: "SkyWest Airlines",
   ACA: "Air Canada",
+  JA: "JetSMART", // IATA code
   AC: "Air Canada", // IATA code, sent by some aircraft instead of ACA
   ROU: "Air Canada Rouge",
   WJA: "WestJet",
@@ -643,7 +644,6 @@ const PRIVATE_CALLSIGNS = [
   /^LN\d{1,5}[A-Z]{1,2}$/, // "L" plus a US tail number, e.g. LN233TJ for N233TJ
   /^NCJ\d+/,
   /^MAVEN\d/,
-  /^JUMP\d/, // skydiving jump planes
 ];
 
 export function airlineFromCallsign(cs) {
@@ -668,6 +668,15 @@ export function isUnknownAirline(f) {
   return !AIRLINE_NAMES[prefix];
 }
 
+export function isSkydiving(f) {
+  return /^JUMP\d/.test(callsignRaw(f));
+}
+
+// The unmarked 737s that shuttle workers to Area 51 and the Nevada test sites.
+export function isJanet(f) {
+  return /^JANET\d/.test(callsignRaw(f));
+}
+
 export function isPrivateFlight(f) {
   const cs = callsignRaw(f);
   if (!cs) return false;
@@ -686,6 +695,8 @@ export function hexUpper(f) {
 export function airlineFromFlight(f) {
   const cs = callsignRaw(f);
   if (/^BOE\d+/.test(cs)) return "Boeing Test Flight";
+  if (isJanet(f)) return "Janet";
+  if (isSkydiving(f)) return "Skydiving";
   if (isPrivateFlight(f)) return "Private";
   if (f.op?.trim()) return f.op.trim();
   if (!cs) return "Undetermined";
@@ -702,7 +713,6 @@ export function militaryBranch(f) {
   if (/^(PAT|ARMY)/.test(cs)) return "USA";
   if (/^(VM|MAR)/.test(cs)) return "USMC";
   if (/^(SAM|SPAR)\d/.test(cs)) return "USAF"; // VIP airlift
-  if (/^JANET\d/.test(cs)) return "USAF"; // Nevada test site shuttle
   if (/^CFCO?\d/.test(cs)) return "RCAF";
   if (/^RRR\d/.test(cs)) return "RAF";
   if (/^GAF\d/.test(cs)) return "GAF";
@@ -726,6 +736,9 @@ export function classifyNotability(f) {
     return { label: "HELI", cls: "bg-emerald-100 text-emerald-800" };
   if (/^BOE\d+/.test(cs))
     return { label: "Test Flight", cls: "bg-amber-100 text-amber-800" };
+  if (isJanet(f)) return { label: "JANET", cls: "bg-violet-700 text-white" };
+  if (isSkydiving(f))
+    return { label: "SKYDIVE", cls: "bg-pink-100 text-pink-800" };
   const branch = militaryBranch(f);
   if (branch) {
     return {

@@ -619,14 +619,22 @@ export const COMMON_AIRLINES = new Set([
   "Aero Air",
 ]);
 
+// Registrations and custom callsigns flown by private aircraft.
+const PRIVATE_CALLSIGNS = [
+  /^N\d{1,5}[A-Z]{0,2}$/,
+  /^C-?[FG][A-Z]{3}$/,
+  /^G-?[A-Z]{4}$/,
+  /^D-?[A-Z]{4}$/,
+  /^HB-?[A-Z]{3}$/,
+  /^T7-?[A-Z]{3,5}$/, // San Marino
+  /^LN\d{1,5}[A-Z]{1,2}$/, // "L" plus a US tail number, e.g. LN233TJ for N233TJ
+  /^NCJ\d+/,
+  /^MAVEN\d/,
+];
+
 export function airlineFromCallsign(cs) {
   if (!cs) return "—";
-  if (/^N\d{1,5}[A-Z]{0,2}$/.test(cs)) return "Private";
-  if (/^C-?[FG][A-Z]{3}$/.test(cs)) return "Private";
-  if (/^G-?[A-Z]{4}$/.test(cs)) return "Private";
-  if (/^D-?[A-Z]{4}$/.test(cs)) return "Private";
-  if (/^HB-?[A-Z]{3}$/.test(cs)) return "Private";
-  if (/^NCJ\d+/.test(cs)) return "Private";
+  if (PRIVATE_CALLSIGNS.some((re) => re.test(cs))) return "Private";
   const prefix = cs.match(/^[A-Z]{2,3}/)?.[0];
   return AIRLINE_NAMES[prefix] || "—";
 }
@@ -649,14 +657,7 @@ export function isUnknownAirline(f) {
 export function isPrivateFlight(f) {
   const cs = callsignRaw(f);
   if (!cs) return false;
-  if (/^NCJ\d+/.test(cs)) return "Private";
-  return (
-    /^N\d{1,5}[A-Z]{0,2}$/.test(cs) ||
-    /^C-?[FG][A-Z]{3}$/.test(cs) ||
-    /^G-?[A-Z]{4}$/.test(cs) ||
-    /^D-?[A-Z]{4}$/.test(cs) ||
-    /^HB-?[A-Z]{3}$/.test(cs)
-  );
+  return PRIVATE_CALLSIGNS.some((re) => re.test(cs));
 }
 
 export function isAirlineFlight(f) {
@@ -680,19 +681,10 @@ export function airlineFromFlight(f) {
 
 export function militaryBranch(f) {
   const cs = callsignRaw(f);
-  if (hexUpper(f).startsWith("AE")) {
-    if (
-      /^(ENRGY|QID|TEX|GOLD|NACHO)/.test(cs) ||
-      ((f.alt_baro ?? 0) > 30000 && (f.gs ?? 0) < 500)
-    ) {
-      return "USAF (TANKER)";
-    }
-    return "USAF";
-  }
   if (/^(ENRGY|QID|TEX|GOLD|NACHO)/.test(cs)) return "USAF (TANKER)";
   // Air Mobility Command: mostly airlift (C-17, C-5), not tankers.
   if (/^(RCH|REACH|AMC)/.test(cs)) return "USAF";
-  if (/^(NAVY|CNV|VV)/.test(cs)) return "USN";
+  if (/^(NAVY|CNV|VV|MAXX)/.test(cs)) return "USN";
   if (/^(PAT|ARMY)/.test(cs)) return "USA";
   if (/^(VM|MAR)/.test(cs)) return "USMC";
   if (/^SAM\d/.test(cs)) return "USAF";
@@ -702,6 +694,10 @@ export function militaryBranch(f) {
   if (/^CTM\d/.test(cs)) return "FR AF";
   if (/^IAM\d/.test(cs)) return "IT AF";
   if (/^KAF\d/.test(cs)) return "KENYA AF";
+  // Any other US military airframe; callsigns above name the branch first.
+  if (hexUpper(f).startsWith("AE")) {
+    return (f.alt_baro ?? 0) > 30000 && (f.gs ?? 0) < 500 ? "USAF (TANKER)" : "USAF";
+  }
   return null;
 }
 

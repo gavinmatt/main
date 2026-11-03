@@ -638,10 +638,12 @@ const PRIVATE_CALLSIGNS = [
   /^[FIM]-?[A-Z]{4}$/,
   /^2-?[A-Z]{4}$/,
   /^B-?\d{4}$/, // China/Taiwan; airliners send airline callsigns instead
+  /^HI\d{3,4}$/, // Dominican Republic
   /^(OE|PH|EC|EI|OO|OY|SE|LN|OH|LX|VH|ZS|P[PRST]|X[ABC]|V[PQ]|CS|SP|OK|HZ|HS|ZK|A6|A7|9H)-?[A-Z]{3}$/,
   /^LN\d{1,5}[A-Z]{1,2}$/, // "L" plus a US tail number, e.g. LN233TJ for N233TJ
   /^NCJ\d+/,
   /^MAVEN\d/,
+  /^JUMP\d/, // skydiving jump planes
 ];
 
 export function airlineFromCallsign(cs) {
@@ -700,6 +702,7 @@ export function militaryBranch(f) {
   if (/^(PAT|ARMY)/.test(cs)) return "USA";
   if (/^(VM|MAR)/.test(cs)) return "USMC";
   if (/^(SAM|SPAR)\d/.test(cs)) return "USAF"; // VIP airlift
+  if (/^JANET\d/.test(cs)) return "USAF"; // Nevada test site shuttle
   if (/^CFCO?\d/.test(cs)) return "RCAF";
   if (/^RRR\d/.test(cs)) return "RAF";
   if (/^GAF\d/.test(cs)) return "GAF";

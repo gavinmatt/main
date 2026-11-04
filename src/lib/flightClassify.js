@@ -65,6 +65,7 @@ export const AIRLINE_NAMES = {
   SWG: "Sunwing",
   FLE: "Flair Airlines",
   FL: "Flair Airlines", // IATA-style variant
+  FE: "Flair Airlines", // seen broadcasting as FE609
   QXE: "Horizon Air",
   QX: "Horizon Air", // IATA code
   JZA: "Jazz",

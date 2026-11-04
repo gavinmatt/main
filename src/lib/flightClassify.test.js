@@ -22,6 +22,7 @@ test("airline codes need a flight number after them", () => {
     WJ276: "WestJet",
     AC123: "Air Canada",
     FL881: "Flair Airlines",
+    FE609: "Flair Airlines",
     AB3187: "ABX Air",
     QX2104: "Horizon Air",
     XAA1154: "American Airlines",

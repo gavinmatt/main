@@ -1,20 +1,21 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import QSLMap from '../components/QSLMap.tsx';
+import RadioDashboard from '../components/RadioDashboard.tsx';
 ---
 
-<BaseLayout title="Amateur Radio" sideBarActiveItemID="radio">
+<BaseLayout title="Amateur Radio" sideBarActiveItemID="radio" wide>
   <div class="pb-12 mt-5">
-    <div class="text-3xl py-3 font-bold">Amateur Radio</div>
-    <div class="py-2 text-lg">
-      I have my amateur radio license and regularly operate on UHF, VHF, and HF bands. I use a EFHW antenna in my attic with a Kenwood TS-590S and hope and pray for good conditions to crack through the noise. 
+    <div class="max-w-3xl">
+      <div class="text-3xl py-3 font-bold">Amateur Radio</div>
+      <div class="py-2 text-lg">
+        I have my amateur radio license and regularly operate on UHF, VHF, and HF bands. I use a EFHW antenna in my attic with a Kenwood TS-590S and hope and pray for good conditions to crack through the noise.
       </div>
-    <div class="py-2 text-lg">
-      This widget shows a map of confirmed DX (long distance) contacts (called QSLs) on various HF radio bands, my longest distance contacts, and even notable/rare/hard contacts.
+      <div class="py-2 text-lg">
+        This dashboard tracks my confirmed long-distance contacts (called QSLs) across the HF bands: where they are, what's newly confirmed, the rarest and furthest, and how close I am to working all 50 states.
+      </div>
     </div>
-    <div class="divider my-0" />
-    <div class="mt-6">
-      <QSLMap client:only="react" />
+    <div class="mt-8">
+      <RadioDashboard client:only="react" />
     </div>
   </div>
 </BaseLayout>

@@ -10,7 +10,8 @@ const redis = new Redis(process.env.REDIS_URL!);
 const QSOS_KEY = "lotw:qsos_v2";
 const CURSOR_KEY = "lotw:cursor_v2";
 // What the page shows. Never expires: a stale copy is served while a fresh one is built.
-const SUMMARY_KEY = "lotw:summary_v2";
+// Bump it when the summary gains a field the page needs.
+const SUMMARY_KEY = "lotw:summary_v3";
 const REFRESH_LOCK_KEY = "lotw:refresh_lock";
 const MOST_WANTED_KEY = "clublog:mostwanted";
 

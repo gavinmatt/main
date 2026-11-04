@@ -563,7 +563,7 @@ import DensityMap from "../components/DensityMap.tsx";
         // Lines for the hover tooltip: when, how many, most common airline.
         const tip = [
           `${DAYS[d]} ${HOURS[h]}`,
-          `${shown} plane${val === 1 ? "" : "s"} on average`,
+          `${shown} ${heatmapType === "heli" ? "helicopter" : "plane"}${val === 1 ? "" : "s"} on average`,
           top ? `Most common: ${top}` : "",
         ].filter(Boolean).join("\n");
         const isNow = d === now.weekday && h === now.hour;

@@ -37,6 +37,129 @@ const CQ_ZONES = 40;
 const NEW_LABEL = { state: 'NEW STATE', province: 'NEW PROVINCE', entity: 'NEW ENTITY' };
 const medals = ['🥇', '🥈', '🥉'];
 
+const COMPASS = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
+const ROSE_R = 100;
+
+function rosePoint(deg: number, r: number) {
+  const rad = (deg * Math.PI) / 180;
+  return `${(r * Math.sin(rad)).toFixed(2)},${(-r * Math.cos(rad)).toFixed(2)}`;
+}
+
+// A pie slice from the centre, with a sliver of gap so neighbours stay distinct.
+function wedge(from: number, to: number, r: number, gap = 0.8) {
+  if (r <= 0) return '';
+  return `M0,0 L${rosePoint(from + gap, r)} A${r},${r} 0 0 1 ${rosePoint(to - gap, r)} Z`;
+}
+
+function DirectionRose({ data }: { data: QSLData['directions'] }) {
+  const [scope, setScope] = useState<'all' | 'dx'>('all');
+  const [tip, setTip] = useState<string | null>(null);
+  const counts = data[scope];
+  const sectorDeg = 360 / counts.length;
+  const max = Math.max(1, ...counts);
+  // Square-root radius, so a wedge's area (what the eye reads) tracks its count.
+  const scale = (n: number) => Math.sqrt(n / max) * ROSE_R;
+  const rings = [...new Set([Math.round(max / 4), Math.round(max / 2), max])].filter((n) => n > 0);
+  const total = counts.reduce((a, b) => a + b, 0);
+  const busiest = counts.indexOf(Math.max(...counts));
+  const reached = counts.filter(Boolean).length;
+  const furthestSector = data.furthest.reduce<number>(
+    (best, f, s) => (f && (!data.furthest[best] || f.distanceMi > data.furthest[best]!.distanceMi) ? s : best),
+    0
+  );
+  const tipFor = (s: number) => {
+    const n = counts[s];
+    const f = data.furthest[s];
+    const from = (s * sectorDeg - sectorDeg / 2 + 360) % 360;
+    return [
+      `${COMPASS[s]} (${Math.round(from)}°–${Math.round((from + sectorDeg) % 360)}°): ${n} QSL${n === 1 ? '' : 's'}`,
+      n && f ? `furthest ${f.name}, ${f.distanceMi.toLocaleString()} mi` : '',
+    ]
+      .filter(Boolean)
+      .join(' · ');
+  };
+
+  return (
+    <>
+      <div className="flex items-center justify-between gap-2 mb-2">
+        <p className="text-xs text-base-content/50 min-h-[1rem]">{tip ?? 'Hover or tap a direction.'}</p>
+        <div className="flex gap-1 shrink-0">
+          {(['all', 'dx'] as const).map((s) => (
+            <button key={s} className={`btn btn-xs ${scope === s ? 'btn-active' : ''}`} onClick={() => setScope(s)}>
+              {s === 'all' ? 'All QSLs' : 'DX only'}
+            </button>
+          ))}
+        </div>
+      </div>
+      <svg viewBox="-118 -118 236 236" className="w-full max-w-[20rem] mx-auto block overflow-visible" role="img" aria-label="Confirmed contacts by compass direction">
+        {rings.map((n) => (
+          <circle key={n} r={scale(n)} fill="none" className="stroke-base-300" strokeWidth={0.6} />
+        ))}
+        {[0, 90, 180, 270].map((deg) => {
+          const [x, y] = rosePoint(deg, ROSE_R).split(',');
+          return <line key={deg} x1={0} y1={0} x2={x} y2={y} className="stroke-base-300" strokeWidth={0.6} />;
+        })}
+        {counts.map((n, s) => (
+          <path key={s} d={wedge(s * sectorDeg - sectorDeg / 2, s * sectorDeg + sectorDeg / 2, scale(n))} className="fill-blue-500/80" />
+        ))}
+        {/* Ring counts over the wedges, with a halo so they read on any fill. */}
+        {rings.map((n) => (
+          <text
+            key={n}
+            x={(scale(n) * 0.383 + 1.5).toFixed(1)}
+            y={(-scale(n) * 0.924 - 1.5).toFixed(1)}
+            fontSize={6}
+            className="fill-base-content/60 stroke-base-100"
+            strokeWidth={2}
+            paintOrder="stroke"
+          >
+            {n}
+          </text>
+        ))}
+        {/* Full-radius transparent slices on top, so every direction has a hover target. */}
+        {counts.map((_, s) => (
+          <path
+            key={s}
+            d={wedge(s * sectorDeg - sectorDeg / 2, s * sectorDeg + sectorDeg / 2, ROSE_R, 0)}
+            fill="transparent"
+            onMouseEnter={() => setTip(tipFor(s))}
+            onMouseLeave={() => setTip(null)}
+            onClick={() => setTip(tipFor(s))}
+          />
+        ))}
+        {(['N', 'E', 'S', 'W'] as const).map((label, i) => {
+          const [x, y] = rosePoint(i * 90, ROSE_R + 10).split(',');
+          return (
+            <text key={label} x={x} y={y} fontSize={8} fontWeight={600} className="fill-base-content/60" textAnchor="middle" dominantBaseline="central">
+              {label}
+            </text>
+          );
+        })}
+        <circle r={2.2} fill="#ef4444" stroke="#fff" strokeWidth={0.8} />
+      </svg>
+      {total > 0 && (
+        <dl className="grid grid-cols-3 gap-2 mt-3 text-center">
+          <div>
+            <dt className="text-xs text-base-content/50">Busiest</dt>
+            <dd className="text-lg font-semibold">{COMPASS[busiest]}</dd>
+            <dd className="text-xs text-base-content/50">{Math.round((counts[busiest] / total) * 100)}% of QSLs</dd>
+          </div>
+          <div>
+            <dt className="text-xs text-base-content/50">Furthest</dt>
+            <dd className="text-lg font-semibold">{COMPASS[furthestSector]}</dd>
+            <dd className="text-xs text-base-content/50">{data.furthest[furthestSector]?.name}</dd>
+          </div>
+          <div>
+            <dt className="text-xs text-base-content/50">Directions</dt>
+            <dd className="text-lg font-semibold">{reached} of 16</dd>
+            <dd className="text-xs text-base-content/50">with a confirmed QSL</dd>
+          </div>
+        </dl>
+      )}
+    </>
+  );
+}
+
 function hourLabel(h: number) {
   return h === 0 ? '12a' : h < 12 ? `${h}a` : h === 12 ? '12p' : `${h - 12}p`;
 }
@@ -323,6 +446,16 @@ export default function RadioDashboard() {
             );
           })}
         </div>
+      </Card>
+
+      <Card title="Which way my signal goes">
+        <p className="dash-note">Confirmed contacts by compass direction from home: the attic antenna's real-world pattern.</p>
+        <p className="dash-subnote">Wedge area shows QSL count. Directions are short-path great-circle headings.</p>
+        {!data ? (
+          <p className="text-sm text-base-content/50 py-6 text-center">{placeholder}</p>
+        ) : (
+          <DirectionRose data={data.directions} />
+        )}
       </Card>
 
       <Card title="When the bands open" wide>

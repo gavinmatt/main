@@ -10,6 +10,7 @@ export interface QSLData {
   rankedEntities: number;
   entities: number;
   continents: { code: string; name: string; count: number }[];
+  directions: { all: number[]; dx: number[]; furthest: ({ name: string; distanceMi: number } | null)[] };
   zones: Record<string, number>;
   hours: number[];
   confirmDays: { median: number; fastest: number; slowest: number } | null;

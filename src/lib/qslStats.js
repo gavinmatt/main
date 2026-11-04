@@ -1,6 +1,8 @@
 // Turns Logbook of the World confirmations into everything the radio page shows.
 // Pure functions, so they're unit tested without LoTW, Club Log or Redis.
 
+import { bearingDeg } from "./positionChecks.js";
+
 export const US_DXCC = "291";
 export const CA_DXCC = "1";
 // Alaska and Hawaii are DXCC entities of their own, but still count toward Worked All States.
@@ -79,6 +81,8 @@ export const CQ_ZONES = 40;
 // Half the Earth's circumference: the furthest any contact can be.
 export const ANTIPODE_MI = 12_450;
 const TIME_ZONE = "America/Denver";
+// 16 compass points, each sector centred on its name.
+export const DIRECTION_SECTORS = 16;
 
 // Club Log Most Wanted rank cutoffs, out of ~340 entities.
 const RARITY_TIERS = [
@@ -147,13 +151,30 @@ export function mergeQsos(existing, incoming) {
   return [...byKey.values()];
 }
 
+// Centre of a Maidenhead grid square, using the 6-character subsquare when there is one.
 export function gridToLatLon(grid) {
   if (!grid || grid.length < 4) return null;
   const g = grid.toUpperCase();
-  const lon = (g.charCodeAt(0) - 65) * 20 - 180 + parseInt(g[2]) * 2 + 1;
-  const lat = (g.charCodeAt(1) - 65) * 10 - 90 + parseInt(g[3]) + 0.5;
+  let lon = (g.charCodeAt(0) - 65) * 20 - 180 + parseInt(g[2]) * 2;
+  let lat = (g.charCodeAt(1) - 65) * 10 - 90 + parseInt(g[3]);
   if (isNaN(lon) || isNaN(lat)) return null;
+  if (/^[A-X]{2}$/.test(g.slice(4, 6))) {
+    lon += (g.charCodeAt(4) - 65) * (5 / 60) + 2.5 / 60;
+    lat += (g.charCodeAt(5) - 65) * (2.5 / 60) + 1.25 / 60;
+  } else {
+    lon += 1;
+    lat += 0.5;
+  }
   return [lat, lon];
+}
+
+// Where a single contact was: its own grid square, else its state, province or entity.
+function qsoLatLon(q) {
+  const fromGrid = gridToLatLon(q.grid);
+  if (fromGrid) return fromGrid;
+  if (q.dxcc === US_DXCC && US_STATES[q.state]) return US_STATES[q.state].slice(1);
+  if (q.dxcc === CA_DXCC && CA_PROVINCES[q.state]) return CA_PROVINCES[q.state].slice(1);
+  return COUNTRY_CENTROID_OVERRIDES[q.country] ?? null;
 }
 
 export function toProperCase(str) {
@@ -269,6 +290,26 @@ export function summarizeQsls(qsos, mostWanted = {}) {
   }
   const dx = [...dxByCountry.values()];
 
+  // Which way each contact lies from home, for the antenna's real-world pattern.
+  const sectorDeg = 360 / DIRECTION_SECTORS;
+  const directions = {
+    all: new Array(DIRECTION_SECTORS).fill(0),
+    dx: new Array(DIRECTION_SECTORS).fill(0),
+    furthest: new Array(DIRECTION_SECTORS).fill(null),
+  };
+  for (const q of qsos) {
+    const at = qsoLatLon(q);
+    if (!at) continue;
+    const bearing = bearingDeg(REF_LAT, REF_LON, at[0], at[1]);
+    const sector = Math.floor(((bearing + sectorDeg / 2) % 360) / sectorDeg);
+    const mi = Math.round(distanceMi(REF_LAT, REF_LON, at[0], at[1]));
+    directions.all[sector]++;
+    if (q.dxcc !== US_DXCC && q.dxcc !== CA_DXCC) directions.dx[sector]++;
+    if (!directions.furthest[sector] || mi > directions.furthest[sector].distanceMi) {
+      directions.furthest[sector] = { name: regionOf(q)?.name ?? toProperCase(q.country), distanceMi: mi };
+    }
+  }
+
   const continentCounts = countBy(qsos, continentOf);
   const continents = Object.entries(CONTINENTS).map(([code, name]) => ({ code, name, count: continentCounts.get(code) ?? 0 }));
   const zones = Object.fromEntries(countBy(qsos, (q) => q.cqz || null));
@@ -317,6 +358,7 @@ export function summarizeQsls(qsos, mostWanted = {}) {
     rankedEntities: Object.keys(mostWanted).length,
     entities: new Set(qsos.map((q) => q.dxcc).filter(Boolean)).size,
     continents,
+    directions,
     zones,
     hours,
     confirmDays,

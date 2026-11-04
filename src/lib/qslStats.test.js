@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { compactQso, mergeQsos, parseADIF, rarityTier, summarizeQsls } from "./qslStats.js";
+import { compactQso, gridToLatLon, mergeQsos, parseADIF, rarityTier, summarizeQsls } from "./qslStats.js";
 
 const ADIF = `ARRL Logbook of the World Status Report
 <PROGRAMID:4>LoTW
@@ -87,4 +87,22 @@ test("contact hours are local and confirmation lag is in days", () => {
   assert.equal(summary.hours[20], 1);
   assert.equal(summary.hours[9], 2);
   assert.deepEqual(summary.confirmDays, { median: 10, fastest: 0, slowest: 30 });
+});
+
+test("grid squares resolve to their centre, finer with a subsquare", () => {
+  assert.deepEqual(gridToLatLon("DN48"), [48.5, -111]);
+  const [lat, lon] = gridToLatLon("DN48ak");
+  assert.ok(Math.abs(lat - 48.4375) < 1e-9 && Math.abs(lon - -111.9583) < 1e-3);
+});
+
+test("contacts are counted by the compass direction they lie in", () => {
+  const summary = summarizeQsls([
+    qso({ state: "MT", grid: "DN58" }), // just east of home
+    qso({ call: "X", dxcc: "71", country: "GALAPAGOS ISLANDS", state: "", grid: "EI49" }), // far to the south-east
+    qso({ call: "Y", dxcc: "339", country: "JAPAN", state: "", grid: "PM95" }), // across the pole to the north-west
+  ]);
+  const at = (arr) => arr.flatMap((n, s) => (n ? [s] : []));
+  assert.deepEqual(at(summary.directions.all), [4, 7, 14]); // E, SSE, NW
+  assert.deepEqual(at(summary.directions.dx), [7, 14]);
+  assert.equal(summary.directions.furthest[14].name, "Japan");
 });

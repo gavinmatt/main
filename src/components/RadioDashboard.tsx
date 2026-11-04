@@ -19,14 +19,30 @@ const TIER_CLS: Record<string, string> = {
   Rare: 'bg-indigo-100 text-indigo-800',
   Uncommon: 'bg-blue-100 text-blue-800',
 };
+// One badge colour per continent; the badge always carries the name too.
+const CONTINENT_CLS: Record<string, string> = {
+  NA: 'bg-blue-100 text-blue-800',
+  SA: 'bg-green-100 text-green-800',
+  EU: 'bg-indigo-100 text-indigo-800',
+  AF: 'bg-amber-100 text-amber-800',
+  AS: 'bg-rose-100 text-rose-800',
+  OC: 'bg-cyan-100 text-cyan-800',
+};
+const CONTINENT_NAMES: Record<string, string> = {
+  NA: 'North America', SA: 'South America', EU: 'Europe', AF: 'Africa', AS: 'Asia', OC: 'Oceania',
+};
+// Half the Earth's circumference: the furthest any contact can be.
+const ANTIPODE_MI = 12_450;
+const CQ_ZONES = 40;
 const NEW_LABEL = { state: 'NEW STATE', province: 'NEW PROVINCE', entity: 'NEW ENTITY' };
 const medals = ['🥇', '🥈', '🥉'];
 
-function distanceLabel(mi: number): { label: string; cls: string } | null {
-  if (mi >= 9000) return { label: 'EXTREME', cls: 'bg-purple-100 text-purple-800' };
-  if (mi >= 7000) return { label: 'LONG-HAUL', cls: 'bg-indigo-100 text-indigo-800' };
-  if (mi >= 4500) return { label: 'DISTANT', cls: 'bg-blue-100 text-blue-800' };
-  return null;
+function hourLabel(h: number) {
+  return h === 0 ? '12a' : h < 12 ? `${h}a` : h === 12 ? '12p' : `${h - 12}p`;
+}
+
+function days(n: number) {
+  return `${n} day${n === 1 ? '' : 's'}`;
 }
 
 // LoTW dates are YYYYMMDD.
@@ -61,27 +77,11 @@ function EmptyRow({ cols, children }: { cols: number; children: React.ReactNode 
   );
 }
 
-function Bars({ rows }: { rows: { label: string; count: number }[] }) {
-  const max = Math.max(1, ...rows.map((r) => r.count));
-  return (
-    <div className="space-y-1.5">
-      {rows.map((r) => (
-        <div key={r.label} className="flex items-center gap-2 text-sm" title={`${r.label}: ${r.count} QSL${r.count === 1 ? '' : 's'}`}>
-          <span className="w-12 shrink-0 text-base-content/70">{r.label}</span>
-          <span className="flex-1 h-3">
-            <span className="block h-3 rounded-r bg-blue-500" style={{ width: `${Math.max(2, (r.count / max) * 100)}%` }} />
-          </span>
-          <span className="w-8 shrink-0 text-right font-semibold tabular-nums">{r.count}</span>
-        </div>
-      ))}
-    </div>
-  );
-}
-
 export default function RadioDashboard() {
   const [data, setData] = useState<QSLData | null>(null);
   const [error, setError] = useState(false);
   const [stateTip, setStateTip] = useState<string | null>(null);
+  const [hourTip, setHourTip] = useState<string | null>(null);
 
   useEffect(() => {
     loadQSLData()
@@ -129,7 +129,11 @@ export default function RadioDashboard() {
 
       <Card title="Recent QSLs">
         <p className="dash-note">Newest confirmations first, flagged when one adds a state, province, or entity.</p>
-        <p className="dash-subnote">Dated by when the QSL confirmed, which can be weeks after the contact.</p>
+        <p className="dash-subnote">
+          Dated by when the other station confirmed.
+          {data?.confirmDays &&
+            ` Half confirm within ${days(data.confirmDays.median)}; the fastest took ${days(data.confirmDays.fastest)} and the slowest ${days(data.confirmDays.slowest)}.`}
+        </p>
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-sm text-base-content">
             <thead>
@@ -242,7 +246,7 @@ export default function RadioDashboard() {
 
       <Card title="Furthest contacts">
         <p className="dash-note">Great-circle distance from my attic EFHW antenna in Whitefish, MT.</p>
-        <p className="dash-subnote">4,500+ miles = distant · 7,000+ = long-haul · 9,000+ = extreme</p>
+        <p className="dash-subnote">The bar shows how far each is toward the far side of the world, {ANTIPODE_MI.toLocaleString()} miles away.</p>
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-sm text-base-content">
             <thead>
@@ -250,21 +254,33 @@ export default function RadioDashboard() {
                 <th className="text-center py-2 px-1.5 w-8">
                   <span className="sr-only">Ranking</span>
                 </th>
-                <th className="text-left py-2 px-1.5">Rating</th>
                 <th className="text-left py-2 px-1.5">Entity</th>
+                <th className="text-left py-2 px-1.5 hidden sm:table-cell">Continent</th>
                 <th className="text-right py-2 px-1.5">Miles</th>
               </tr>
             </thead>
             <tbody>
               {!data && <EmptyRow cols={4}>{placeholder}</EmptyRow>}
               {data?.dxByDistance.slice(0, 10).map((d, i) => {
-                const label = distanceLabel(d.distanceMi);
+                const share = d.distanceMi / ANTIPODE_MI;
                 return (
                   <tr key={d.name} className="border-b border-base-300">
                     <td className="text-center py-2 px-1.5 text-lg">{medals[i] ?? ''}</td>
-                    <td className="py-2 px-1.5">{label ? <Badge {...label} /> : '—'}</td>
-                    <td className="py-2 px-1.5">{d.name}</td>
-                    <td className="text-right py-2 px-1.5 font-semibold tabular-nums">{d.distanceMi.toLocaleString()}</td>
+                    <td className="py-2 px-1.5">
+                      {d.name}
+                      {d.continent && (
+                        <div className="sm:hidden text-xs text-base-content/50">{CONTINENT_NAMES[d.continent]}</div>
+                      )}
+                    </td>
+                    <td className="py-2 px-1.5 hidden sm:table-cell">
+                      {d.continent ? <Badge label={CONTINENT_NAMES[d.continent].toUpperCase()} cls={CONTINENT_CLS[d.continent]} /> : '—'}
+                    </td>
+                    <td className="py-2 px-1.5 w-32 sm:w-40" title={`${Math.round(share * 100)}% of the way to the far side of the world`}>
+                      <div className="text-right font-semibold tabular-nums">{d.distanceMi.toLocaleString()}</div>
+                      <div className="h-1.5 rounded-full bg-base-300 mt-1">
+                        <div className="h-1.5 rounded-full bg-blue-500" style={{ width: `${Math.min(100, share * 100)}%` }} />
+                      </div>
+                    </td>
                   </tr>
                 );
               })}
@@ -273,20 +289,76 @@ export default function RadioDashboard() {
         </div>
       </Card>
 
-      <Card title="Bands & modes" wide>
-        <p className="dash-note">Where on the dial my confirmed contacts happened, and how.</p>
-        <p className="dash-subnote">Confirmed QSLs per band (longest wavelength first) and per mode.</p>
+      <Card
+        title="Continents & zones"
+        aside={data ? `${data.continents.filter((c) => c.count).length} of 6 · ${Object.keys(data.zones).length} of ${CQ_ZONES}` : undefined}
+      >
+        <p className="dash-note">Progress toward Worked All Continents and CQ's Worked All Zones awards.</p>
+        <p className="dash-subnote">CQ zones split the world into 40 regions; each confirmed QSL counts toward one.</p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-5">
+          {(data?.continents ?? Object.entries(CONTINENT_NAMES).map(([code, name]) => ({ code, name, count: 0 }))).map((c) => (
+            <div
+              key={c.code}
+              className={`rounded-lg px-3 py-2 ${c.count ? CONTINENT_CLS[c.code] : 'border border-dashed border-base-300 text-base-content/40'}`}
+            >
+              <div className="text-sm font-semibold">{c.name}</div>
+              <div className="text-xs">{c.count ? `${c.count} QSL${c.count === 1 ? '' : 's'}` : 'Not yet'}</div>
+            </div>
+          ))}
+        </div>
+        <div className="text-xs text-base-content/60 mb-1.5">CQ zones</div>
+        <div className="grid grid-cols-10 gap-0.5 sm:gap-1">
+          {Array.from({ length: CQ_ZONES }, (_, i) => {
+            const count = data?.zones[i + 1];
+            return (
+              <div
+                key={i}
+                title={count ? `Zone ${i + 1}: ${count} QSL${count === 1 ? '' : 's'}` : `Zone ${i + 1}: not yet`}
+                className={`aspect-square flex items-center justify-center rounded text-[10px] sm:text-xs font-semibold ${
+                  count ? 'bg-blue-500 text-white' : 'border border-dashed border-base-300 text-base-content/40'
+                }`}
+              >
+                {i + 1}
+              </div>
+            );
+          })}
+        </div>
+      </Card>
+
+      <Card title="When the bands open" wide>
+        <p className="dash-note">Confirmed contacts by the hour I made them, in Montana time.</p>
+        <p className="dash-subnote">{hourTip ?? 'Hover or tap an hour for its count.'}</p>
         {!data ? (
           <p className="text-sm text-base-content/50 py-6 text-center">{placeholder}</p>
         ) : (
-          <div className="grid gap-6 sm:grid-cols-2">
-            <div>
-              <h3 className="text-sm font-semibold mb-2">Bands</h3>
-              <Bars rows={data.bands.map((b) => ({ label: b.band.toLowerCase(), count: b.count }))} />
+          <div>
+            <div className="flex items-end gap-0.5 sm:gap-1 h-40 border-b border-base-300">
+              {data.hours.map((n, h) => {
+                const max = Math.max(1, ...data.hours);
+                const tip = `${hourLabel(h)}–${hourLabel((h + 1) % 24)}: ${n} QSL${n === 1 ? '' : 's'}`;
+                return (
+                  // The whole column is the hit target, not just the bar.
+                  <div
+                    key={h}
+                    className="flex-1 h-full flex items-end cursor-default"
+                    onMouseEnter={() => setHourTip(tip)}
+                    onMouseLeave={() => setHourTip(null)}
+                    onClick={() => setHourTip(tip)}
+                  >
+                    <div
+                      className={`w-full rounded-t ${n ? 'bg-blue-500' : ''}`}
+                      style={{ height: n ? `${Math.max(3, (n / max) * 100)}%` : 0 }}
+                    />
+                  </div>
+                );
+              })}
             </div>
-            <div>
-              <h3 className="text-sm font-semibold mb-2">Modes</h3>
-              <Bars rows={data.modes.map((m) => ({ label: m.mode, count: m.count }))} />
+            <div className="flex gap-0.5 sm:gap-1 mt-1 text-[10px] sm:text-xs text-base-content/50">
+              {data.hours.map((_, h) => (
+                <div key={h} className="flex-1 text-center">
+                  {h % 3 === 0 ? hourLabel(h) : ''}
+                </div>
+              ))}
             </div>
           </div>
         )}

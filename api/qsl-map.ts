@@ -6,10 +6,11 @@ import { compactQso, mergeQsos, parseADIF, summarizeQsls } from "../src/lib/qslS
 const redis = new Redis(process.env.REDIS_URL!);
 
 // The confirmed log, kept so each refresh only downloads what's new since the last.
-const QSOS_KEY = "lotw:qsos_v1";
-const CURSOR_KEY = "lotw:cursor_v1";
+// Bump both together when compactQso keeps a new field, to download the whole log again.
+const QSOS_KEY = "lotw:qsos_v2";
+const CURSOR_KEY = "lotw:cursor_v2";
 // What the page shows. Never expires: a stale copy is served while a fresh one is built.
-const SUMMARY_KEY = "lotw:summary_v1";
+const SUMMARY_KEY = "lotw:summary_v2";
 const REFRESH_LOCK_KEY = "lotw:refresh_lock";
 const MOST_WANTED_KEY = "clublog:mostwanted";
 

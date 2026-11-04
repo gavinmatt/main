@@ -5,12 +5,14 @@ export interface QSLData {
   states: { state: string; name: string; count: number; lat: number; lon: number; entity: boolean }[];
   provinces: { province: string; name: string; count: number; lat: number; lon: number }[];
   dx: { name: string; count: number; lat: number; lon: number; distanceMi: number }[];
-  dxByDistance: { name: string; distanceMi: number; count: number }[];
+  dxByDistance: { name: string; distanceMi: number; count: number; continent: string | null }[];
   rare: { name: string; rank: number; tier: string | null; count: number; distanceMi: number }[];
   rankedEntities: number;
   entities: number;
-  bands: { band: string; count: number }[];
-  modes: { mode: string; count: number }[];
+  continents: { code: string; name: string; count: number }[];
+  zones: Record<string, number>;
+  hours: number[];
+  confirmDays: { median: number; fastest: number; slowest: number } | null;
   recent: {
     call: string;
     band: string;

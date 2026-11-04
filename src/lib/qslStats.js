@@ -62,8 +62,23 @@ const COUNTRY_CENTROID_OVERRIDES = {
   "CANADA": [56.1, -106.3],
 };
 
-// Long to short wavelength, for listing bands in their natural order.
-const BAND_ORDER = ["160M", "80M", "60M", "40M", "30M", "20M", "17M", "15M", "12M", "10M", "6M", "2M", "70CM"];
+// The continent each CQ zone belongs to: [last zone, continent]. Zone 40 is the Arctic
+// (Iceland, Svalbard, Franz Josef Land), which DXCC counts as Europe.
+const ZONE_CONTINENTS = [
+  [8, "NA"],
+  [13, "SA"],
+  [16, "EU"],
+  [26, "AS"],
+  [32, "OC"],
+  [39, "AF"],
+  [40, "EU"],
+];
+export const CONTINENTS = { NA: "North America", SA: "South America", EU: "Europe", AF: "Africa", AS: "Asia", OC: "Oceania" };
+export const CQ_ZONES = 40;
+
+// Half the Earth's circumference: the furthest any contact can be.
+export const ANTIPODE_MI = 12_450;
+const TIME_ZONE = "America/Denver";
 
 // Club Log Most Wanted rank cutoffs, out of ~340 entities.
 const RARITY_TIERS = [
@@ -117,6 +132,7 @@ export function compactQso(r) {
     country: r.COUNTRY || "",
     state: r.STATE || "",
     grid: r.GRIDSQUARE || "",
+    cqz: r.CQZ ? String(Number(r.CQZ)) : "",
   };
 }
 
@@ -143,6 +159,23 @@ export function gridToLatLon(grid) {
 export function toProperCase(str) {
   return str.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
 }
+
+export function continentOfZone(zone) {
+  const z = Number(zone);
+  if (!Number.isInteger(z) || z < 1 || z > CQ_ZONES) return null;
+  return ZONE_CONTINENTS.find(([last]) => z <= last)[1];
+}
+
+function continentOf(q) {
+  return continentOfZone(q.cqz) ?? (q.dxcc === US_DXCC || q.dxcc === CA_DXCC ? "NA" : null);
+}
+
+// LoTW dates are YYYYMMDD and times HHMMSS, in UTC.
+function utcDate(ymd, hms = "000000") {
+  return Date.UTC(+ymd.slice(0, 4), +ymd.slice(4, 6) - 1, +ymd.slice(6, 8), +hms.slice(0, 2) || 0, +hms.slice(2, 4) || 0);
+}
+
+const localHour = new Intl.DateTimeFormat("en-US", { timeZone: TIME_ZONE, hour: "numeric", hourCycle: "h23" });
 
 export function rarityTier(rank) {
   if (rank == null) return null;
@@ -231,18 +264,27 @@ export function summarizeQsls(qsos, mostWanted = {}) {
       distanceMi: Math.round(distanceMi(REF_LAT, REF_LON, coords[0], coords[1])),
       rank,
       tier: rarityTier(rank),
+      continent: continentOf(q),
     });
   }
   const dx = [...dxByCountry.values()];
 
-  const bands = [...countBy(qsos, (q) => q.band)]
-    .map(([band, count]) => ({ band, count }))
-    .sort((a, b) => {
-      const ia = BAND_ORDER.indexOf(a.band);
-      const ib = BAND_ORDER.indexOf(b.band);
-      return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
-    });
-  const modes = [...countBy(qsos, (q) => q.mode)].map(([mode, count]) => ({ mode, count })).sort((a, b) => b.count - a.count);
+  const continentCounts = countBy(qsos, continentOf);
+  const continents = Object.entries(CONTINENTS).map(([code, name]) => ({ code, name, count: continentCounts.get(code) ?? 0 }));
+  const zones = Object.fromEntries(countBy(qsos, (q) => q.cqz || null));
+
+  // When contacts happen, by local hour of the day.
+  const hours = new Array(24).fill(0);
+  for (const q of qsos) {
+    if (q.qsoDate && q.timeOn) hours[Number(localHour.format(utcDate(q.qsoDate, q.timeOn)))]++;
+  }
+
+  // Days from the contact to the other station confirming it.
+  const lags = qsos
+    .filter((q) => q.qsoDate && q.qslDate)
+    .map((q) => Math.max(0, Math.round((utcDate(q.qslDate) - utcDate(q.qsoDate)) / 86_400_000)))
+    .sort((a, b) => a - b);
+  const confirmDays = lags.length ? { median: lags[Math.floor(lags.length / 2)], fastest: lags[0], slowest: lags.at(-1) } : null;
 
   const recent = ordered
     .slice(-RECENT_LIMIT)
@@ -265,15 +307,19 @@ export function summarizeQsls(qsos, mostWanted = {}) {
     states,
     provinces,
     dx,
-    dxByDistance: [...dx].sort((a, b) => b.distanceMi - a.distanceMi).map(({ name, distanceMi, count }) => ({ name, distanceMi, count })),
+    dxByDistance: [...dx]
+      .sort((a, b) => b.distanceMi - a.distanceMi)
+      .map(({ name, distanceMi, count, continent }) => ({ name, distanceMi, count, continent })),
     rare: dx
       .filter((d) => d.rank != null)
       .sort((a, b) => a.rank - b.rank)
       .map(({ name, rank, tier, count, distanceMi }) => ({ name, rank, tier, count, distanceMi })),
     rankedEntities: Object.keys(mostWanted).length,
     entities: new Set(qsos.map((q) => q.dxcc).filter(Boolean)).size,
-    bands,
-    modes,
+    continents,
+    zones,
+    hours,
+    confirmDays,
     recent,
     total: qsos.length,
   };

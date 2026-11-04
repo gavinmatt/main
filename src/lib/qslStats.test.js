@@ -65,7 +65,26 @@ test("Alaska and Hawaii count as states as well as entities", () => {
   assert.deepEqual(summary.dx.map((d) => d.name), ["Alaska"]);
 });
 
-test("bands are listed long to short wavelength", () => {
-  const summary = summarizeQsls([qso({ band: "10M" }), qso({ band: "40M", call: "X" }), qso({ band: "20M", call: "Y" })]);
-  assert.deepEqual(summary.bands.map((b) => b.band), ["40M", "20M", "10M"]);
+test("CQ zones give each contact a continent", () => {
+  const summary = summarizeQsls([
+    qso({ cqz: "3", state: "OR" }),
+    qso({ call: "X", dxcc: "71", country: "GALAPAGOS ISLANDS", state: "", cqz: "10" }),
+    qso({ call: "Y", dxcc: "256", country: "MADEIRA ISLANDS", state: "", cqz: "33" }),
+    qso({ call: "Z", dxcc: "1", country: "CANADA", state: "ON" }),
+  ]);
+  assert.deepEqual(summary.continents.filter((c) => c.count).map((c) => [c.code, c.count]), [["NA", 2], ["SA", 1], ["AF", 1]]);
+  assert.deepEqual(summary.zones, { 3: 1, 10: 1, 33: 1 });
+  assert.equal(summary.dxByDistance.find((d) => d.name === "Madeira Islands").continent, "AF");
+});
+
+test("contact hours are local and confirmation lag is in days", () => {
+  // 02:30 UTC on Oct 2 is 20:30 on Oct 1 in Montana (MDT).
+  const summary = summarizeQsls([
+    qso({ qsoDate: "20261002", timeOn: "023000", qslDate: "20261002" }),
+    qso({ call: "X", qsoDate: "20261001", timeOn: "150000", qslDate: "20261011" }),
+    qso({ call: "Y", qsoDate: "20261001", timeOn: "150000", qslDate: "20261031" }),
+  ]);
+  assert.equal(summary.hours[20], 1);
+  assert.equal(summary.hours[9], 2);
+  assert.deepEqual(summary.confirmDays, { median: 10, fastest: 0, slowest: 30 });
 });

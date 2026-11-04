@@ -25,8 +25,8 @@ export interface QSLData {
   updated: string;
 }
 
-const HOME_LAT = 48.4716;
-const HOME_LON = -114.3355;
+const HOME_LAT = 48.41;
+const HOME_LON = -114.444;
 
 // Fetches the QSL summary once per page, however many components ask for it.
 let qslRequest: Promise<QSLData> | null = null;

@@ -66,6 +66,7 @@ export const AIRLINE_NAMES = {
   FLE: "Flair Airlines",
   FL: "Flair Airlines", // IATA-style variant
   FE: "Flair Airlines", // seen broadcasting as FE609
+  GT: "Private charter", // seen broadcasting as GT322
   QXE: "Horizon Air",
   QX: "Horizon Air", // IATA code
   JZA: "Jazz",
@@ -468,6 +469,7 @@ export const COMMON_AIRLINES = new Set([
   "Canadian North",
   "Bering Air",
   // Business jet, charter, and utility operators: not airlines, so never "uncommon".
+  "Private charter",
   "Qatar Executive",
   "Fai Airservice",
   "Janus Airways",

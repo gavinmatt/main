@@ -212,33 +212,6 @@ import DensityMap from "../components/DensityMap.tsx";
     </section>
   </div>
 
-  <style>
-    /* Two columns only when the content area can really fit two 30rem cards. */
-    .dash-grid {
-      display: grid;
-      gap: 1.5rem;
-      grid-template-columns: repeat(auto-fit, minmax(min(100%, 30rem), 1fr));
-    }
-    .dash-wide {
-      grid-column: 1 / -1;
-    }
-    .dash-card {
-      @apply min-w-0 rounded-lg border border-base-300 bg-base-100 p-3 sm:p-5;
-    }
-    .dash-head {
-      @apply flex items-baseline justify-between gap-3 mb-1;
-    }
-    .dash-title {
-      @apply text-xl font-bold;
-    }
-    .dash-note {
-      @apply text-sm text-base-content/80 mb-1;
-    }
-    .dash-subnote {
-      @apply text-xs text-base-content/50 mb-3;
-    }
-  </style>
-
   <!-- SCRIPT -->
   <script>
     import {

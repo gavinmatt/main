@@ -79,7 +79,7 @@ import DensityMap from "../components/DensityMap.tsx";
       <div class="dash-head">
         <h2 class="dash-title">Distant pings</h2>
       </div>
-      <p class="dash-note">Furthest away aircraft I've tracked. 1 NM = ~1.15 miles.</p>
+      <p class="dash-note">Furthest away aircraft I've tracked. 1 NM = ~1.15 miles. A plane that never sent a callsign shows its transponder address instead.</p>
       <p class="dash-subnote" id="notableScale">
         Ratings compare each ping with my receiver's recent days.
       </p>
@@ -219,6 +219,7 @@ import DensityMap from "../components/DensityMap.tsx";
       airlineFromFlight,
       callsignRaw,
       classifyNotability,
+      countryFromHex,
       distanceNm,
       escapeHtml,
       hexUpper,
@@ -259,7 +260,15 @@ import DensityMap from "../components/DensityMap.tsx";
     function notableLabelForFlight(f) {
       const branch = militaryBranch(f);
       if (branch) return branch.replace(" (TANKER)", "");
-      return airlineFromFlight(f);
+      const airline = airlineFromFlight(f);
+      if (airline !== "—" && airline !== "Undetermined") return airline;
+      // No operator to name, so say what the plane is: its size class and where it's
+      // registered, e.g. "Canadian light aircraft".
+      const size = CATEGORY_LABELS[f.category];
+      const country = countryFromHex(f.hex);
+      if (size && country) return `${country} ${size[0].toLowerCase()}${size.slice(1)}`;
+      if (size) return size;
+      return country ? `${country} aircraft` : "Unidentified aircraft";
     }
 
     // Ratings come from the receiver's own recent days (each day's furthest plane, last
@@ -309,7 +318,9 @@ import DensityMap from "../components/DensityMap.tsx";
       notableBody.innerHTML = rows
         .map((r, i) => {
           const noCallsign = /^no callsign$/i.test(r.callsign ?? "");
-          const fakeFlight = { flight: noCallsign ? "" : r.callsign, hex: r.hex };
+          const fakeFlight = { flight: noCallsign ? "" : r.callsign, hex: r.hex, category: r.category };
+          // Without a callsign, the transponder address is what identifies the plane.
+          const callsign = noCallsign ? r.hex.toUpperCase() : r.callsign;
           const rank = medals[i] ?? "";
           const label = notableDistanceLabel(r.maxDistance, range);
           const date = new Date(r.lastSeen);
@@ -321,8 +332,8 @@ import DensityMap from "../components/DensityMap.tsx";
             <td class="py-2 px-1.5">
               ${label ? `<span class="px-2 py-0.5 rounded text-xs font-medium ${label.cls}">${label.label}</span>` : "—"}
             </td>
-            <td class="py-2 px-1.5 whitespace-nowrap">${escapeHtml(r.airline && r.airline !== "—" ? r.airline : notableLabelForFlight(fakeFlight))}${phoneCallsign(noCallsign ? "No callsign" : r.callsign)}</td>
-            <td class="py-2 px-1.5 whitespace-nowrap hidden sm:table-cell ${noCallsign ? "text-base-content/50" : ""}">${noCallsign ? "No callsign" : escapeHtml(r.callsign)}</td>
+            <td class="py-2 px-1.5 whitespace-nowrap">${escapeHtml(r.airline && r.airline !== "—" ? r.airline : notableLabelForFlight(fakeFlight))}${phoneCallsign(callsign)}</td>
+            <td class="py-2 px-1.5 whitespace-nowrap hidden sm:table-cell ${noCallsign ? "font-mono text-base-content/60" : ""}"${noCallsign ? ' title="No callsign sent; this is its transponder address"' : ""}>${escapeHtml(callsign)}</td>
             <td class="text-right py-2 px-1.5 font-semibold">${escapeHtml(r.maxDistance)}</td>
             <td class="text-right py-2 px-1.5 whitespace-nowrap"><a class="link" href="${trace}" target="_blank" rel="noopener">${date.toLocaleDateString(undefined, { month: "short", day: "numeric" })}</a></td>
           </tr>`;

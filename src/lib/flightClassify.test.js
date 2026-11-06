@@ -5,6 +5,7 @@ import {
   airlineFromFlight,
   callsignRaw,
   classifyNotability,
+  countryFromHex,
   heatmapTypes,
   isGarbledCallsign,
   isPrivateFlight,
@@ -95,6 +96,14 @@ test("garbled callsigns count as no callsign", () => {
   for (const cs of ["N1", "DAL1", "110AX", "", "00000000"]) {
     assert.ok(!isGarbledCallsign(cs), cs);
   }
+});
+
+test("country of registration from the transponder address", () => {
+  assert.equal(countryFromHex("c013fb"), "Canadian");
+  assert.equal(countryFromHex("A1E928"), "US");
+  assert.equal(countryFromHex("3c65ad"), "German");
+  assert.equal(countryFromHex("e48000"), null);
+  assert.equal(countryFromHex(undefined), null);
 });
 
 test("heatmap types are exclusive", () => {

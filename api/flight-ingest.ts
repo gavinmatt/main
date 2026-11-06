@@ -164,10 +164,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         hex: f.hex,
         airline: f.op || "—",
         callsign: (f.flight || "").trim() || "No callsign",
+        category: f.category ?? prev?.category,
         maxDistance: d,
         lastSeen: now,
       });
     }
+  }
+  // A plane often sends its callsign only once it's closer, so fill in a record that
+  // was set without one.
+  for (const f of payload.aircraft) {
+    const n = byHex.get(f.hex);
+    const cs = (f.flight || "").trim();
+    if (n && cs && n.callsign === "No callsign") {
+      n.callsign = cs;
+      if (f.op) n.airline = f.op;
+    }
+    if (n && !n.category && f.category) n.category = f.category;
   }
 
   const next = [...byHex.values()]

@@ -732,6 +732,25 @@ export function hexUpper(f) {
   return f.hex?.toUpperCase() ?? "";
 }
 
+// Where a plane is registered, from the block its transponder address falls in. Only
+// the countries whose planes this receiver actually hears.
+const HEX_COUNTRIES = [
+  [0xa00000, 0xafffff, "US"],
+  [0xc00000, 0xc3ffff, "Canadian"],
+  [0x0d0000, 0x0d7fff, "Mexican"],
+  [0x400000, 0x43ffff, "British"],
+  [0x3c0000, 0x3fffff, "German"],
+  [0x380000, 0x3bffff, "French"],
+  [0x480000, 0x487fff, "Dutch"],
+  [0x7c0000, 0x7fffff, "Australian"],
+  [0x840000, 0x87ffff, "Japanese"],
+];
+
+export function countryFromHex(hex) {
+  const n = parseInt(hex ?? "", 16);
+  return HEX_COUNTRIES.find(([lo, hi]) => n >= lo && n <= hi)?.[2] ?? null;
+}
+
 export function airlineFromFlight(f) {
   const cs = callsignRaw(f);
   if (/^BOE\d+/.test(cs)) return "Boeing Test Flight";

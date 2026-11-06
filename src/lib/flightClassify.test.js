@@ -41,7 +41,7 @@ test("airline codes need a flight number after them", () => {
 test("registrations and custom callsigns are private", () => {
   for (const cs of [
     "N123AB", "N4139H", "110AX", "CFPCX", "CGABC", "CFPCX0", "GABCD", "DABCD", "HBABC",
-    "T7MUSIC", "LN86TW", "T755J", "T777JG", "NCJ12", "MAVEN59", "FABCD", "B5999", "HI1234",
+    "T7MUSIC", "LN86TW", "T755J", "T777JG", "NCJ12", "MAVEN59", "AXEL74", "FABCD", "B5999", "HI1234",
     "PHABC", "VHABC", "ZSABC",
   ]) {
     assert.ok(isPrivateFlight(plane(cs)), cs);

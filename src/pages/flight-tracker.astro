@@ -333,7 +333,7 @@ import DensityMap from "../components/DensityMap.tsx";
           const trace = `https://globe.adsbexchange.com/?icao=${encodeURIComponent(r.hex)}&showTrace=${date.toISOString().slice(0, 10)}`;
           return `
           <tr class="border-b border-base-300">
-            <td class="text-center py-2 px-1.5 text-lg">${rank}</td>
+            <td class="text-center py-2 px-1.5 text-lg leading-none">${rank}</td>
             <td class="py-2 px-1.5">
               ${label ? `<span class="px-2 py-0.5 rounded text-xs font-medium ${label.cls}">${label.label}</span>` : "—"}
             </td>
@@ -375,7 +375,7 @@ import DensityMap from "../components/DensityMap.tsx";
           const rank = medals[i] ?? "";
           return `
           <tr class="border-b border-base-300">
-            <td class="text-center py-2 px-1.5 text-lg">${rank}</td>
+            <td class="text-center py-2 px-1.5 text-lg leading-none">${rank}</td>
             <td class="py-2 px-1.5 whitespace-nowrap">${escapeHtml(airlineFromCallsign(r.callsign))}${phoneCallsign(r.callsign)}</td>
             <td class="py-2 px-1.5 font-mono hidden sm:table-cell">${escapeHtml(r.callsign)}</td>
             <td class="text-right py-2 px-1.5 font-semibold">${escapeHtml(r.count)}</td>

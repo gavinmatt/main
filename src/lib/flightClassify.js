@@ -657,6 +657,7 @@ const PRIVATE_CALLSIGNS = [
   /^T\d{1,4}[A-Z]{1,2}$/, // "T" in place of the N, e.g. T755J
   /^NCJ\d+/,
   /^MAVEN\d/,
+  /^AXEL\d/,
 ];
 
 // Operators that fly under a spoken-style word instead of their three-letter code.

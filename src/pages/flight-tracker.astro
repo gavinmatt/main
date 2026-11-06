@@ -79,7 +79,7 @@ import DensityMap from "../components/DensityMap.tsx";
       <div class="dash-head">
         <h2 class="dash-title">Distant pings</h2>
       </div>
-      <p class="dash-note">Furthest away aircraft I've tracked. 1 NM = ~1.15 miles. A plane that never sent a callsign shows its transponder address instead.</p>
+      <p class="dash-note">Furthest away aircraft I've tracked. 1 NM = ~1.15 miles. Planes that never sent a callsign go by their transponder address and the country it's registered to.</p>
       <p class="dash-subnote" id="notableScale">
         Ratings compare each ping with my receiver's recent days.
       </p>
@@ -90,8 +90,8 @@ import DensityMap from "../components/DensityMap.tsx";
             <tr class="border-b border-base-300 text-base-content/70">
               <th class="text-center py-2 px-1.5 w-8"><span class="sr-only">Ranking</span></th>
               <th class="text-left py-2 px-1.5">Rating</th>
-              <th class="text-left py-2 px-1.5">Airline</th>
-              <th class="text-left py-2 px-1.5 hidden sm:table-cell">Callsign</th>
+              <th class="text-left py-2 px-1.5">Aircraft</th>
+              <th class="text-left py-2 px-1.5 hidden sm:table-cell">Direction</th>
               <th class="text-right py-2 px-1.5">NM</th>
               <th class="text-right py-2 px-1.5">Date</th>
             </tr>
@@ -319,8 +319,13 @@ import DensityMap from "../components/DensityMap.tsx";
         .map((r, i) => {
           const noCallsign = /^no callsign$/i.test(r.callsign ?? "");
           const fakeFlight = { flight: noCallsign ? "" : r.callsign, hex: r.hex, category: r.category };
+          const aircraft = r.airline && r.airline !== "—" ? r.airline : notableLabelForFlight(fakeFlight);
           // Without a callsign, the transponder address is what identifies the plane.
-          const callsign = noCallsign ? r.hex.toUpperCase() : r.callsign;
+          const id = noCallsign
+            ? `<span class="font-mono" title="No callsign sent; this is its transponder address">${escapeHtml(r.hex.toUpperCase())}</span>`
+            : escapeHtml(r.callsign);
+          const direction = r.bearing != null ? compassName(r.bearing) : "";
+          const altitude = r.altitude > 0 ? `${(Math.round(r.altitude / 100) * 100).toLocaleString()} ft` : "";
           const rank = medals[i] ?? "";
           const label = notableDistanceLabel(r.maxDistance, range);
           const date = new Date(r.lastSeen);
@@ -332,8 +337,14 @@ import DensityMap from "../components/DensityMap.tsx";
             <td class="py-2 px-1.5">
               ${label ? `<span class="px-2 py-0.5 rounded text-xs font-medium ${label.cls}">${label.label}</span>` : "—"}
             </td>
-            <td class="py-2 px-1.5 whitespace-nowrap">${escapeHtml(r.airline && r.airline !== "—" ? r.airline : notableLabelForFlight(fakeFlight))}${phoneCallsign(callsign)}</td>
-            <td class="py-2 px-1.5 whitespace-nowrap hidden sm:table-cell ${noCallsign ? "font-mono text-base-content/60" : ""}"${noCallsign ? ' title="No callsign sent; this is its transponder address"' : ""}>${escapeHtml(callsign)}</td>
+            <td class="py-2 px-1.5 whitespace-nowrap">
+              ${escapeHtml(aircraft)}
+              <div class="text-xs text-base-content/50">${id}${direction ? `<span class="sm:hidden"> · ${direction}</span>` : ""}</div>
+            </td>
+            <td class="py-2 px-1.5 whitespace-nowrap hidden sm:table-cell">
+              ${direction}
+              ${altitude ? `<div class="text-xs text-base-content/50">at ${altitude}</div>` : ""}
+            </td>
             <td class="text-right py-2 px-1.5 font-semibold">${escapeHtml(r.maxDistance)}</td>
             <td class="text-right py-2 px-1.5 whitespace-nowrap"><a class="link" href="${trace}" target="_blank" rel="noopener">${date.toLocaleDateString(undefined, { month: "short", day: "numeric" })}</a></td>
           </tr>`;

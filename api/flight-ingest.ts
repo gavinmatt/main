@@ -156,8 +156,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const d = trustedDistance(f);
     if (d == null) continue;
     batchMax = Math.max(batchMax, d);
-    const sector = Math.floor(bearingDeg(RX_LAT, RX_LON, f.lat, f.lon) / COVERAGE_SECTOR_DEG);
+    const bearing = bearingDeg(RX_LAT, RX_LON, f.lat, f.lon);
+    const sector = Math.floor(bearing / COVERAGE_SECTOR_DEG);
     sectorMax.set(sector, Math.max(sectorMax.get(sector) ?? 0, d));
+    const alt = f.alt_geom ?? f.alt_baro;
     const prev = byHex.get(f.hex);
     if (!prev || d > prev.maxDistance) {
       byHex.set(f.hex, {
@@ -165,6 +167,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         airline: f.op || "—",
         callsign: (f.flight || "").trim() || "No callsign",
         category: f.category ?? prev?.category,
+        bearing: Math.round(bearing),
+        altitude: typeof alt === "number" ? alt : undefined,
         maxDistance: d,
         lastSeen: now,
       });

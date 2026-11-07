@@ -444,6 +444,7 @@ export const COMMON_AIRLINES = new Set([
   "Porter Airlines",
   "AirSprint",
   "Flexjet",
+  "PlaneSense",
   "Jazz",
   "Carson Air",
   "Corporate Air",

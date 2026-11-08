@@ -85,6 +85,7 @@ test("fun badges", () => {
   assert.equal(classifyNotability(plane("N123AB", { category: "A7" })).label, "HELI");
   assert.equal(classifyNotability(plane("DAL1234", { squawk: "7700" })).label, "EMERGENCY");
   assert.equal(classifyNotability(plane("DAL1234")), null);
+  assert.equal(classifyNotability(plane("CNS412")), null);
 });
 
 test("garbled callsigns count as no callsign", () => {

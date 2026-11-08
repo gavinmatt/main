@@ -633,6 +633,10 @@ export const COMMON_AIRLINES = new Set([
   "AirNet II",
   "Private Jet Center",
   "Aero Air",
+  "Volkswagen Air Service",
+  "Titan Airways",
+  "Omni Air International",
+  "National Airlines",
 ]);
 
 // Registrations and custom callsigns flown by private aircraft.

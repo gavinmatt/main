@@ -25,6 +25,7 @@ test("airline codes need a flight number after them", () => {
     FL881: "Flair Airlines",
     FE609: "Flair Airlines",
     GT322: "Private charter",
+    DOW890: "Best Jets International",
     AB3187: "ABX Air",
     QX2104: "Horizon Air",
     XAA1154: "American Airlines",

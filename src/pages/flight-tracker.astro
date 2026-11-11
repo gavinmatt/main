@@ -121,7 +121,6 @@ import DensityMap from "../components/DensityMap.tsx";
             <tr class="border-b border-base-300 text-base-content/70">
               <th class="text-center py-2 px-1.5 w-8"><span class="sr-only">Ranking</span></th>
               <th class="text-left py-2 px-1.5">Airline</th>
-              <th class="text-left py-2 px-1.5 hidden sm:table-cell">Callsign</th>
               <th class="text-right py-2 px-1.5">Hours</th>
               <th class="text-right py-2 px-1.5">Last seen</th>
             </tr>
@@ -475,15 +474,17 @@ import DensityMap from "../components/DensityMap.tsx";
       const ffBody = document.getElementById("frequentFliersBody");
       if (!ffBody) return;
       if (!rows || !rows.length) {
-        ffBody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-base-content/50">No frequent fliers recorded yet.</td></tr>`;
+        ffBody.innerHTML = `<tr><td colspan="4" class="text-center py-6 text-base-content/50">No frequent fliers recorded yet.</td></tr>`;
         return;
       }
       ffBody.innerHTML = rows
         .map((r, i) => {
           return `
           <tr class="border-b border-base-300">${rankCell(i)}
-            <td class="py-2 px-1.5 whitespace-nowrap">${escapeHtml(airlineFromCallsign(r.callsign))}${phoneCallsign(r.callsign)}</td>
-            <td class="py-2 px-1.5 font-mono hidden sm:table-cell">${escapeHtml(r.callsign)}</td>
+            <td class="py-2 px-1.5 whitespace-nowrap">
+              ${escapeHtml(airlineFromCallsign(r.callsign))}
+              <div class="text-xs text-base-content/50">${escapeHtml(r.callsign)}</div>
+            </td>
             <td class="text-right py-2 px-1.5 font-semibold">${escapeHtml(r.count)}</td>
             <td class="text-right py-2 px-1.5 whitespace-nowrap">${new Date(`${r.lastDay}T12:00:00`).toLocaleDateString(undefined, { month: "short", day: "numeric" })}</td>
           </tr>`;

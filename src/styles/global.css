@@ -27,3 +27,11 @@
 .dash-subnote {
   @apply text-xs text-base-content/50 mb-3;
 }
+/* Side-by-side cards built as title, notes, table: they share the parent's rows, so
+   both tables start on the same line however long each card's notes run. */
+.dash-paired {
+  display: grid;
+  grid-row: span 3;
+  grid-template-rows: subgrid;
+  row-gap: 0;
+}

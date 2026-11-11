@@ -11,6 +11,15 @@ const MAX_NOTABLES = 10;
 // bad position decode, and would otherwise hold the record forever.
 const MAX_PLAUSIBLE_NM = 300;
 
+// Highest and fastest planes heard, one row per plane with its best reading.
+const HIGHEST_KEY = "records:highest:v1";
+const FASTEST_KEY = "records:fastest:v1";
+const MAX_RECORDS = 10;
+// Above anything that flies over Montana (a U-2 tops out near 70,000 ft) or faster
+// than a jet stream tailwind can push an airliner; beyond these is a bad decode.
+const MAX_PLAUSIBLE_FT = 75_000;
+const MAX_PLAUSIBLE_KT = 800;
+
 // Each day's longest valid reception, scored by distance, for judging how good a
 // distant ping is against this receiver's own recent range.
 const DAILY_RANGE_KEY = "range:daily";
@@ -67,6 +76,74 @@ function trustedDistance(f: any) {
   if (typeof f.seen_pos === "number" && f.seen_pos > 30) return null;
   const d = Math.round(distanceNm(RX_LAT, RX_LON, f.lat, f.lon));
   return d <= MAX_PLAUSIBLE_NM ? d : null;
+}
+
+// Only a fresh, direct ADS-B report of this field: MLAT and TIS-B values can be well off.
+function isDirect(f: any, field: string) {
+  if (f.type && !/^(adsb|adsr)/.test(f.type)) return false;
+  if (typeof f.seen === "number" && f.seen > 30) return false;
+  return !f.mlat?.includes(field) && !f.tisb?.includes(field);
+}
+
+function trustedAltitude(f: any) {
+  if (typeof f.alt_baro !== "number" || typeof f.alt_geom !== "number") return null;
+  if (!isDirect(f, "alt_baro")) return null;
+  // The two altitudes come from separate sensors, so a bad decode rarely moves both.
+  if (Math.abs(f.alt_baro - f.alt_geom) > 3000) return null;
+  return f.alt_baro <= MAX_PLAUSIBLE_FT ? f.alt_baro : null;
+}
+
+// Ground speed, so a tailwind counts; only in the air, where taxiing decodes can't land.
+function trustedSpeed(f: any) {
+  if (typeof f.gs !== "number" || typeof f.alt_baro !== "number") return null;
+  if (!isDirect(f, "gs")) return null;
+  return f.gs <= MAX_PLAUSIBLE_KT ? Math.round(f.gs) : null;
+}
+
+// A plane often sends its callsign only once it's closer, so fill in a record that was
+// set without one.
+function fillIdentity(byHex: Map<string, any>, aircraft: any[]) {
+  for (const f of aircraft) {
+    const n = byHex.get(f.hex);
+    const cs = (f.flight || "").trim();
+    if (n && cs && n.callsign === "No callsign") {
+      n.callsign = cs;
+      if (f.op) n.airline = f.op;
+    }
+    if (n && !n.category && f.category) n.category = f.category;
+  }
+}
+
+async function readRecords(key: string): Promise<any[]> {
+  try {
+    return JSON.parse((await redis.get(key)) ?? "[]");
+  } catch {
+    return [];
+  }
+}
+
+// Keeps each plane's best reading of one measure, then the top ten planes by it.
+async function updateRecords(key: string, aircraft: any[], measure: (f: any) => number | null, extra: (f: any) => object, now: number) {
+  const records = await readRecords(key);
+  const byHex = new Map<string, any>(records.map((r) => [r.hex, r]));
+  for (const f of aircraft) {
+    const v = measure(f);
+    if (v == null || !f.hex) continue;
+    const prev = byHex.get(f.hex);
+    if (prev && v <= prev.value) continue;
+    byHex.set(f.hex, {
+      hex: f.hex,
+      airline: f.op || "—",
+      callsign: (f.flight || "").trim() || "No callsign",
+      category: f.category ?? prev?.category,
+      value: v,
+      ...extra(f),
+      lastSeen: now,
+    });
+  }
+  fillIdentity(byHex, aircraft);
+  const next = [...byHex.values()].sort((a, b) => b.value - a.value).slice(0, MAX_RECORDS);
+  await redis.set(key, JSON.stringify(next));
 }
 
 function distanceNm(lat1: number, lon1: number, lat2: number, lon2: number) {
@@ -174,23 +251,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       });
     }
   }
-  // A plane often sends its callsign only once it's closer, so fill in a record that
-  // was set without one.
-  for (const f of payload.aircraft) {
-    const n = byHex.get(f.hex);
-    const cs = (f.flight || "").trim();
-    if (n && cs && n.callsign === "No callsign") {
-      n.callsign = cs;
-      if (f.op) n.airline = f.op;
-    }
-    if (n && !n.category && f.category) n.category = f.category;
-  }
+  fillIdentity(byHex, payload.aircraft);
 
   const next = [...byHex.values()]
     .sort((a, b) => b.maxDistance - a.maxDistance)
     .slice(0, MAX_NOTABLES);
 
   await redis.set(NOTABLE_KEY, JSON.stringify(next));
+
+  // --- HIGHEST AND FASTEST ---
+  await Promise.all([
+    updateRecords(HIGHEST_KEY, payload.aircraft, trustedAltitude, () => ({}), now),
+    updateRecords(FASTEST_KEY, payload.aircraft, trustedSpeed, (f) => ({ track: typeof f.track === "number" ? Math.round(f.track) : undefined, altitude: trustedAltitude(f) ?? undefined }), now),
+  ]);
 
   // --- DAILY RANGE ---
   if (batchMax > 0) {

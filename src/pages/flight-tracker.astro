@@ -137,7 +137,7 @@ import DensityMap from "../components/DensityMap.tsx";
         <h2 class="dash-title">Highest flights</h2>
       </div>
       <p class="dash-note">The highest-flying planes I've tracked, by the pressure altitude pilots fly by.</p>
-      <p class="dash-subnote">Airliners cruise around FL350–FL400; business jets can climb past FL450.</p>
+      <p class="dash-subnote">Airliners cruise around 35,000–40,000 ft; business jets can climb past 45,000.</p>
 
       <div class="overflow-x-auto">
         <table class="w-full border-collapse text-sm text-base-content">
@@ -396,10 +396,7 @@ import DensityMap from "../components/DensityMap.tsx";
 
     function renderHighest(rows) {
       renderRecordTable("highestBody", rows, 4, (r) => `${aircraftCell(r)}
-            <td class="text-right py-2 px-1.5 whitespace-nowrap">
-              <span class="font-semibold">${escapeHtml(r.value.toLocaleString())}</span>
-              <div class="text-xs text-base-content/50">FL${String(Math.round(r.value / 1000) * 10).padStart(3, "0")}</div>
-            </td>`);
+            <td class="text-right py-2 px-1.5 font-semibold">${escapeHtml(r.value.toLocaleString())}</td>`);
     }
 
     function renderFastest(rows) {

@@ -75,14 +75,16 @@ import DensityMap from "../components/DensityMap.tsx";
     </section>
 
     <!-- CARD: DISTANT PINGS -->
-    <section class="dash-card">
+    <section class="dash-card dash-paired">
       <div class="dash-head">
         <h2 class="dash-title">Distant pings</h2>
       </div>
-      <p class="dash-note">Furthest away aircraft I've tracked. 1 NM = ~1.15 miles. Planes that never sent a callsign go by their transponder address and the country it's registered to.</p>
-      <p class="dash-subnote" id="notableScale">
-        Ratings compare each ping with my receiver's recent days.
-      </p>
+      <div>
+        <p class="dash-note">Furthest away aircraft I've tracked. 1 NM = ~1.15 miles. Planes that never sent a callsign go by their transponder address and the country it's registered to.</p>
+        <p class="dash-subnote" id="notableScale">
+          Ratings compare each ping with my receiver's recent days.
+        </p>
+      </div>
 
       <div class="overflow-x-auto">
         <table class="w-full border-collapse text-sm text-base-content">
@@ -102,18 +104,20 @@ import DensityMap from "../components/DensityMap.tsx";
     </section>
 
     <!-- CARD: FREQUENT FLIERS -->
-    <section class="dash-card">
+    <section class="dash-card dash-paired">
       <div class="dash-head">
         <h2 class="dash-title">Frequent fliers</h2>
       </div>
-      <p class="dash-note">
-        Callsigns I've seen most often over the last 90 days, effectively the
-        busiest routes over my antenna.
-      </p>
-      <p class="dash-subnote">
-        Each callsign counts once for every hour it's in range.
-        <span id="frequentSince"></span>
-      </p>
+      <div>
+        <p class="dash-note">
+          Callsigns I've seen most often over the last 90 days, effectively the
+          busiest routes over my antenna.
+        </p>
+        <p class="dash-subnote">
+          Each callsign counts once for every hour it's in range.
+          <span id="frequentSince"></span>
+        </p>
+      </div>
 
       <div class="overflow-x-auto">
         <table class="w-full border-collapse text-sm text-base-content">
@@ -131,12 +135,14 @@ import DensityMap from "../components/DensityMap.tsx";
     </section>
 
     <!-- CARD: HIGHEST -->
-    <section class="dash-card">
+    <section class="dash-card dash-paired">
       <div class="dash-head">
         <h2 class="dash-title">Highest flights</h2>
       </div>
-      <p class="dash-note">The highest-flying planes I've tracked, by the pressure altitude pilots fly by.</p>
-      <p class="dash-subnote">Airliners cruise around 35,000–40,000 ft; business jets can climb past 45,000.</p>
+      <div>
+        <p class="dash-note">The highest-flying planes I've tracked, by the pressure altitude pilots fly by.</p>
+        <p class="dash-subnote">Airliners cruise around 35,000–40,000 ft; business jets can climb past 45,000.</p>
+      </div>
 
       <div class="overflow-x-auto">
         <table class="w-full border-collapse text-sm text-base-content">
@@ -154,12 +160,14 @@ import DensityMap from "../components/DensityMap.tsx";
     </section>
 
     <!-- CARD: FASTEST -->
-    <section class="dash-card">
+    <section class="dash-card dash-paired">
       <div class="dash-head">
         <h2 class="dash-title">Fastest flights</h2>
       </div>
-      <p class="dash-note">The fastest planes I've tracked, by speed over the ground, so a tailwind counts.</p>
-      <p class="dash-subnote">Planes heading east with the jet stream behind them can pass 600 knots, which is faster than sound at cruise altitude. Those get a Mach badge, though only over the ground: through the air they're still subsonic.</p>
+      <div>
+        <p class="dash-note">The fastest planes I've tracked, by speed over the ground, so a tailwind counts.</p>
+        <p class="dash-subnote">Planes heading east with the jet stream behind them can pass 600 knots, which is faster than sound at cruise altitude. Those get a Mach badge, though only over the ground: through the air they're still subsonic.</p>
+      </div>
 
       <div class="overflow-x-auto">
         <table class="w-full border-collapse text-sm text-base-content">

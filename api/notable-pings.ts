@@ -9,6 +9,8 @@ const redis = new Redis(process.env.REDIS_URL);
 
 const NOTABLE_KEY = 'notable-pings:v1';
 const DAILY_RANGE_KEY = 'range:daily'; // must match flight-ingest.ts
+const HIGHEST_KEY = 'records:highest:v1'; // must match flight-ingest.ts
+const FASTEST_KEY = 'records:fastest:v1'; // must match flight-ingest.ts
 const RANGE_WINDOW_DAYS = 30;
 const COVERAGE_SECTOR_DEG = 10; // must match flight-ingest.ts
 
@@ -62,10 +64,20 @@ export default async function handler(
   res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=120');
 
   try {
-    const [raw, range] = await Promise.all([redis.get(NOTABLE_KEY), rangeStats()]);
+    const [raw, range, highest, fastest] = await Promise.all([
+      redis.get(NOTABLE_KEY),
+      rangeStats(),
+      redis.get(HIGHEST_KEY),
+      redis.get(FASTEST_KEY),
+    ]);
     const rows = raw ? JSON.parse(raw) : [];
     await fillBearings(rows);
-    return res.status(200).json({ rows, range });
+    return res.status(200).json({
+      rows,
+      range,
+      highest: highest ? JSON.parse(highest) : [],
+      fastest: fastest ? JSON.parse(fastest) : [],
+    });
   } catch (err) {
     console.error('notable-pings read failed', err);
     return res.status(500).json({

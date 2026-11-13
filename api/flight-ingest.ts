@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from "./_vercel.js";
 import { Redis } from "ioredis";
-import { airlineFromFlight, heatmapTypes, isGarbledCallsign } from "../src/lib/flightClassify.js";
+import { airlineFromFlight, heatmapTypes, isGarbledCallsign, isResearch, militaryBranch } from "../src/lib/flightClassify.js";
 import { bearingDeg, isImpossibleJump, maxHearableNm } from "../src/lib/positionChecks.js";
 
 const redis = new Redis(process.env.REDIS_URL!);
@@ -12,13 +12,22 @@ const MAX_NOTABLES = 10;
 const MAX_PLAUSIBLE_NM = 300;
 
 // Highest and fastest planes heard, one row per plane with its best reading.
-const HIGHEST_KEY = "records:highest:v1";
+const HIGHEST_KEY = "records:highest:v2";
 const FASTEST_KEY = "records:fastest:v1";
 const MAX_RECORDS = 10;
 // Above anything that flies over Montana (a U-2 tops out near 70,000 ft) or faster
 // than a jet stream tailwind can push an airliner; beyond these is a bad decode.
 const MAX_PLAUSIBLE_FT = 75_000;
 const MAX_PLAUSIBLE_KT = 800;
+// No civil aircraft is certified above 51,000 ft (the top business jets); only military
+// and research planes go higher.
+const MAX_CIVIL_FT = 51_000;
+// Each plane's altitude and speed in the previous post. A record needs two posts in a
+// row that agree, because a bad decode is a one-off spike.
+const LAST_READINGS_KEY = "records:last";
+const MAX_ALT_CHANGE_FT = 2000; // about 8,000 ft/min across one 15-second post
+const MAX_SPEED_CHANGE_KT = 40;
+const READING_MAX_AGE_MS = 60_000;
 
 // Each day's longest valid reception, scored by distance, for judging how good a
 // distant ping is against this receiver's own recent range.
@@ -85,19 +94,29 @@ function isDirect(f: any, field: string) {
   return !f.mlat?.includes(field) && !f.tisb?.includes(field);
 }
 
-function trustedAltitude(f: any) {
+type Reading = [alt: number | null, gs: number | null, t: number];
+
+// Whether this post's value is close to the same plane's value in the previous one.
+function steady(value: number, prev: number | null | undefined, prevT: number | undefined, now: number, maxChange: number) {
+  return prev != null && prevT != null && now - prevT <= READING_MAX_AGE_MS && Math.abs(value - prev) <= maxChange;
+}
+
+function trustedAltitude(f: any, prev: Reading | undefined, now: number) {
   if (typeof f.alt_baro !== "number" || typeof f.alt_geom !== "number") return null;
   if (!isDirect(f, "alt_baro")) return null;
-  // The two altitudes come from separate sensors, so a bad decode rarely moves both.
+  // GPS altitude is often the pressure altitude plus a correction, so a bad decode can
+  // move both; this only catches a GPS reading that's off on its own.
   if (Math.abs(f.alt_baro - f.alt_geom) > 3000) return null;
-  return f.alt_baro <= MAX_PLAUSIBLE_FT ? f.alt_baro : null;
+  const ceiling = militaryBranch(f) || isResearch(f) ? MAX_PLAUSIBLE_FT : MAX_CIVIL_FT;
+  if (f.alt_baro > ceiling) return null;
+  return steady(f.alt_baro, prev?.[0], prev?.[2], now, MAX_ALT_CHANGE_FT) ? f.alt_baro : null;
 }
 
 // Ground speed, so a tailwind counts; only in the air, where taxiing decodes can't land.
-function trustedSpeed(f: any) {
+function trustedSpeed(f: any, prev: Reading | undefined, now: number) {
   if (typeof f.gs !== "number" || typeof f.alt_baro !== "number") return null;
-  if (!isDirect(f, "gs")) return null;
-  return f.gs <= MAX_PLAUSIBLE_KT ? Math.round(f.gs) : null;
+  if (!isDirect(f, "gs") || f.gs > MAX_PLAUSIBLE_KT) return null;
+  return steady(f.gs, prev?.[1], prev?.[2], now, MAX_SPEED_CHANGE_KT) ? Math.round(f.gs) : null;
 }
 
 // A plane often sends its callsign only once it's closer, so fill in a record that was
@@ -260,10 +279,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   await redis.set(NOTABLE_KEY, JSON.stringify(next));
 
   // --- HIGHEST AND FASTEST ---
+  const lastReadings: Record<string, Reading> = JSON.parse((await redis.get(LAST_READINGS_KEY)) ?? "{}");
+  const altitude = (f: any) => trustedAltitude(f, lastReadings[f.hex], now);
+  const speed = (f: any) => trustedSpeed(f, lastReadings[f.hex], now);
   await Promise.all([
-    updateRecords(HIGHEST_KEY, payload.aircraft, trustedAltitude, () => ({}), now),
-    updateRecords(FASTEST_KEY, payload.aircraft, trustedSpeed, (f) => ({ track: typeof f.track === "number" ? Math.round(f.track) : undefined, altitude: trustedAltitude(f) ?? undefined }), now),
+    updateRecords(HIGHEST_KEY, payload.aircraft, altitude, () => ({}), now),
+    updateRecords(FASTEST_KEY, payload.aircraft, speed, (f) => ({ track: typeof f.track === "number" ? Math.round(f.track) : undefined, altitude: altitude(f) ?? undefined }), now),
   ]);
+  const readings: Record<string, Reading> = {};
+  for (const f of payload.aircraft) {
+    const alt = typeof f.alt_baro === "number" ? f.alt_baro : null;
+    const gs = typeof f.gs === "number" ? f.gs : null;
+    if (f.hex && (alt != null || gs != null)) readings[f.hex] = [alt, gs, now];
+  }
+  await redis.set(LAST_READINGS_KEY, JSON.stringify(readings), "EX", 300);
 
   // --- DAILY RANGE ---
   if (batchMax > 0) {

@@ -331,9 +331,10 @@ import DensityMap from "../components/DensityMap.tsx";
     const MIN_RANGE_DAYS = 7;
     const FALLBACK_RANGE = { median: 170, p90: 205, best: 250 };
     const NOTABLE_TIERS = [
-      { key: "best", label: "AMAZING", cls: "bg-purple-100 text-purple-800" },
-      { key: "p90", label: "GREAT", cls: "bg-indigo-100 text-indigo-800" },
-      { key: "median", label: "GOOD", cls: "bg-blue-100 text-blue-800" },
+      // One hue, darker for a better rating.
+      { key: "best", label: "AMAZING", cls: "bg-indigo-700 text-white" },
+      { key: "p90", label: "GREAT", cls: "bg-indigo-300 text-indigo-950" },
+      { key: "median", label: "GOOD", cls: "bg-indigo-100 text-indigo-800" },
     ];
 
     const rangeThresholds = (range) =>

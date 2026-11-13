@@ -9,7 +9,7 @@ const redis = new Redis(process.env.REDIS_URL);
 
 const NOTABLE_KEY = 'notable-pings:v1';
 const DAILY_RANGE_KEY = 'range:daily'; // must match flight-ingest.ts
-const HIGHEST_KEY = 'records:highest:v1'; // must match flight-ingest.ts
+const HIGHEST_KEY = 'records:highest:v2'; // must match flight-ingest.ts
 const FASTEST_KEY = 'records:fastest:v1'; // must match flight-ingest.ts
 const RANGE_WINDOW_DAYS = 30;
 const COVERAGE_SECTOR_DEG = 10; // must match flight-ingest.ts
@@ -30,8 +30,19 @@ async function rangeStats() {
   }
   maxes.sort((a, b) => a - b);
   if (!maxes.length) return { days: 0 };
-  const pct = (p: number) => maxes[Math.min(maxes.length - 1, Math.floor(p * maxes.length))];
-  return { days: maxes.length, median: pct(0.5), p90: pct(0.9), best: maxes[maxes.length - 1] };
+  // Interpolated between days, so with only a couple of weeks the 90th percentile isn't
+  // simply the best day.
+  const pct = (p: number) => {
+    const pos = p * (maxes.length - 1);
+    const lo = Math.floor(pos);
+    const hi = Math.min(lo + 1, maxes.length - 1);
+    return Math.round(maxes[lo] + (maxes[hi] - maxes[lo]) * (pos - lo));
+  };
+  const median = pct(0.5);
+  const best = maxes[maxes.length - 1];
+  // Each tier strictly above the last, so no two ratings share a threshold.
+  const p90 = Math.max(median + 1, Math.min(pct(0.9), best - 1));
+  return { days: maxes.length, median, p90, best: Math.max(best, p90 + 1) };
 }
 
 // Records from before ingest kept a bearing: recover it from that day's coverage rose,

@@ -166,7 +166,7 @@ import DensityMap from "../components/DensityMap.tsx";
       </div>
       <div>
         <p class="dash-note">The fastest planes I've tracked, by speed over the ground, so a tailwind counts.</p>
-        <p class="dash-subnote">Planes heading east with the jet stream behind them can pass 600 knots, which is faster than sound at cruise altitude. Those get a Mach badge, though only over the ground: through the air they're still subsonic.</p>
+        <p class="dash-subnote">Sound slows as the air cools with height, from 661 knots at sea level to 573 above 36,000 ft, so a slower plane flying higher can reach Mach 1 first. Those get highlighted, though it's only over the ground: through the air they're still subsonic.</p>
       </div>
 
       <div class="overflow-x-auto">
@@ -416,11 +416,13 @@ import DensityMap from "../components/DensityMap.tsx";
 
     // Ground speed against the speed of sound where the plane is. Past 1 it's
     // technically supersonic over the ground, though a tailwind did the work.
-    function machBadge(r, cls) {
+    function machLabel(r) {
       if (!(r.altitude > 0)) return "";
-      const mach = r.value / speedOfSoundKt(r.altitude);
-      if (mach < 1) return "";
-      return `<span class="px-1.5 rounded font-medium bg-fuchsia-100 text-fuchsia-800 ${cls}" title="Faster than sound at ${feet(r.altitude)}, over the ground. A tailwind is doing the work: through the air it's still subsonic.">MACH ${mach.toFixed(2)}</span>`;
+      // Rounded down, so 0.998 can't read as an unhighlighted 1.00.
+      const mach = Math.floor((r.value / speedOfSoundKt(r.altitude)) * 100) / 100;
+      const text = `Mach ${mach.toFixed(2)}`;
+      if (mach < 1) return ` · <span title="Speed of sound at ${feet(r.altitude)} is about ${Math.round(speedOfSoundKt(r.altitude))} knots">${text}</span>`;
+      return ` <span class="px-1 rounded font-medium bg-fuchsia-100 text-fuchsia-800" title="Faster than sound at ${feet(r.altitude)}, over the ground. A tailwind is doing the work: through the air it's still subsonic.">${text}</span>`;
     }
 
     function renderFastest(rows) {
@@ -432,8 +434,8 @@ import DensityMap from "../components/DensityMap.tsx";
               ${r.altitude > 0 ? `<div class="text-xs text-base-content/50">at ${feet(r.altitude)}</div>` : ""}
             </td>
             <td class="text-right py-2 px-1.5 whitespace-nowrap">
-              ${machBadge(r, "hidden sm:inline-block py-0.5 mr-1 text-xs")}<span class="font-semibold">${escapeHtml(r.value)}</span>
-              <div class="text-xs text-base-content/50">${machBadge(r, "sm:hidden") ? `${machBadge(r, "sm:hidden")}<span class="hidden sm:inline">` : "<span>"}${Math.round(r.value * 1.15078)} mph</span></div>
+              <span class="font-semibold">${escapeHtml(r.value)}</span>
+              <div class="text-xs text-base-content/50">${Math.round(r.value * 1.15078)} mph${machLabel(r)}</div>
             </td>`;
       });
     }
